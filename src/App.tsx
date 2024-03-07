@@ -1,10 +1,8 @@
-import { useState } from 'react'
 import './App.css'
 import { HomePage } from './pages/home-page'
 import {
   QueryClient,
   QueryClientProvider,
-  useQuery,
 } from '@tanstack/react-query'
 
 const queryClient = new QueryClient()
