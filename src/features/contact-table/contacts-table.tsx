@@ -11,28 +11,13 @@ import {
 } from '@tanstack/react-table'
 import {  useQuery } from '@tanstack/react-query'
 import { Contact } from '../../types/contact'
-import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react'
+import { useEffect, useMemo, useReducer, useState } from 'react'
 import './contact-table.css'
 
 declare module '@tanstack/react-table' {
   interface TableMeta<TData extends RowData> {
     updateData: (rowIndex: number, columnId: string, value: unknown) => void
   }
-}
-function useSkipper() {
-  const shouldSkipRef = useRef(true)
-  const shouldSkip = shouldSkipRef.current
-
-  // Wrap a function with this to skip a pagination reset temporarily
-  const skip = useCallback(() => {
-    shouldSkipRef.current = false
-  }, [])
-
-  useEffect(() => {
-    shouldSkipRef.current = true
-  })
-
-  return [shouldSkip, skip] as const
 }
 
 function Filter({
@@ -89,7 +74,6 @@ function Filter({
 const DEV_API_URL = import.meta.env.VITE_DEV_API_URL
 
 export const ContactsTable = ({updateContact}:{updateContact: (updatedContact: {contact: Partial<Contact>, id: number}) => void})=>  {
-  const [tableData, setTableData] = useState<never[]>([])
   const defaultColumn: Partial<ColumnDef<Contact>> = {
     cell: ({ getValue, row, column, table }) => {
       console.log('column', column)
@@ -157,7 +141,6 @@ export const ContactsTable = ({updateContact}:{updateContact: (updatedContact: {
       return res.json()
     }),
   })
-  const [autoResetPageIndex, skipAutoResetPageIndex] = useSkipper()
   const refreshData = () => {}
   const table = useReactTable({
     columns,
@@ -166,30 +149,13 @@ export const ContactsTable = ({updateContact}:{updateContact: (updatedContact: {
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    meta: {
-      updateData: (rowIndex, columnId, value) => {
-        // Skip page index reset until after next rerender
-        skipAutoResetPageIndex()
-        setTableData((old: any) =>
-          old.map((row: any, index: number) => {
-            if (index === rowIndex) {
-              return {
-                ...old[rowIndex]!,
-                [columnId]: value,
-              }
-            }
-            return row
-          })
-        )
-      },
-    },
     debugTable: true,
   })
 
   // ...render your table
   return (
-    <div className="p-2">
-    <div className="h-2" />
+    <div >
+    <div />
     <table>
       <thead>
         {table.getHeaderGroups().map(headerGroup => (
@@ -235,75 +201,20 @@ export const ContactsTable = ({updateContact}:{updateContact: (updatedContact: {
         })}
       </tbody>
     </table>
-    <div className="h-2" />
-    <div className="flex items-center gap-2">
-      <button
-        className="border rounded p-1"
-        onClick={() => table.setPageIndex(0)}
-        disabled={!table.getCanPreviousPage()}
-      >
-        {'<<'}
-      </button>
-      <button
-        className="border rounded p-1"
-        onClick={() => table.previousPage()}
-        disabled={!table.getCanPreviousPage()}
-      >
-        {'<'}
-      </button>
-      <button
-        className="border rounded p-1"
-        onClick={() => table.nextPage()}
-        disabled={!table.getCanNextPage()}
-      >
-        {'>'}
-      </button>
-      <button
-        className="border rounded p-1"
-        onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-        disabled={!table.getCanNextPage()}
-      >
-        {'>>'}
-      </button>
-      <span className="flex items-center gap-1">
-        <div>Page</div>
-        <strong>
-          {table.getState().pagination.pageIndex + 1} of{' '}
-          {table.getPageCount()}
-        </strong>
-      </span>
-      <span className="flex items-center gap-1">
-        | Go to page:
-        <input
-          type="number"
-          defaultValue={table.getState().pagination.pageIndex + 1}
-          onChange={e => {
-            const page = e.target.value ? Number(e.target.value) - 1 : 0
-            table.setPageIndex(page)
-          }}
-          className="border p-1 rounded w-16"
-        />
-      </span>
-      <select
-        value={table.getState().pagination.pageSize}
-        onChange={e => {
-          table.setPageSize(Number(e.target.value))
-        }}
-      >
-        {[10, 20, 30, 40, 50].map(pageSize => (
-          <option key={pageSize} value={pageSize}>
-            Show {pageSize}
-          </option>
-        ))}
-      </select>
+    <div  />
+    <div >
     </div>
-    <div>{table.getRowModel().rows.length} Rows</div>
-    <div>
-      <button onClick={() => rerender()}>Force Rerender</button>
+    <div style={{display: 'flex'}}> 
+      <div>{table.getRowModel().rows.length} Rows</div>
+      <div>
+        <button onClick={() => rerender()}>Force Rerender</button>
+      </div>
+      <div>
+        <button onClick={() => refreshData()}>Refresh Data</button>
+    </div>  
+
     </div>
-    <div>
-      <button onClick={() => refreshData()}>Refresh Data</button>
-    </div>
+   
   </div>
   )
 }
