@@ -1,4 +1,5 @@
 import './App.css'
+import { TopBar } from './features/app-bar/TopBar'
 import { HomePage } from './pages/home-page'
 import {
   QueryClient,
@@ -8,9 +9,9 @@ import {
 const queryClient = new QueryClient()
 
 function App() {
-
   return (
     <QueryClientProvider client={queryClient}>
+      <TopBar />
       <HomePage/>
     </QueryClientProvider>
   )

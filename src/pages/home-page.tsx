@@ -69,13 +69,18 @@ export const HomePage = () => {
   }
 
   return (
-    <div style={{display: "flex"}} >
+    <div>
+        <Button
+          color='info'
+          variant="contained"
+          onClick={()=> setIsContactFormOpen(!isContactFormOpen)}>
+            Add Contact
+        </Button >
        <ContactsTable
         updateContact={updateContact}
         tableData={data}
         refreshTableData={refetchContacts}/>
       <div>
-        <Button color='info' variant="contained" onClick={()=> setIsContactFormOpen(!isContactFormOpen)}>Add Contact</Button >
         <ContactForm
           isOpen={isContactFormOpen}
           handleClose={()=>setIsContactFormOpen(false)} 
@@ -86,3 +91,4 @@ export const HomePage = () => {
     </div>
   )
 }
+// style={{display: 'flex', flexDirection: 'column', border: '1px solid red'}}
