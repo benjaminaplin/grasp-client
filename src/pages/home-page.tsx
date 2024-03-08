@@ -5,6 +5,7 @@ import {  useState } from "react";
 import { ContactsTable } from "../features/contact-table/contact-table";
 import { Contact } from "../types/contact";
 import { ContactForm } from "../features/contact-form/contact-form";
+import ButtonGroup from "@mui/material/ButtonGroup";
 
 const DEV_API_URL = import.meta.env.VITE_DEV_API_URL
 
@@ -33,6 +34,7 @@ export const HomePage = () => {
       })
     },
     onSuccess: () => {
+      setIsContactFormOpen(false)
       refetchContacts()
     }
   })
@@ -70,12 +72,14 @@ export const HomePage = () => {
 
   return (
     <div>
+      <ButtonGroup variant="contained" aria-label="Basic button group" style={{padding: '1rem 0'}}>
         <Button
           color='info'
           variant="contained"
           onClick={()=> setIsContactFormOpen(!isContactFormOpen)}>
             Add Contact
         </Button >
+      </ButtonGroup >
        <ContactsTable
         updateContact={updateContact}
         tableData={data}
