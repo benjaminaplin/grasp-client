@@ -9,9 +9,8 @@ import {
   flexRender,
   RowData,
 } from '@tanstack/react-table'
-import {  useQuery } from '@tanstack/react-query'
 import { Contact } from '../../types/contact'
-import { useEffect, useMemo, useReducer, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import './contact-table.css'
 
 declare module '@tanstack/react-table' {
@@ -71,9 +70,17 @@ function Filter({
   )
 }
 
-const DEV_API_URL = import.meta.env.VITE_DEV_API_URL
+type ContactsTableType = {
+  updateContact: (updatedContact: {contact: Partial<Contact>, id: number}) => void,
+  tableData: Contact[],
+  refreshTableData: () => void
+}
 
-export const ContactsTable = ({updateContact}:{updateContact: (updatedContact: {contact: Partial<Contact>, id: number}) => void})=>  {
+export const ContactsTable = ({
+  updateContact,
+  tableData,
+  refreshTableData
+}: ContactsTableType)=>  {
   const defaultColumn: Partial<ColumnDef<Contact>> = {
     cell: ({ getValue, row, column, table }) => {
       console.log('column', column)
@@ -101,8 +108,6 @@ export const ContactsTable = ({updateContact}:{updateContact: (updatedContact: {
       )
     },
   }
-
-  const rerender = useReducer(() => ({}), {})[1]
 
   const columns = useMemo<ColumnDef<Contact>[]>(()=>[
       {
@@ -135,17 +140,12 @@ export const ContactsTable = ({updateContact}:{updateContact: (updatedContact: {
       },
   ],[])
 
-  const { data } = useQuery({
-    queryKey: ['test'],
-    queryFn: () => fetch(`${DEV_API_URL}/contacts`).then((res: any) => {
-      return res.json()
-    }),
-  })
-  const refreshData = () => {}
+
+  const refreshData = () => refreshTableData()
   const table = useReactTable({
     columns,
     defaultColumn,
-    data: data || [],
+    data: tableData || [],
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -206,9 +206,6 @@ export const ContactsTable = ({updateContact}:{updateContact: (updatedContact: {
     </div>
     <div style={{display: 'flex'}}> 
       <div>{table.getRowModel().rows.length} Rows</div>
-      <div>
-        <button onClick={() => rerender()}>Force Rerender</button>
-      </div>
       <div>
         <button onClick={() => refreshData()}>Refresh Data</button>
     </div>  

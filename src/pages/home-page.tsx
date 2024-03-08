@@ -1,18 +1,17 @@
 import axios from "axios"
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import Button from '@mui/material/Button';
-import FormGroup from '@mui/material/FormGroup';
-import TextField from "@mui/material/TextField";
 import {  useState } from "react";
-import { ContactsTable } from "../features/contact-table/contacts-table";
+import { ContactsTable } from "../features/contact-table/contact-table";
 import { Contact } from "../types/contact";
+import { ContactForm } from "../features/contact-form/contact-form";
 
 const DEV_API_URL = import.meta.env.VITE_DEV_API_URL
-
 
 export default function ButtonUsage() {
   return <Button variant="contained">Hello world</Button>;
 }
+
 export const HomePage = () => {
   const [isContactFormOpen, setIsContactFormOpen] = useState(false)
   const [formState, setFormState] = useState<(Contact)>({
@@ -29,11 +28,20 @@ export const HomePage = () => {
       console.log('contact', contact)
       return axios.post(`${DEV_API_URL}/contacts`, JSON.stringify(contact),{
         headers: {
-          // Overwrite Axios's automatically set Content-Type
           'Content-Type': 'application/json'
         }
       })
     },
+    onSuccess: () => {
+      refetchContacts()
+    }
+  })
+
+  const { data, refetch: refetchContacts } = useQuery({
+    queryKey: ['test'],
+    queryFn: () => fetch(`${DEV_API_URL}/contacts`).then((res: any) => {
+      return res.json()
+    }),
   })
 
   const {mutate: mutateUpdateContact } = useMutation({
@@ -45,8 +53,8 @@ export const HomePage = () => {
         }
       })
     },
+   
   })
-
 
   const createContact = () => {
     mutateCreateContact(formState)
@@ -59,25 +67,22 @@ export const HomePage = () => {
   const handleFormChange = (evt: any) => {
     setFormState((formState: any) => ({...formState, [evt.target.name]: evt.target.value}))
   }
+
   return (
     <div style={{display: "flex"}} >
-       <ContactsTable updateContact={updateContact}/>
+       <ContactsTable
+        updateContact={updateContact}
+        tableData={data}
+        refreshTableData={refetchContacts}/>
       <div>
         <Button color='info' variant="contained" onClick={()=> setIsContactFormOpen(!isContactFormOpen)}>Add Contact</Button >
-        {isContactFormOpen
-        ? <div style={{display: "flex", flexDirection: 'column', backgroundColor: "lightgrey"}}>
-          <FormGroup onChange={handleFormChange}>
-            <TextField id="standard-basic" name="title" label="Title" variant="filled" />
-            <TextField id="standard-basic" name='type' label="Type" variant="filled" />
-            <TextField id="standard-basic" name="notes" label="Notes" variant="filled" />
-            <TextField id="standard-basic" name="firstName" label="First Name" variant="filled" />
-            <TextField id="standard-basic" name="lastName" label="Last Name" variant="filled" />
-            <Button color='primary' variant="contained" onClick={createContact}>Create Contact</Button >
-          </FormGroup>
-          </div>
-        : null}
+        <ContactForm
+          isOpen={isContactFormOpen}
+          handleClose={()=>setIsContactFormOpen(false)} 
+          createContact={createContact}
+          handleFormChange={handleFormChange}
+        />
       </div>
-     
     </div>
   )
 }
