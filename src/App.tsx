@@ -11,6 +11,7 @@ import {
   Route,
   Routes,
 } from "react-router-dom";
+import { Companies } from './pages/companies';
 
 const queryClient = new QueryClient()
 
@@ -35,4 +36,3 @@ export default App
 
 const NoMatch = () => <LeftDrawer><div>Nothing to see here</div></LeftDrawer>
 const NextSteps = () => <LeftDrawer><div>Next Steps</div></LeftDrawer>
-const Companies = () => <LeftDrawer><div>Companies</div></LeftDrawer>
