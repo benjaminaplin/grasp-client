@@ -1,16 +1,14 @@
 import './App.css'
 import LeftDrawer from './features/left-drawer/LeftDrawer';
+import {Applications} from './pages/applications';
 import { Contacts } from './pages/contacts'
 import {
   QueryClient,
   QueryClientProvider,
 } from '@tanstack/react-query'
 import {
-  createBrowserRouter,
-  RouterProvider,
   BrowserRouter,
   Route,
-  Link,
   Routes,
 } from "react-router-dom";
 
@@ -37,5 +35,4 @@ export default App
 
 const NoMatch = () => <LeftDrawer><div>Nothing to see here</div></LeftDrawer>
 const NextSteps = () => <LeftDrawer><div>Next Steps</div></LeftDrawer>
-const Applications = () => <LeftDrawer><div>Applications</div></LeftDrawer>
 const Companies = () => <LeftDrawer><div>Companies</div></LeftDrawer>

@@ -2,9 +2,9 @@ import axios from "axios"
 import { useMutation, useQuery } from '@tanstack/react-query'
 import Button from '@mui/material/Button';
 import {  useState } from "react";
-import { ContactsTable } from "../features/contact-table/contact-table";
+import { ContactsTable } from "../features/contact-table/ContactTable";
 import { Contact } from "../types/contact";
-import { ContactForm } from "../features/contact-form/contact-form";
+import { ContactForm } from "../features/contact-form/ContactForm";
 import LeftDrawer from "../features/left-drawer/LeftDrawer";
 
 const DEV_API_URL = import.meta.env.VITE_DEV_API_URL

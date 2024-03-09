@@ -50,7 +50,7 @@ export default function ResponsiveDrawer({children}:{children: React.ReactNode})
       <Toolbar />
       <Divider />
       <List>
-        {menuItems.map((item, index) => (
+        {menuItems.map((item) => (
           <ListItem key={item.name} disablePadding>
             <ListItemButton onClick={() => navigate(`${item.link}`)}>
               <ListItemIcon>
