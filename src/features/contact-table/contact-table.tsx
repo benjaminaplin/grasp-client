@@ -10,6 +10,7 @@ import { Contact } from '../../types/contact'
 import { useEffect, useMemo, useState } from 'react'
 import './contact-table.css'
 import { Filter } from './contact-table-filter'
+import { Button } from '@mui/material'
 
 declare module '@tanstack/react-table' {
   interface TableMeta<TData extends RowData> {
@@ -58,6 +59,7 @@ export const ContactsTable = ({
   const columns = useMemo<ColumnDef<Contact>[]>(()=>[
       {
         accessorKey: 'firstName',
+        header: () => <span>First Name</span>,
         footer: props => props.column.id,
       },
       {
@@ -145,12 +147,6 @@ export const ContactsTable = ({
         </tbody>
       </table>
       <div/>
-      <div style={{display: 'flex'}}> 
-        <div>{table.getRowModel().rows.length} Rows</div>
-        <div>
-          <button onClick={() => refreshData()}>Refresh Data</button>
-      </div>  
-      </div>
   </>
   )
 }

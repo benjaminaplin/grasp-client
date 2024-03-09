@@ -25,7 +25,6 @@ export function Filter({
           ])
         }
         placeholder={`Min`}
-        className="w-24 border shadow rounded"
       />
       <input
         type="number"
@@ -37,7 +36,6 @@ export function Filter({
           ])
         }
         placeholder={`Max`}
-        className="w-24 border shadow rounded"
       />
     </div>
   ) : (
@@ -46,7 +44,6 @@ export function Filter({
       value={(columnFilterValue ?? '') as string}
       onChange={e => column.setFilterValue(e.target.value)}
       placeholder={`Search...`}
-      className="w-36 border shadow rounded"
     />
   )
 }

@@ -5,7 +5,7 @@ import {  useState } from "react";
 import { ContactsTable } from "../features/contact-table/contact-table";
 import { Contact } from "../types/contact";
 import { ContactForm } from "../features/contact-form/contact-form";
-import ButtonGroup from "@mui/material/ButtonGroup";
+import LeftDrawer from "../features/left-drawer/LeftDrawer";
 
 const DEV_API_URL = import.meta.env.VITE_DEV_API_URL
 
@@ -13,7 +13,8 @@ export default function ButtonUsage() {
   return <Button variant="contained">Hello world</Button>;
 }
 
-export const HomePage = () => {
+export const Contacts
+ = () => {
   const [isContactFormOpen, setIsContactFormOpen] = useState(false)
   const [formState, setFormState] = useState<(Contact)>({
     title: null,
@@ -71,20 +72,19 @@ export const HomePage = () => {
   }
 
   return (
-    <div>
-      <ButtonGroup variant="contained" aria-label="Basic button group" style={{padding: '1rem 0'}}>
+     <LeftDrawer >
+      <div style={{padding: '2rem 0'}}>
         <Button
           color='info'
           variant="contained"
           onClick={()=> setIsContactFormOpen(!isContactFormOpen)}>
             Add Contact
         </Button >
-      </ButtonGroup >
-       <ContactsTable
-        updateContact={updateContact}
-        tableData={data}
-        refreshTableData={refetchContacts}/>
-      <div>
+        <Button style={{marginLeft: '1rem'}} onClick={() => refetchContacts()}>Refresh Data</Button>
+        <ContactsTable
+          updateContact={updateContact}
+          tableData={data}
+          refreshTableData={refetchContacts}/>
         <ContactForm
           isOpen={isContactFormOpen}
           handleClose={()=>setIsContactFormOpen(false)} 
@@ -92,7 +92,6 @@ export const HomePage = () => {
           handleFormChange={handleFormChange}
         />
       </div>
-    </div>
+    </LeftDrawer>
   )
 }
-// style={{display: 'flex', flexDirection: 'column', border: '1px solid red'}}
