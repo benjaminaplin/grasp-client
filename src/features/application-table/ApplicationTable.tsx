@@ -6,10 +6,12 @@ import {
   flexRender,
   RowData,
 } from '@tanstack/react-table'
-import { useEffect, useMemo, useState } from 'react'
+import { ReactNode, useEffect, useMemo, useState } from 'react'
 import './application-table.css'
 import { Filter } from './application-table-filter'
 import { Application } from '../../types/application'
+import { Link } from 'react-router-dom'
+import { InvertColorsOff } from '@mui/icons-material'
 
 declare module '@tanstack/react-table' {
   interface TableMeta<TData extends RowData> {
@@ -73,6 +75,15 @@ export const ApplicationsTable = ({
         header: () => <span>Notes</span>,
         footer: props => props.column.id,
       },
+      {
+        accessorKey: 'company',
+        id: 'company',
+        header: () => <span>Company</span>,
+        footer: props => props.column.id,
+        cell: (info) => {
+          return <Link to={`/companies/${info.row.original.companyId}`}>{info.getValue() as ReactNode}</Link>
+      }
+      },
   ],[])
 
   const refreshData = () => refreshTableData()
@@ -134,6 +145,6 @@ export const ApplicationsTable = ({
         </tbody>
       </table>
       <div/>
-  </>
+    </>
   )
 }

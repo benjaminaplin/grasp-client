@@ -18,11 +18,12 @@ export const SelectInput = ({name, value, handleChange, options}: SelectProps) =
       id="demo-simple-select"
       value={value}
       label={name}
+      name={name}
       onChange={handleChange}
     >
-      {options.map((label: any, value: any) => {
+      {options?.map(({label, value}) => {
         return (
-          <MenuItem value={value}>{label}</MenuItem>
+          <MenuItem key={value} value={value}>{label}</MenuItem>
         )
       })}
     </Select>

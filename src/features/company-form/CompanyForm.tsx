@@ -33,11 +33,8 @@ export const CompanyForm = ({isOpen, handleClose, handleFormChange, createCompan
       >
        <div style={{display: "flex", flexDirection: 'column', backgroundColor: "lightgrey", width: '100%', height: '100%'}}>
           <FormGroup onChange={handleFormChange}>
-            <TextField id="standard-basic" name="title" label="Title" variant="filled" />
-            <TextField id="standard-basic" name='type' label="Type" variant="filled" />
+            <TextField id="standard-basic" name="name" label="Name" variant="filled" />
             <TextField id="standard-basic" name="notes" label="Notes" variant="filled" />
-            <TextField id="standard-basic" name="firstName" label="First Name" variant="filled" />
-            <TextField id="standard-basic" name="lastName" label="Last Name" variant="filled" />
             <Button color='primary' variant="contained" onClick={createCompany}>Create Company</Button >
           </FormGroup>
           </div>

@@ -6,5 +6,6 @@ export type Application = {
   role: string | null
   notes: string | null
   userId: number | null
+  companyId: number | null
   companies: Company[]
 }

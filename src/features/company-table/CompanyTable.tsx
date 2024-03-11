@@ -57,11 +57,6 @@ export const CompanyTable = ({
 
   const columns = useMemo<ColumnDef<Company>[]>(()=>[
       {
-        accessorKey: 'type',
-        header: () => <span>Type</span>,
-        footer: props => props.column.id,
-      },
-      {
         accessorFn: row => row.name,
         id: 'name',
         header: () => <span>Name</span>,

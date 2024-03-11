@@ -7,6 +7,7 @@ import { Application } from "../types/application";
 // import { ApplicationForm } from "../features/application-form/application-form";
 import LeftDrawer from "../features/left-drawer/LeftDrawer";
 import { ApplicationForm } from "../features/application-form/ApplicationForm";
+import { Company } from "../types/company";
 
 const DEV_API_URL = import.meta.env.VITE_DEV_API_URL
 
@@ -21,7 +22,8 @@ export const Applications
     type: null,
     notes: null,
     role: null,
-    userId: 2
+    userId: 2,
+    companies: []
   })
 
   const {mutate: mutateCreateapplication  } = useMutation({
@@ -39,21 +41,21 @@ export const Applications
     }
   })
 
-  const { data: companies, refetch: refetchCompanies } = useQuery({
-    queryKey: ['applications'],
+  const { data: companies } = useQuery({
+    queryKey: ['companies'],
     queryFn: () => fetch(`${DEV_API_URL}/companies`).then((res: any) => {
       return res.json()
     }),
   })
 
-  const { data, refetch: refetchApplications } = useQuery({
+  const { data: applications, refetch: refetchApplications, isFetching } = useQuery({
     queryKey: ['applications'],
     queryFn: () => fetch(`${DEV_API_URL}/job-applications`).then((res: any) => {
       return res.json()
     }),
   })
 
-  const {mutate: mutateUpdateapplication } = useMutation({
+  const {mutate: mutateUpdateApplication } = useMutation({
     mutationFn: ({application, id} :{application: Partial<Application>, id: number}) => {
       console.log('application', application)
       return axios.patch(`${DEV_API_URL}/job-applications/${id}`, JSON.stringify(application),{
@@ -70,12 +72,20 @@ export const Applications
   }
 
   const updateApplication = (updatedapplication: {application: Partial<Application>, id: number}) => {
-    mutateUpdateapplication(updatedapplication)
+    mutateUpdateApplication(updatedapplication)
   }
 
   const handleFormChange = (evt: any) => {
+    console.log('evt.target', evt.target)
     setFormState((formState: any) => ({...formState, [evt.target.name]: evt.target.value}))
   }
+  console.log('companies', companies)
+  const applicationTableData = applications?.map((a: Application) => {
+    return (
+      {...a, company: companies.find((c: Company) => c.id === a.companyId)?.name || null}
+    )
+  })
+  console.log('applicationTableData', applicationTableData)
 
   return (
      <LeftDrawer >
@@ -86,13 +96,14 @@ export const Applications
           onClick={()=> setIsapplicationFormOpen(!isapplicationFormOpen)}>
             Add application
         </Button >
-        <Button style={{marginLeft: '1rem'}} onClick={() => refetchapplications()}>Refresh Data</Button>
+        <Button style={{marginLeft: '1rem'}} onClick={() => refetchApplications()}>Refresh Data</Button>
         <ApplicationsTable
           updateApplication={updateApplication}
-          tableData={data}
+          tableData={applicationTableData}
           refreshTableData={refetchApplications}
           />
         <ApplicationForm
+          companyId={formState.companies[0]?.id}
           isOpen={isapplicationFormOpen}
           handleClose={()=>setIsapplicationFormOpen(false)} 
           createApplication={createApplication}
