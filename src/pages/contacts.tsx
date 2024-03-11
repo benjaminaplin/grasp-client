@@ -27,7 +27,6 @@ export const Contacts
 
   const {mutate: mutateCreateContact } = useMutation({
     mutationFn: (contact: Contact) => {
-      console.log('contact', contact)
       return axios.post(`${DEV_API_URL}/contacts`, JSON.stringify(contact),{
         headers: {
           'Content-Type': 'application/json'
@@ -49,7 +48,6 @@ export const Contacts
 
   const {mutate: mutateUpdateContact } = useMutation({
     mutationFn: ({contact, id} :{contact: Partial<Contact>, id: number}) => {
-      console.log('contact', contact)
       return axios.patch(`${DEV_API_URL}/contacts/${id}`, JSON.stringify(contact),{
         headers: {
           'Content-Type': 'application/json'

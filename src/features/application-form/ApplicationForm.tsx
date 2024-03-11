@@ -45,7 +45,7 @@ export const ApplicationForm = ({
        <div style={{display: "flex", flexDirection: 'column', backgroundColor: "lightgrey", width: '100%', height: '100%'}}>
           <FormGroup onChange={handleFormChange}>
             <TextField id="standard-basic" name="role" label="Role" variant="filled" />
-            <SelectInput name="company" handleChange={handleFormChange} value={companyId} options={companyOptions}/>
+            <SelectInput name="companyId" handleChange={handleFormChange} value={companyId} options={companyOptions}/>
             <TextField id="standard-basic" name='type' label="Type" variant="filled" />
             <TextField id="standard-basic" name="notes" label="Notes" variant="filled" />
             <Button color='primary' variant="contained" onClick={createApplication}>Create Application</Button >

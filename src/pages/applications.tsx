@@ -23,12 +23,12 @@ export const Applications
     notes: null,
     role: null,
     userId: 2,
-    companies: []
+    companies: [],
+    companyId: null
   })
 
   const {mutate: mutateCreateapplication  } = useMutation({
     mutationFn: (application: Application) => {
-      console.log('application', application)
       return axios.post(`${DEV_API_URL}/job-applications`, JSON.stringify(application),{
         headers: {
           'Content-Type': 'application/json'
@@ -57,7 +57,6 @@ export const Applications
 
   const {mutate: mutateUpdateApplication } = useMutation({
     mutationFn: ({application, id} :{application: Partial<Application>, id: number}) => {
-      console.log('application', application)
       return axios.patch(`${DEV_API_URL}/job-applications/${id}`, JSON.stringify(application),{
         headers: {
           'Content-Type': 'application/json'
@@ -76,16 +75,12 @@ export const Applications
   }
 
   const handleFormChange = (evt: any) => {
-    console.log('evt.target', evt.target)
     setFormState((formState: any) => ({...formState, [evt.target.name]: evt.target.value}))
   }
-  console.log('companies', companies)
-  const applicationTableData = applications?.map((a: Application) => {
-    return (
+  const applicationTableData = applications?.map((a: Application) =>  (
       {...a, company: companies.find((c: Company) => c.id === a.companyId)?.name || null}
-    )
-  })
-  console.log('applicationTableData', applicationTableData)
+    ))
+  
 
   return (
      <LeftDrawer >

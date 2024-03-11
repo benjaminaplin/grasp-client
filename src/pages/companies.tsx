@@ -27,7 +27,6 @@ export const Companies
 
   const {mutate: mutateCreateCompany } = useMutation({
     mutationFn: (company: Company) => {
-      console.log('company', company)
       return axios.post(`${DEV_API_URL}/companies`, JSON.stringify(company),{
         headers: {
           'Content-Type': 'application/json'
@@ -49,7 +48,6 @@ export const Companies
 
   const {mutate: mutateUpdateCompany } = useMutation({
     mutationFn: ({company, id} :{company: Partial<Company>, id: number}) => {
-      console.log('company', company)
       return axios.patch(`${DEV_API_URL}/companies/${id}`, JSON.stringify(company),{
         headers: {
           'Content-Type': 'application/json'
