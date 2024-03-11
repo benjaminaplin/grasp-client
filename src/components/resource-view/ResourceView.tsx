@@ -1,5 +1,5 @@
 import { useLocation, useParams } from "react-router-dom"
-import LeftDrawer from "../../features/left-drawer/LeftDrawer"
+import LeftDrawer from "../left-drawer/LeftDrawer"
 import { useQuery } from "@tanstack/react-query"
 const DEV_API_URL = import.meta.env.VITE_DEV_API_URL
 

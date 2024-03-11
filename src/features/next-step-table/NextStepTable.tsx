@@ -7,9 +7,9 @@ import {
   RowData,
 } from '@tanstack/react-table'
 import { ReactNode, useEffect, useMemo, useState } from 'react'
-import './application-table.css'
-import { Filter } from './application-table-filter'
-import { Application } from '../../types/application'
+import './next-step-table.css'
+import { Filter } from './next-step-filter'
+import { NextStep } from '../../types/next-step'
 import { Link } from 'react-router-dom'
 
 declare module '@tanstack/react-table' {
@@ -18,18 +18,18 @@ declare module '@tanstack/react-table' {
   }
 }
 
-type ApplicationsTableType = {
-  updateApplication: (updatedApplication: {application: Partial<Application>, id: number}) => void,
-  tableData: Application[] | undefined,
+type NextStepTableType = {
+  updateNextStep: (updatedNextStep: {nextStep: Partial<NextStep>, id: number}) => void,
+  tableData: NextStep[] | undefined,
   refreshTableData: () => void
 }
 
-export const ApplicationsTable = ({
-  updateApplication,
+export const NextStepTable = ({
+  updateNextStep,
   tableData,
   refreshTableData
-}: ApplicationsTableType)=>  {
-  const defaultColumn: Partial<ColumnDef<Application>> = {
+}: NextStepTableType)=>  {
+  const defaultColumn: Partial<ColumnDef<NextStep>> = {
     cell: ({ getValue, row, column, table }) => {
       const initialValue = getValue()
       // We need to keep and update the state of the cell normally
@@ -38,7 +38,7 @@ export const ApplicationsTable = ({
       // When the input is blurred, we'll call our table meta's updateData function
       const onBlur = () => {
         table.options.meta?.updateData(row.index, column.id, value)
-        updateApplication({application: {[column.id]: value}, id: row.original.id as number})
+        updateNextStep({nextStep: {[column.id]: value}, id: row.original.id as number})
       }
   
       // If the initialValue is changed external, sync it up with our state
@@ -56,16 +56,16 @@ export const ApplicationsTable = ({
     },
   }
 
-  const columns = useMemo<ColumnDef<Application>[]>(()=>[
+  const columns = useMemo<ColumnDef<NextStep>[]>(()=>[
       {
         accessorKey: 'type',
         header: () => <span>Type</span>,
         footer: props => props.column.id,
       },
       {
-        accessorFn: row => row.role,
-        id: 'role',
-        header: () => <span>Role</span>,
+        accessorFn: row => row.action,
+        id: 'action',
+        header: () => <span>Action</span>,
         footer: props => props.column.id,
       },
       {
@@ -75,12 +75,12 @@ export const ApplicationsTable = ({
         footer: props => props.column.id,
       },
       {
-        accessorKey: 'company',
-        id: 'company',
-        header: () => <span>Company</span>,
+        accessorKey: 'contact',
+        id: 'contact',
+        header: () => <span>Contact</span>,
         footer: props => props.column.id,
         cell: (info) => {
-          return <Link to={`/companies/${info.row.original.companyId}`}>{info.getValue() as ReactNode}</Link>
+          return <Link to={`/contacts/${info.row.original.contactId}`}>{info.getValue() as ReactNode}</Link>
       }
       },
   ],[])

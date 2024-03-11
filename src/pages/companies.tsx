@@ -5,7 +5,7 @@ import {  useState } from "react";
 import { CompanyTable } from "../features/company-table/CompanyTable";
 import { Company } from "../types/company";
 // import { CompanyForm } from "../features/company-form/CompanyForm";
-import LeftDrawer from "../features/left-drawer/LeftDrawer";
+import LeftDrawer from "../components/left-drawer/LeftDrawer";
 import { CompanyForm } from "../features/company-form/CompanyForm";
 
 const DEV_API_URL = import.meta.env.VITE_DEV_API_URL
@@ -40,7 +40,7 @@ export const Companies
   })
 
   const { data, refetch: refetchCompanies } = useQuery({
-    queryKey: ['test'],
+    queryKey: ['companies'],
     queryFn: () => fetch(`${DEV_API_URL}/companies`).then((res: any) => {
       return res.json()
     }),

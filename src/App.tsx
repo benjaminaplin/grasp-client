@@ -1,5 +1,5 @@
 import './App.css'
-import LeftDrawer from './features/left-drawer/LeftDrawer';
+import LeftDrawer from './components/left-drawer/LeftDrawer';
 import {Applications} from './pages/applications';
 import { Contacts } from './pages/contacts'
 import {
@@ -13,6 +13,7 @@ import {
 } from "react-router-dom";
 import { Companies } from './pages/companies';
 import { ResourceView } from './components/resource-view/ResourceView';
+import {NextSteps} from './pages/next-steps';
 
 const queryClient = new QueryClient()
 
@@ -23,6 +24,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Contacts />} />
           <Route path="/contacts" element={<Contacts />} />
+          <Route path="/contacts/:id" element={<ResourceView />} />
           <Route path="/next-steps" element={<NextSteps />} />
           <Route path="/applications" element={<Applications />} />
           <Route path="/companies" element={<Companies />} />
@@ -37,4 +39,3 @@ function App() {
 export default App
 
 const NoMatch = () => <LeftDrawer><div>Nothing to see here</div></LeftDrawer>
-const NextSteps = () => <LeftDrawer><div>Next Steps</div></LeftDrawer>

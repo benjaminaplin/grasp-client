@@ -5,7 +5,7 @@ import {  useState } from "react";
 import { ApplicationsTable } from "../features/application-table/ApplicationTable";
 import { Application } from "../types/application";
 // import { ApplicationForm } from "../features/application-form/application-form";
-import LeftDrawer from "../features/left-drawer/LeftDrawer";
+import LeftDrawer from "../components/left-drawer/LeftDrawer";
 import { ApplicationForm } from "../features/application-form/ApplicationForm";
 import { Company } from "../types/company";
 

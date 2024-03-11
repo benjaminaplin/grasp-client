@@ -5,7 +5,7 @@ import {  useState } from "react";
 import { ContactsTable } from "../features/contact-table/ContactTable";
 import { Contact } from "../types/contact";
 import { ContactForm } from "../features/contact-form/ContactForm";
-import LeftDrawer from "../features/left-drawer/LeftDrawer";
+import LeftDrawer from "../components/left-drawer/LeftDrawer";
 
 const DEV_API_URL = import.meta.env.VITE_DEV_API_URL
 
