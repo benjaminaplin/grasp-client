@@ -4,7 +4,6 @@ import Button from '@mui/material/Button';
 import {  useState } from "react";
 import { ApplicationsTable } from "../features/application-table/ApplicationTable";
 import { Application } from "../types/application";
-// import { ApplicationForm } from "../features/application-form/application-form";
 import LeftDrawer from "../components/left-drawer/LeftDrawer";
 import { ApplicationForm } from "../features/application-form/ApplicationForm";
 import { Company } from "../types/company";
@@ -83,7 +82,7 @@ export const Applications
   
 
   return (
-     <LeftDrawer >
+     <LeftDrawer title="Applications">
       <div style={{padding: '2rem 0'}}>
         <Button
           color='info'

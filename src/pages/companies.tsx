@@ -4,7 +4,6 @@ import Button from '@mui/material/Button';
 import {  useState } from "react";
 import { CompanyTable } from "../features/company-table/CompanyTable";
 import { Company } from "../types/company";
-// import { CompanyForm } from "../features/company-form/CompanyForm";
 import LeftDrawer from "../components/left-drawer/LeftDrawer";
 import { CompanyForm } from "../features/company-form/CompanyForm";
 
@@ -70,7 +69,7 @@ export const Companies
   }
 
   return (
-     <LeftDrawer >
+     <LeftDrawer title="Companies" >
       <div style={{padding: '2rem 0'}}>
         <Button
           color='info'

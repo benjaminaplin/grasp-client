@@ -8,9 +8,10 @@ import {
 } from '@tanstack/react-table'
 import { ReactNode, useEffect, useMemo, useState } from 'react'
 import './next-step-table.css'
-import { Filter } from './next-step-filter'
+import { Filter } from '../../components/table-filter/TableFilter'
 import { NextStep } from '../../types/next-step'
 import { Link } from 'react-router-dom'
+import { relationFilterFn } from '../../utils/FilterFn'
 
 declare module '@tanstack/react-table' {
   interface TableMeta<TData extends RowData> {
@@ -81,7 +82,8 @@ export const NextStepTable = ({
         footer: props => props.column.id,
         cell: (info) => {
           return <Link to={`/contacts/${info.row.original.contactId}`}>{info.getValue() as ReactNode}</Link>
-      }
+        },
+        filterFn: relationFilterFn<NextStep>()
       },
   ],[])
 

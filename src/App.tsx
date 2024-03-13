@@ -26,7 +26,9 @@ function App() {
           <Route path="/contacts" element={<Contacts />} />
           <Route path="/contacts/:id" element={<ResourceView />} />
           <Route path="/next-steps" element={<NextSteps />} />
+          <Route path="/next-steps/:id" element={<ResourceView />} />
           <Route path="/applications" element={<Applications />} />
+          <Route path="/applications/:id" element={<ResourceView />} />
           <Route path="/companies" element={<Companies />} />
           <Route path="/companies/:id" element={<ResourceView />} />
           <Route path="*" element={<NoMatch />} />
@@ -38,4 +40,4 @@ function App() {
 
 export default App
 
-const NoMatch = () => <LeftDrawer><div>Nothing to see here</div></LeftDrawer>
+const NoMatch = () => <LeftDrawer title=""><div>Nothing to see here</div></LeftDrawer>

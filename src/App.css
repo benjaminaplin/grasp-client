@@ -1,3 +1,8 @@
+:root {
+  --secondary-bg-color: #1976d2;
+}
+
 #root {
   padding: 2rem;
 }
+

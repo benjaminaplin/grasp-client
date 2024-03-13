@@ -83,11 +83,8 @@ export const NextSteps
       {...a, contact: contact ? `${contact?.firstName} ${contact?.lastName}` : null}
     )})
   
-console.log('contacts', contacts?.find((c: Contact) => c.id === 11)?.firstName || null)
-console.log('nextSteps', nextSteps)
-
   return (
-     <LeftDrawer >
+     <LeftDrawer title="Next Steps" >
       <div style={{padding: '2rem 0'}}>
         <Button
           color='info'

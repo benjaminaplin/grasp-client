@@ -8,7 +8,7 @@ import {
 } from '@tanstack/react-table'
 import { useEffect, useMemo, useState } from 'react'
 import './company-table.css'
-import { Filter } from './company-table-filter'
+import { Filter } from '../../components/table-filter/TableFilter'
 import { Company } from '../../types/company'
 
 declare module '@tanstack/react-table' {

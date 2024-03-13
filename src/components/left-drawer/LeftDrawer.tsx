@@ -16,6 +16,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { ArrowForward, Business, Work } from '@mui/icons-material';
 import { Link, useNavigate } from "react-router-dom";
+import './left-drawer.css'
 
 const drawerWidth = 240;
 
@@ -26,7 +27,7 @@ const menuItems = [
   { name:'Companies', link: '/companies', icon: <Business />}
 ]
 
-export default function ResponsiveDrawer({children}:{children: React.ReactNode}) {
+export default function ResponsiveDrawer({title, children}:{title: string, children: React.ReactNode}) {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [isClosing, setIsClosing] = React.useState(false);
   const navigate = useNavigate()
@@ -47,7 +48,9 @@ export default function ResponsiveDrawer({children}:{children: React.ReactNode})
 
   const drawer = (
     <div>
-      <Toolbar />
+      <div className='grasp-title'>
+      Grasp
+      </div>
       <Divider />
       <List>
         {menuItems.map((item) => (
@@ -86,7 +89,7 @@ export default function ResponsiveDrawer({children}:{children: React.ReactNode})
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
-            Grasp
+            {title}
           </Typography>
         </Toolbar>
       </AppBar>

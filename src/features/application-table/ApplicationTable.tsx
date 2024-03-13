@@ -8,9 +8,10 @@ import {
 } from '@tanstack/react-table'
 import { ReactNode, useEffect, useMemo, useState } from 'react'
 import './application-table.css'
-import { Filter } from './application-table-filter'
+import { Filter } from '../../components/table-filter/TableFilter'
 import { Application } from '../../types/application'
 import { Link } from 'react-router-dom'
+import { relationFilterFn } from '../../utils/FilterFn'
 
 declare module '@tanstack/react-table' {
   interface TableMeta<TData extends RowData> {
@@ -81,11 +82,11 @@ export const ApplicationsTable = ({
         footer: props => props.column.id,
         cell: (info) => {
           return <Link to={`/companies/${info.row.original.companyId}`}>{info.getValue() as ReactNode}</Link>
-      }
+        },
+        filterFn: relationFilterFn<Application>()
       },
   ],[])
 
-  const refreshData = () => refreshTableData()
   const table = useReactTable({
     columns,
     defaultColumn,

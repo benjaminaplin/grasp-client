@@ -70,7 +70,7 @@ export const Contacts
   }
 
   return (
-     <LeftDrawer >
+     <LeftDrawer title="Contacts" >
       <div style={{padding: '2rem 0'}}>
         <Button
           color='info'

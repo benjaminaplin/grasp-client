@@ -5,12 +5,11 @@ export function Filter({
   table,
 }: {
   column: Column<any, any>
-  table: Table<any>
+  table: Table<any>,
 }) {
   const firstValue = table
     .getPreFilteredRowModel()
     .flatRows[0]?.getValue(column.id)
-
   const columnFilterValue = column.getFilterValue()
 
   return typeof firstValue === 'number' ? (

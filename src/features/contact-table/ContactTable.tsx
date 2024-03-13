@@ -9,7 +9,7 @@ import {
 import { Contact } from '../../types/contact'
 import { useEffect, useMemo, useState } from 'react'
 import './contact-table.css'
-import { Filter } from './contact-table-filter'
+import { Filter } from '../../components/table-filter/TableFilter'
 import { Button } from '@mui/material'
 
 declare module '@tanstack/react-table' {
