@@ -12,6 +12,7 @@ import { Filter } from '../../components/table-filter/TableFilter'
 import { NextStep } from '../../types/next-step'
 import { Link } from 'react-router-dom'
 import { relationFilterFn } from '../../utils/FilterFn'
+import { DeleteButtonCell } from '../../components/delete-button-cell/DeleteButtonCell'
 
 declare module '@tanstack/react-table' {
   interface TableMeta<TData extends RowData> {
@@ -85,6 +86,10 @@ export const NextStepTable = ({
         },
         filterFn: relationFilterFn<NextStep>()
       },
+      {
+        header: 'Delete',
+        cell: ({row}) => <DeleteButtonCell row={row} deleteResource={(id: number) => console.log('deleting', id)} />
+      }
   ],[])
 
   const refreshData = () => refreshTableData()

@@ -15,21 +15,15 @@ const style = {
   p: 4,
 };
 
-type ContactFormPropsType = {isOpen: boolean, handleClose: (arg: boolean)=>void, handleFormChange: (evt: any) => void,  createContact: () => void}
+type ContactFormPropsType = { isOpen: boolean, handleClose: (arg: boolean)=>void, handleFormChange: (evt: any) => void,  createContact: () => void}
 
-export const ContactForm = ({isOpen, handleClose, handleFormChange, createContact}: ContactFormPropsType) => {
+export const ContactForm = ({ isOpen, handleClose, handleFormChange, createContact}: ContactFormPropsType) => {
   return (
     <Modal
       open={isOpen}
       onClose={handleClose}
     >
-      <Box
-        my={4}
-        display="flex"
-        alignItems="center"
-        gap={4}
-        p={2}
-        sx={style}
+      <Box my={4} display="flex" alignItems="center" gap={4} p={2} sx={style}
       >
        <div style={{display: "flex", flexDirection: 'column', backgroundColor: "lightgrey", width: '100%', height: '100%'}}>
           <FormGroup onChange={handleFormChange}>
@@ -38,6 +32,7 @@ export const ContactForm = ({isOpen, handleClose, handleFormChange, createContac
             <TextField id="standard-basic" name="notes" label="Notes" variant="filled" />
             <TextField id="standard-basic" name="firstName" label="First Name" variant="filled" />
             <TextField id="standard-basic" name="lastName" label="Last Name" variant="filled" />
+            <TextField id="standard-basic" name="closeness" label="Closeness" variant="filled" />
             <Button color='primary' variant="contained" onClick={createContact}>Create Contact</Button >
           </FormGroup>
           </div>

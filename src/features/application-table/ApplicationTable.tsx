@@ -5,6 +5,7 @@ import {
   getFilteredRowModel,
   flexRender,
   RowData,
+  CellContext,
 } from '@tanstack/react-table'
 import { ReactNode, useEffect, useMemo, useState } from 'react'
 import './application-table.css'
@@ -12,11 +13,16 @@ import { Filter } from '../../components/table-filter/TableFilter'
 import { Application } from '../../types/application'
 import { Link } from 'react-router-dom'
 import { relationFilterFn } from '../../utils/FilterFn'
+import { DeleteButtonCell } from '../../components/delete-button-cell/DeleteButtonCell'
 
 declare module '@tanstack/react-table' {
   interface TableMeta<TData extends RowData> {
     updateData: (rowIndex: number, columnId: string, value: unknown) => void
   }
+}
+
+const linkToApplicationCellFn = (info: CellContext<Application, unknown>)  => {
+  return <Link to={`/job-applications/${info.row.original.id}`}>{info.getValue() as ReactNode}</Link>
 }
 
 type ApplicationsTableType = {
@@ -68,6 +74,7 @@ export const ApplicationsTable = ({
         id: 'role',
         header: () => <span>Role</span>,
         footer: props => props.column.id,
+        cell: linkToApplicationCellFn 
       },
       {
         accessorFn: row => row.notes,
@@ -85,6 +92,10 @@ export const ApplicationsTable = ({
         },
         filterFn: relationFilterFn<Application>()
       },
+      {
+        header: 'Delete',
+        cell: ({row}) => <DeleteButtonCell row={row} deleteResource={(id: number) => console.log('deleting', id)} />
+      }
   ],[])
 
   const table = useReactTable({

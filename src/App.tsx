@@ -24,11 +24,11 @@ function App() {
         <Routes>
           <Route path="/" element={<Contacts />} />
           <Route path="/contacts" element={<Contacts />} />
-          <Route path="/contacts/:id" element={<ResourceView />} />
+          <Route path="/contacts/:id" element={<ResourceView relation='nextSteps'/>} />
           <Route path="/next-steps" element={<NextSteps />} />
           <Route path="/next-steps/:id" element={<ResourceView />} />
-          <Route path="/applications" element={<Applications />} />
-          <Route path="/applications/:id" element={<ResourceView />} />
+          <Route path="/job-applications" element={<Applications />} />
+          <Route path="/job-applications/:id" element={<ResourceView />} />
           <Route path="/companies" element={<Companies />} />
           <Route path="/companies/:id" element={<ResourceView />} />
           <Route path="*" element={<NoMatch />} />

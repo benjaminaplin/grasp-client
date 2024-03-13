@@ -23,14 +23,7 @@ export const CompanyForm = ({isOpen, handleClose, handleFormChange, createCompan
       open={isOpen}
       onClose={handleClose}
     >
-      <Box
-        my={4}
-        display="flex"
-        alignItems="center"
-        gap={4}
-        p={2}
-        sx={style}
-      >
+      <Box my={4} display="flex" alignItems="center" gap={4} p={2} sx={style}>
        <div style={{display: "flex", flexDirection: 'column', backgroundColor: "lightgrey", width: '100%', height: '100%'}}>
           <FormGroup onChange={handleFormChange}>
             <TextField id="standard-basic" name="name" label="Name" variant="filled" />

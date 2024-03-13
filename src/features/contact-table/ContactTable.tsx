@@ -5,12 +5,15 @@ import {
   getFilteredRowModel,
   flexRender,
   RowData,
+  Row,
+  CellContext,
 } from '@tanstack/react-table'
 import { Contact } from '../../types/contact'
-import { useEffect, useMemo, useState } from 'react'
+import { ReactNode, useEffect, useMemo, useState } from 'react'
 import './contact-table.css'
 import { Filter } from '../../components/table-filter/TableFilter'
-import { Button } from '@mui/material'
+import { Link } from 'react-router-dom'
+import { DeleteButtonCell } from '../../components/delete-button-cell/DeleteButtonCell'
 
 declare module '@tanstack/react-table' {
   interface TableMeta<TData extends RowData> {
@@ -18,16 +21,22 @@ declare module '@tanstack/react-table' {
   }
 }
 
+const linkToContactCellFn = (info: CellContext<Contact, unknown>)  => {
+  return <Link to={`/contacts/${info.row.original.id}`}>{info.getValue() as ReactNode}</Link>
+}
+
 type ContactsTableType = {
   updateContact: (updatedContact: {contact: Partial<Contact>, id: number}) => void,
   tableData: Contact[] | undefined,
   refreshTableData: () => void
+  deleteContact: (id: number) => void
 }
 
 export const ContactsTable = ({
   updateContact,
   tableData,
-  refreshTableData
+  refreshTableData,
+  deleteContact
 }: ContactsTableType)=>  {
   const defaultColumn: Partial<ColumnDef<Contact>> = {
     cell: ({ getValue, row, column, table }) => {
@@ -61,15 +70,23 @@ export const ContactsTable = ({
         accessorKey: 'firstName',
         header: () => <span>First Name</span>,
         footer: props => props.column.id,
+        cell: linkToContactCellFn
       },
       {
         accessorFn: row => row.lastName,
         id: 'lastName',
         header: () => <span>Last Name</span>,
         footer: props => props.column.id,
+        cell: linkToContactCellFn
       },
       {
-        accessorFn: row => row.lastName,
+        accessorFn: row => row.closeness,
+        id: 'closeness',
+        header: () => <span>Closeness</span>,
+        footer: props => props.column.id,
+      },
+      {
+        accessorFn: row => row.title,
         id: 'title',
         header: () => <span>Title</span>,
         footer: props => props.column.id,
@@ -86,6 +103,17 @@ export const ContactsTable = ({
         header: () => <span>Notes</span>,
         footer: props => props.column.id,
       },
+      {
+        accessorFn: row => row.nextSteps.length,
+        id: 'nextSteps',
+        header: () => <span>NextSteps</span>,
+        footer: props => props.column.id,
+        cell: linkToContactCellFn
+      },
+      {
+        header: 'Delete',
+        cell: ({row}: CellContext<Contact, unknown>) => <DeleteButtonCell row={row} deleteResource={deleteContact} />
+      }
   ],[])
 
   const refreshData = () => refreshTableData()
@@ -146,7 +174,6 @@ export const ContactsTable = ({
           })}
         </tbody>
       </table>
-      <div/>
   </>
   )
 }

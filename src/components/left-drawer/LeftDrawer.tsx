@@ -23,7 +23,7 @@ const drawerWidth = 240;
 const menuItems = [
   { name: 'Contacts', link: '/contacts', icon: <PersonIcon />},
   { name: 'Next Steps', link: '/next-steps', icon: <ArrowForward />},
-  { name: 'Applications', link: '/applications', icon: <Work />},
+  { name: 'Applications', link: '/job-applications', icon: <Work />},
   { name:'Companies', link: '/companies', icon: <Business />}
 ]
 

@@ -5,16 +5,23 @@ import {
   getFilteredRowModel,
   flexRender,
   RowData,
+  CellContext,
 } from '@tanstack/react-table'
-import { useEffect, useMemo, useState } from 'react'
+import { ReactNode, useEffect, useMemo, useState } from 'react'
 import './company-table.css'
 import { Filter } from '../../components/table-filter/TableFilter'
 import { Company } from '../../types/company'
+import { DeleteButtonCell } from '../../components/delete-button-cell/DeleteButtonCell'
+import { Link } from 'react-router-dom'
 
 declare module '@tanstack/react-table' {
   interface TableMeta<TData extends RowData> {
     updateData: (rowIndex: number, columnId: string, value: unknown) => void
   }
+}
+
+const linkToCompanyCellFn = (info: CellContext<Company, unknown>)  => {
+  return <Link to={`/companies/${info.row.original.id}`}>{info.getValue() as ReactNode}</Link>
 }
 
 type CompanysTableType = {
@@ -61,12 +68,17 @@ export const CompanyTable = ({
         id: 'name',
         header: () => <span>Name</span>,
         footer: props => props.column.id,
+        cell: linkToCompanyCellFn 
       },
       {
         accessorFn: row => row.notes,
         id: 'notes',
         header: () => <span>Notes</span>,
         footer: props => props.column.id,
+      },
+      {
+        header: 'Delete',
+        cell: ({row}) => <DeleteButtonCell row={row} deleteResource={(id: number) => console.log('deleting', id)} />
       },
   ],[])
 

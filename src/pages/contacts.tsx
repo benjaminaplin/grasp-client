@@ -22,8 +22,15 @@ export const Contacts
     notes: null,
     firstName: null,
     lastName: null,
-    userId: 2
+    userId: 2,
+    closeness: null,
+    nextSteps: []
   })
+
+  const onMutateSuccess = () => {
+    setIsContactFormOpen(false)
+    refetchContacts()
+  }
 
   const {mutate: mutateCreateContact } = useMutation({
     mutationFn: (contact: Contact) => {
@@ -33,10 +40,18 @@ export const Contacts
         }
       })
     },
-    onSuccess: () => {
-      setIsContactFormOpen(false)
-      refetchContacts()
-    }
+    onSuccess: onMutateSuccess
+  })
+
+  const {mutate: mutateDeleteContact } = useMutation({
+    mutationFn: (contactId: number) => {
+      return axios.delete(`${DEV_API_URL}/contacts/${contactId}`, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+    },
+    onSuccess: onMutateSuccess
   })
 
   const { data, refetch: refetchContacts } = useQuery({
@@ -56,6 +71,10 @@ export const Contacts
     },
    
   })
+
+  const deleteContact = (contactId: number) => {
+    mutateDeleteContact(contactId)
+  }
 
   const createContact = () => {
     mutateCreateContact(formState)
@@ -82,7 +101,9 @@ export const Contacts
         <ContactsTable
           updateContact={updateContact}
           tableData={data}
-          refreshTableData={refetchContacts}/>
+          refreshTableData={refetchContacts}
+          deleteContact={deleteContact}
+        />
         <ContactForm
           isOpen={isContactFormOpen}
           handleClose={()=>setIsContactFormOpen(false)} 
