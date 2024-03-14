@@ -16,6 +16,8 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { ArrowForward, Business, Work } from '@mui/icons-material';
 import { Link, useNavigate } from "react-router-dom";
+import HandshakeIcon from '@mui/icons-material/Handshake';
+
 import './left-drawer.css'
 
 const drawerWidth = 240;
@@ -49,7 +51,7 @@ export default function ResponsiveDrawer({title, children}:{title: string, child
   const drawer = (
     <div>
       <div className='grasp-title'>
-      Grasp
+      <HandshakeIcon /> Grasp 
       </div>
       <Divider />
       <List>

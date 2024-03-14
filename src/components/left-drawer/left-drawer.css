@@ -1,8 +1,11 @@
 .grasp-title {
   height: 64px;
-  padding: 1rem;
+  padding: 1rem 3rem;
   background-color: var(--secondary-bg-color);
   color: white;
   font-size: 1.5rem;
   font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
 }
