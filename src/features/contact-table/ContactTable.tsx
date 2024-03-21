@@ -5,7 +5,6 @@ import {
   getFilteredRowModel,
   flexRender,
   RowData,
-  Row,
   CellContext,
 } from '@tanstack/react-table'
 import { Contact } from '../../types/contact'
@@ -35,7 +34,6 @@ type ContactsTableType = {
 export const ContactsTable = ({
   updateContact,
   tableData,
-  refreshTableData,
   deleteContact
 }: ContactsTableType)=>  {
   const defaultColumn: Partial<ColumnDef<Contact>> = {
@@ -116,7 +114,6 @@ export const ContactsTable = ({
       }
   ],[])
 
-  const refreshData = () => refreshTableData()
   const table = useReactTable({
     columns,
     defaultColumn,

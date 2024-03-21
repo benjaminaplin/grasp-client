@@ -29,7 +29,6 @@ type NextStepTableType = {
 export const NextStepTable = ({
   updateNextStep,
   tableData,
-  refreshTableData
 }: NextStepTableType)=>  {
   const defaultColumn: Partial<ColumnDef<NextStep>> = {
     cell: ({ getValue, row, column, table }) => {
@@ -92,7 +91,6 @@ export const NextStepTable = ({
       }
   ],[])
 
-  const refreshData = () => refreshTableData()
   const table = useReactTable({
     columns,
     defaultColumn,

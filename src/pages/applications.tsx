@@ -47,7 +47,7 @@ export const Applications
     }),
   })
 
-  const { data: applications, refetch: refetchApplications, isFetching } = useQuery({
+  const { data: applications, refetch: refetchApplications } = useQuery({
     queryKey: ['applications'],
     queryFn: () => fetch(`${DEV_API_URL}/job-applications`).then((res: any) => {
       return res.json()

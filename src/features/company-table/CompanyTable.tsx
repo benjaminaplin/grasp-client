@@ -33,7 +33,6 @@ type CompanysTableType = {
 export const CompanyTable = ({
   updateCompany,
   tableData,
-  refreshTableData
 }: CompanysTableType)=>  {
   const defaultColumn: Partial<ColumnDef<Company>> = {
     cell: ({ getValue, row, column, table }) => {
@@ -82,7 +81,6 @@ export const CompanyTable = ({
       },
   ],[])
 
-  const refreshData = () => refreshTableData()
   const table = useReactTable({
     columns,
     defaultColumn,

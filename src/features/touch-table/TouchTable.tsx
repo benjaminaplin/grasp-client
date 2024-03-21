@@ -1,4 +1,3 @@
-import { Filter } from '../../components/table-filter/TableFilter'
 
 export const TouchTable = () => {
   return (

@@ -25,7 +25,7 @@ export const NextSteps
     action: null,
     contacts: []
   })
-  const { data: nextSteps, refetch: refetchNextSteps, isFetching } = useQuery({
+  const { data: nextSteps, refetch: refetchNextSteps } = useQuery({
     queryKey: ['next-steps'],
     queryFn: () => fetch(`${DEV_API_URL}/next-steps`).then((res: any) => {
       return res.json()

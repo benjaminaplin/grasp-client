@@ -34,7 +34,6 @@ type ApplicationsTableType = {
 export const ApplicationsTable = ({
   updateApplication,
   tableData,
-  refreshTableData
 }: ApplicationsTableType)=>  {
   const defaultColumn: Partial<ColumnDef<Application>> = {
     cell: ({ getValue, row, column, table }) => {
