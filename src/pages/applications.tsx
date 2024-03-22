@@ -77,7 +77,7 @@ export const Applications
     setFormState((formState: any) => ({...formState, [evt.target.name]: evt.target.value}))
   }
   const applicationTableData = applications?.map((a: Application) =>  (
-      {...a, company: companies.find((c: Company) => c.id === a.companyId)?.name || null}
+      {...a, company: companies?.find((c: Company) => c.id === a.companyId)?.name || null}
     ))
   
 

@@ -7,8 +7,6 @@ export const DeleteButtonCell =  ({row, deleteResource}:{row: Row<any>, deleteRe
     <Button
       color='warning'
       onClick={() => row.original.id ? deleteResource(row.original.id) : null} variant="outlined"
-      startIcon={<DeleteIcon />}>
-        Delete
-    </Button>
+      ><DeleteIcon /></Button>
   )
 }

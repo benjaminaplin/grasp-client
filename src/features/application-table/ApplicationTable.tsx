@@ -14,6 +14,8 @@ import { Application } from '../../types/application'
 import { Link } from 'react-router-dom'
 import { relationFilterFn } from '../../utils/FilterFn'
 import { DeleteButtonCell } from '../../components/delete-button-cell/DeleteButtonCell'
+import { useMutation } from '@tanstack/react-query'
+import axios from 'axios'
 
 declare module '@tanstack/react-table' {
   interface TableMeta<TData extends RowData> {
@@ -34,6 +36,7 @@ type ApplicationsTableType = {
 export const ApplicationsTable = ({
   updateApplication,
   tableData,
+  refreshTableData
 }: ApplicationsTableType)=>  {
   const defaultColumn: Partial<ColumnDef<Application>> = {
     cell: ({ getValue, row, column, table }) => {
@@ -62,39 +65,74 @@ export const ApplicationsTable = ({
     },
   }
 
+  const onMutateSuccess = () => {
+    // setIsApplicationFormOpen(false)
+    refreshTableData()
+  }
+
+  const {mutate: mutateDeleteContact } = useMutation({
+    mutationFn: (applicationId: number) => {
+      return axios.delete(`${import.meta.env.VITE_DEV_API_URL}/job-applications/${applicationId}`, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+    },
+    onSuccess: onMutateSuccess
+  })
+  const deleteContact = (applicationId: number) => {
+    mutateDeleteContact(applicationId)
+  }
+
+
   const columns = useMemo<ColumnDef<Application>[]>(()=>[
-      {
-        accessorKey: 'type',
-        header: () => <span>Type</span>,
-        footer: props => props.column.id,
+    {
+      id: 'index',
+      cell: (info) => {
+        return <span style={{ 
+          color: 'grey',
+          fontFamily: 'sans-serif',
+          margin: '0 0.5rem 0 0'
+        }}>{`${info.row.index + 1}`}</span>
       },
-      {
-        accessorFn: row => row.role,
-        id: 'role',
-        header: () => <span>Role</span>,
-        footer: props => props.column.id,
-        cell: linkToApplicationCellFn 
+    },
+    {
+      accessorFn: row => row.role,
+      id: 'role',
+      header: () => <span>Role</span>,
+      footer: props => props.column.id,
+    },{
+      accessorKey: 'company',
+      id: 'company',
+      header: () => <span>Company</span>,
+      footer: props => props.column.id,
+      cell: (info) => {
+        return <Link to={`/companies/${info.row.original.companyId}`}>{info.getValue() as ReactNode}</Link>
       },
-      {
-        accessorFn: row => row.notes,
-        id: 'notes',
-        header: () => <span>Notes</span>,
-        footer: props => props.column.id,
-      },
-      {
-        accessorKey: 'company',
-        id: 'company',
-        header: () => <span>Company</span>,
-        footer: props => props.column.id,
-        cell: (info) => {
-          return <Link to={`/companies/${info.row.original.companyId}`}>{info.getValue() as ReactNode}</Link>
-        },
-        filterFn: relationFilterFn<Application>()
-      },
-      {
-        header: 'Delete',
-        cell: ({row}) => <DeleteButtonCell row={row} deleteResource={(id: number) => console.log('deleting', id)} />
-      }
+      filterFn: relationFilterFn<Application>()
+    },  
+    {
+      accessorKey: 'status',
+      header: () => <span>Status</span>,
+      footer: props => props.column.id,
+    },
+  
+    {
+      accessorKey: 'link',
+      header: () => <span>Link</span>,
+      footer: props => props.column.id,
+    },
+  
+    {
+      accessorFn: row => row.notes,
+      id: 'notes',
+      header: () => <span>Notes</span>,
+      footer: props => props.column.id,
+    },
+    {
+      header: 'Delete',
+      cell: ({row}) => <DeleteButtonCell row={row} deleteResource={(id: number) => deleteContact(id)} />
+    }
   ],[])
 
   const table = useReactTable({

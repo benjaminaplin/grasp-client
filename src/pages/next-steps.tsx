@@ -78,7 +78,7 @@ export const NextSteps
     setFormState((formState: any) => ({...formState, [evt.target.name]: evt.target.value}))
   }
   const nextStepTableData = nextSteps?.map((a: NextStep) =>  {
-    const contact = contacts.find((c: Contact) => c.id === a.contactId)
+    const contact = contacts?.find((c: Contact) => c.id === a.contactId)
     return (
       {...a, contact: contact ? `${contact?.firstName} ${contact?.lastName}` : null}
     )})
