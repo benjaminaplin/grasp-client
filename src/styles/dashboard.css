@@ -1,6 +1,5 @@
 .stat-cards-container {
-  display: 'flex';
-  flex-direction: 'row';
-  flex-wrap: 'wrap';
+  display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
 }

@@ -97,7 +97,8 @@ export const ApplicationsTable = ({
       id: 'role',
       header: () => <span>Role</span>,
       footer: props => props.column.id,
-    },{
+    },
+    {
       accessorKey: 'company',
       id: 'company',
       header: () => <span>Company</span>,
@@ -112,13 +113,11 @@ export const ApplicationsTable = ({
       header: () => <span>Status</span>,
       footer: props => props.column.id,
     },
-  
     {
       accessorKey: 'link',
       header: () => <span>Link</span>,
       footer: props => props.column.id,
     },
-  
     {
       accessorFn: row => row.notes,
       id: 'notes',

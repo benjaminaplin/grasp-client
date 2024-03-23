@@ -134,7 +134,7 @@ export default function ResponsiveDrawer({title, children}:{title: string, child
         component="main"
         sx={{ flexGrow: 1,   width: { sm: `calc(100% - ${drawerWidth}px)` } }}
       >
-        <div  className='layout-main'>
+        <div className='layout-main'>
          {children}
         </div>
       </Box>

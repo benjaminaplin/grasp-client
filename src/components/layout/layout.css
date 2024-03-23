@@ -11,6 +11,7 @@
 }
 
 .layout-main {
-  padding: 2rem 0;
+  padding: 5rem 2rem 0 2rem;
   background-color: var(--main-bg-color);
+  height: 100vw;
 }

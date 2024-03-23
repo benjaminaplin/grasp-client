@@ -4,17 +4,17 @@ import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
-
+import './dashboard-card.css'
 
 type DashboardCardProps = { title: string, content: React.ReactNode, actions?: React.ReactNode }
 
 export const DashboardCard = ({ title, content, actions }: DashboardCardProps) => {
   return (
-    <Box sx={{ minWidth: 275, marginBottom: '1rem' }}>
+    <Box className='dashboard-card-container' sx={{ minWidth: 275, marginBottom: '1rem' }}>
       <Card variant="outlined">
         <React.Fragment>
           <CardContent>
-            <Typography align='center' variant='h4' gutterBottom>
+            <Typography className='dashboard-card-title' align='center' variant='h4' gutterBottom>
               {title}
             </Typography>
               <div>
