@@ -24,6 +24,11 @@ export const Companies
     jobApplications: []
   })
 
+  const onMutateSuccess = () => {
+    setIsCompanyFormOpen(false)
+    refetchCompanies()
+  }
+
   const {mutate: mutateCreateCompany } = useMutation({
     mutationFn: (company: Company) => {
       return axios.post(`${DEV_API_URL}/companies`, JSON.stringify(company),{
@@ -32,17 +37,25 @@ export const Companies
         }
       })
     },
-    onSuccess: () => {
-      setIsCompanyFormOpen(false)
-      refetchCompanies()
-    }
+    onSuccess: onMutateSuccess
   })
 
   const { data, refetch: refetchCompanies } = useQuery({
     queryKey: ['companies'],
-    queryFn: () => fetch(`${DEV_API_URL}/companies`).then((res: any) => {
+    queryFn: () => fetch(`${DEV_API_URL}/users/2/companies`).then((res: any) => {
       return res.json()
     }),
+  })
+
+  const {mutate: mutateDeleteCompany } = useMutation({
+    mutationFn: (companyId: number) => {
+      return axios.delete(`${DEV_API_URL}/companies/${companyId}`, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+    },
+    onSuccess: onMutateSuccess
   })
 
   const {mutate: mutateUpdateCompany } = useMutation({
@@ -68,6 +81,9 @@ export const Companies
     setFormState((formState: any) => ({...formState, [evt.target.name]: evt.target.value}))
   }
 
+  const deleteCompany = (companyId: number) => {
+    mutateDeleteCompany(companyId)
+  }
   return (
      <Layout title="Companies" >
         <Button
@@ -80,7 +96,9 @@ export const Companies
         <CompanyTable
           updateCompany={updateCompany}
           tableData={data}
-          refreshTableData={refetchCompanies}/>
+          refreshTableData={refetchCompanies}
+          deleteCompany={deleteCompany}
+          />
         <CompanyForm
           isOpen={isCompanyFormOpen}
           handleClose={()=>setIsCompanyFormOpen(false)} 

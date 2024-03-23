@@ -27,12 +27,14 @@ const linkToCompanyCellFn = (info: CellContext<Company, unknown>)  => {
 type CompanysTableType = {
   updateCompany: (updatedCompany: {company: Partial<Company>, id: number}) => void,
   tableData: Company[] | undefined,
-  refreshTableData: () => void
+  refreshTableData: () => void,
+  deleteCompany: (id: number) => void
 }
 
 export const CompanyTable = ({
   updateCompany,
   tableData,
+  deleteCompany
 }: CompanysTableType)=>  {
   const defaultColumn: Partial<ColumnDef<Company>> = {
     cell: ({ getValue, row, column, table }) => {
@@ -77,7 +79,7 @@ export const CompanyTable = ({
       },
       {
         header: 'Delete',
-        cell: ({row}) => <DeleteButtonCell row={row} deleteResource={(id: number) => console.log('deleting', id)} />
+        cell: ({row}) => <DeleteButtonCell row={row} deleteResource={(id: number) => deleteCompany(id)} />
       },
   ],[])
 
