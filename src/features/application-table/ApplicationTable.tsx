@@ -5,7 +5,6 @@ import {
   getFilteredRowModel,
   flexRender,
   RowData,
-  CellContext,
 } from '@tanstack/react-table'
 import { ReactNode, useEffect, useMemo, useState } from 'react'
 import './application-table.css'
@@ -21,10 +20,6 @@ declare module '@tanstack/react-table' {
   interface TableMeta<TData extends RowData> {
     updateData: (rowIndex: number, columnId: string, value: unknown) => void
   }
-}
-
-const linkToApplicationCellFn = (info: CellContext<Application, unknown>)  => {
-  return <Link to={`/job-applications/${info.row.original.id}`}>{info.getValue() as ReactNode}</Link>
 }
 
 type ApplicationsTableType = {
