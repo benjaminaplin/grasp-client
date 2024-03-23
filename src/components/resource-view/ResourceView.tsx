@@ -1,5 +1,5 @@
 import { useLocation } from "react-router-dom"
-import LeftDrawer from "../left-drawer/LeftDrawer"
+import Layout from "../layout/Layout"
 import { useQuery } from "@tanstack/react-query"
 import { camelToHuman } from '../../utils/camel-to-human'
 
@@ -17,7 +17,7 @@ export const ResourceView = ({relation} : {relation?: string | string[]}) => {
 
   const title = data?.firstName ? `${data.firstName} ${data.lastName}` : (data?.name || data?.id)
   return (
-    <LeftDrawer title={title}>
+    <Layout title={title}>
       <>
         {data ? <div style={{margin: '1rem 0'}}>
         {Object.entries(data).map((entry: any[]) => {
@@ -45,6 +45,6 @@ export const ResourceView = ({relation} : {relation?: string | string[]}) => {
         })}
         </div> : null}
       </>
-    </LeftDrawer>
+    </Layout>
   )
 }

@@ -9,3 +9,8 @@
   align-items: center;
   justify-content: space-evenly;
 }
+
+.layout-main {
+  padding: 2rem 0;
+  background-color: var(--main-bg-color);
+}

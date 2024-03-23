@@ -4,7 +4,7 @@ import Button from '@mui/material/Button';
 import {  useState } from "react";
 import { CompanyTable } from "../features/company-table/CompanyTable";
 import { Company } from "../types/company";
-import LeftDrawer from "../components/left-drawer/LeftDrawer";
+import Layout from "../components/layout/Layout";
 import { CompanyForm } from "../features/company-form/CompanyForm";
 
 const DEV_API_URL = import.meta.env.VITE_DEV_API_URL
@@ -69,8 +69,7 @@ export const Companies
   }
 
   return (
-     <LeftDrawer title="Companies" >
-      <div style={{padding: '2rem 0'}}>
+     <Layout title="Companies" >
         <Button
           color='info'
           variant="contained"
@@ -88,7 +87,6 @@ export const Companies
           createCompany={createCompany}
           handleFormChange={handleFormChange}
         />
-      </div>
-    </LeftDrawer>
+    </Layout>
   )
 }

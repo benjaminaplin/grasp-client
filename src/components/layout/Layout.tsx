@@ -14,19 +14,21 @@ import ListItemText from '@mui/material/ListItemText';
 import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import { ArrowForward, Business, Work } from '@mui/icons-material';
+import { ArrowForward, Business, Dashboard, Work } from '@mui/icons-material';
 import { Link, useNavigate } from "react-router-dom";
 import HandshakeIcon from '@mui/icons-material/Handshake';
 
-import './left-drawer.css'
+import './layout.css'
 
 const drawerWidth = 240;
 
 const menuItems = [
+  { name:'Dashboard', link: '/dashboard', icon: <Dashboard />},
   { name: 'Contacts', link: '/contacts', icon: <PersonIcon />},
   { name: 'Next Steps', link: '/next-steps', icon: <ArrowForward />},
   { name: 'Applications', link: '/job-applications', icon: <Work />},
-  { name:'Companies', link: '/companies', icon: <Business />}
+  { name:'Companies', link: '/companies', icon: <Business />},
+ 
 ]
 
 export default function ResponsiveDrawer({title, children}:{title: string, children: React.ReactNode}) {
@@ -128,11 +130,14 @@ export default function ResponsiveDrawer({title, children}:{title: string, child
         </Drawer>
       </Box>
       <Box
+      
         component="main"
-        sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
+        sx={{ flexGrow: 1,   width: { sm: `calc(100% - ${drawerWidth}px)` } }}
       >
-        {children}
-        </Box>
+        <div  className='layout-main'>
+         {children}
+        </div>
+      </Box>
     </Box>
   );
 }

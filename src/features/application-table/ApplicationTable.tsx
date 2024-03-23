@@ -89,11 +89,7 @@ export const ApplicationsTable = ({
     {
       id: 'index',
       cell: (info) => {
-        return <span style={{ 
-          color: 'grey',
-          fontFamily: 'sans-serif',
-          margin: '0 0.5rem 0 0'
-        }}>{`${info.row.index + 1}`}</span>
+        return <span >{`${info.row.index + 1}`}</span>
       },
     },
     {

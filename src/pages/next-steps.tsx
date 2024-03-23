@@ -4,7 +4,7 @@ import Button from '@mui/material/Button';
 import {  useState } from "react";
 import { NextStepTable } from "../features/next-step-table/NextStepTable";
 import { NextStep } from "../types/next-step";
-import LeftDrawer from "../components/left-drawer/LeftDrawer";
+import Layout from "../components/layout/Layout";
 import { NextStepForm } from "../features/next-step-form/NextStepForm";
 import { Contact } from "../types/contact";
 
@@ -84,8 +84,7 @@ export const NextSteps
     )})
   
   return (
-     <LeftDrawer title="Next Steps" >
-      <div style={{padding: '2rem 0'}}>
+     <Layout title="Next Steps" >
         <Button
           color='info'
           variant="contained"
@@ -106,7 +105,6 @@ export const NextSteps
           handleFormChange={handleFormChange}
           contacts={contacts}
         />
-      </div>
-    </LeftDrawer>
+    </Layout>
   )
 }

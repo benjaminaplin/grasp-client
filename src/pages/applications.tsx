@@ -4,7 +4,7 @@ import Button from '@mui/material/Button';
 import {  useState } from "react";
 import { ApplicationsTable } from "../features/application-table/ApplicationTable";
 import { Application } from "../types/application";
-import LeftDrawer from "../components/left-drawer/LeftDrawer";
+import Layout from "../components/layout/Layout";
 import { ApplicationForm } from "../features/application-form/ApplicationForm";
 import { Company } from "../types/company";
 
@@ -82,15 +82,17 @@ export const Applications
   
 
   return (
-     <LeftDrawer title="Applications">
-      <div style={{padding: '2rem 0'}}>
-        <Button
-          color='info'
-          variant="contained"
-          onClick={()=> setIsapplicationFormOpen(!isapplicationFormOpen)}>
-            Add application
-        </Button >
-        <Button style={{marginLeft: '1rem'}} onClick={() => refetchApplications()}>Refresh Data</Button>
+     <Layout title="Applications">
+        <div style={{display: 'flex', justifyContent: 'flex-start',alignItems: 'center', marginLeft: '1rem'}}>
+          <Button
+            color='info'
+            variant="contained"
+            onClick={()=> setIsapplicationFormOpen(!isapplicationFormOpen)}>
+              Add application
+          </Button >
+          <Button style={{marginLeft: '1rem'}} onClick={() => refetchApplications()}>Refresh Data</Button>
+          <div>Applications: {`${applications?.length || 0}`}</div>
+        </div>
         <ApplicationsTable
           updateApplication={updateApplication}
           tableData={applicationTableData}
@@ -104,7 +106,6 @@ export const Applications
           handleFormChange={handleFormChange}
           companies={companies}
         />
-      </div>
-    </LeftDrawer>
+    </Layout>
   )
 }

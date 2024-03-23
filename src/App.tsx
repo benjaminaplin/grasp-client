@@ -1,5 +1,5 @@
 import './App.css'
-import LeftDrawer from './components/left-drawer/LeftDrawer';
+import Layout from './components/layout/Layout';
 import {Applications} from './pages/applications';
 import { Contacts } from './pages/contacts'
 import {
@@ -14,6 +14,8 @@ import {
 import { Companies } from './pages/companies';
 import { ResourceView } from './components/resource-view/ResourceView';
 import {NextSteps} from './pages/next-steps';
+import { Dashboard } from './pages/dashboard';
+
 
 const queryClient = new QueryClient()
 
@@ -22,7 +24,8 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Contacts />} />
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/contacts" element={<Contacts />} />
           <Route path="/contacts/:id" element={<ResourceView relation='nextSteps'/>} />
           <Route path="/next-steps" element={<NextSteps />} />
@@ -40,4 +43,4 @@ function App() {
 
 export default App
 
-const NoMatch = () => <LeftDrawer title=""><div>Nothing to see here</div></LeftDrawer>
+const NoMatch = () => <Layout title=""><div>Nothing to see here</div></Layout>

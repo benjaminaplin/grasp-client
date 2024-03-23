@@ -5,7 +5,7 @@ import {  useState } from "react";
 import { ContactsTable } from "../features/contact-table/ContactTable";
 import { Contact } from "../types/contact";
 import { ContactForm } from "../features/contact-form/ContactForm";
-import LeftDrawer from "../components/left-drawer/LeftDrawer";
+import Layout from "../components/layout/Layout";
 
 const DEV_API_URL = import.meta.env.VITE_DEV_API_URL
 
@@ -55,7 +55,7 @@ export const Contacts
   })
 
   const { data, refetch: refetchContacts } = useQuery({
-    queryKey: ['test'],
+    queryKey: ['contacts'],
     queryFn: () => fetch(`${DEV_API_URL}/contacts`).then((res: any) => {
       return res.json()
     }),
@@ -89,8 +89,7 @@ export const Contacts
   }
 
   return (
-     <LeftDrawer title="Contacts" >
-      <div style={{padding: '2rem 0'}}>
+     <Layout title="Contacts" >
         <Button
           color='info'
           variant="contained"
@@ -110,7 +109,6 @@ export const Contacts
           createContact={createContact}
           handleFormChange={handleFormChange}
         />
-      </div>
-    </LeftDrawer>
+    </Layout>
   )
 }
