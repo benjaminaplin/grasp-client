@@ -1,6 +1,8 @@
 .dashboard-card-container {
-  min-width: 275px;
+  max-width: 100px;
+  min-height: 50px;
   margin-bottom: 1rem;
+  /* background-color: ; */
 }
 
 .dashboard-card-title {

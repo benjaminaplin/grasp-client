@@ -10,10 +10,16 @@ type DashboardCardProps = { title: string, content: React.ReactNode, actions?: R
 
 export const DashboardCard = ({ title, content, actions }: DashboardCardProps) => {
   return (
-    <Box className='dashboard-card-container' sx={{ minWidth: 275, marginBottom: '1rem' }}>
-      <Card variant="outlined">
+    <Box className='dashboard-card-container' sx={{ minWidth: 275, marginBottom: '1rem', minHeight: '80px' }}>
+      <Card variant="outlined" style={{
+        height: '100%',
+       
+      }}>
         <React.Fragment>
-          <CardContent>
+          <CardContent style={{height: '100%',
+         display: 'flex',
+         flexDirection: 'column',
+         justifyContent: 'space-around'}}>
             <Typography className='dashboard-card-title' align='center' variant='h4' gutterBottom>
               {title}
             </Typography>

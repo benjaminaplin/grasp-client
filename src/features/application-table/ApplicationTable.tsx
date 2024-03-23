@@ -94,6 +94,12 @@ export const ApplicationsTable = ({
       footer: props => props.column.id,
     },
     {
+      accessorFn: row => row.type,
+      id: 'type',
+      header: () => <span>Type</span>,
+      footer: props => props.column.id,
+    },
+    {
       accessorKey: 'company',
       id: 'company',
       header: () => <span>Company</span>,
