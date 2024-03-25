@@ -12,7 +12,7 @@
 
 .layout-main {
   padding: 2rem 2rem 0 2rem;
-  background-color: var(--main-bg-color);
-  height: 100vh;
+  /* background-color: var(--davysgrey-lighter); */
+  height: 100%;
   margin-top: 4rem;
 }

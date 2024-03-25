@@ -1,10 +1,31 @@
 .dashboard-card-container {
   max-width: 100px;
-  min-height: 50px;
   margin-bottom: 1rem;
-  /* background-color: ; */
+  color: var(--davysgrey);
 }
 
-.dashboard-card-title {
-  color: #b1b1b1;
+.dashboard-card-container__header {
+  max-width: 100px;
+  margin-bottom: 1rem;
+  color: var(--davysgrey);
+  background-color: var(--davysgrey);
+}
+
+.dashboard-card-container{
+  max-width: 100px;
+  margin-bottom: 1rem;
+  color: var(--davysgrey);
+}
+
+.card-1-1 {
+  background-color: var(--davysgrey);
+  border: 1px solid red;
+}
+
+.dashboard-card-content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  color: var(--davysgrey);
 }

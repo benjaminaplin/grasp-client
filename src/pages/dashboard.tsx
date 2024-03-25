@@ -46,15 +46,14 @@ export const Dashboard = () => {
   return (
     <Layout title="Next Steps" >
       <div className='stat-cards-container'>
-        <DashboardCard title='Applications' content={<StatContainer>{applications?.length}</StatContainer> || 0}/>
-        <DashboardCard title='Recruiter Applications' content={<StatContainer>{recruiterApplications}</StatContainer> || 0}/>
-        <DashboardCard title='Cold Applications' content={<StatContainer>{coldApplications}</StatContainer> || 0}/>
-        <DashboardCard title='Connection Applications' content={<StatContainer>{connectionApplications}</StatContainer> || 0}/>
-        <DashboardCard title='Contacts' content={<StatContainer>{contacts?.length}</StatContainer> || 0} />
-        <DashboardCard title='Companies' content={<StatContainer>{companies?.length}</StatContainer> || 0}/>
-        <DashboardCard title='Next Steps' content={<StatContainer>{nextSteps?.length}</StatContainer> || 0} />
-        <DashboardCard title='Contacts' content={<StatContainer>{contacts?.length}</StatContainer> || 0} />
-        <DashboardCard title='Recruiters' content={<StatContainer>{recruiters}</StatContainer> || 0} />
+        <DashboardCard title='Applications' color='coral' destinationOnClick='/job-applications' content={<StatContainer>{applications?.length}</StatContainer> || 0}/>
+        <DashboardCard title='Recruiter Applications' color='coral-lighter' destinationOnClick='/job-applications' content={<StatContainer>{recruiterApplications}</StatContainer> || 0}/>
+        <DashboardCard title='Cold Applications' color='coral-lighter' destinationOnClick='/job-applications' content={<StatContainer>{coldApplications}</StatContainer> || 0}/>
+        <DashboardCard title='Connection Applications' color='coral-lighter' destinationOnClick='/job-applications' content={<StatContainer>{connectionApplications}</StatContainer> || 0}/>
+        <DashboardCard title='Contacts'  color='powder-blue' destinationOnClick='/contacts' content={<StatContainer>{contacts?.length}</StatContainer> || 0} />
+        <DashboardCard title='Recruiters'  color='powder-blue' destinationOnClick='/contacts' content={<StatContainer>{recruiters}</StatContainer> || 0} />
+        <DashboardCard title='Companies' color='powder-blue'  destinationOnClick='/companies' content={<StatContainer>{companies?.length}</StatContainer> || 0}/>
+        <DashboardCard title='Next Steps'  color='powder-blue' destinationOnClick='/next-steps' content={<StatContainer>{nextSteps?.length}</StatContainer> || 0} />
       </div>
     </Layout>
   )

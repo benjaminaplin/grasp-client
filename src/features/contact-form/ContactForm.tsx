@@ -25,7 +25,7 @@ export const ContactForm = ({ isOpen, handleClose, handleFormChange, createConta
     >
       <Box my={4} display="flex" alignItems="center" gap={4} p={2} sx={style}
       >
-       <div style={{display: "flex", flexDirection: 'column', backgroundColor: "lightgrey", width: '100%', height: '100%'}}>
+       <div style={{display: "flex", flexDirection: 'column', backgroundColor: "var(--davysgrey-lighter)", width: '100%', height: '100%'}}>
           <FormGroup onChange={handleFormChange}>
             <TextField id="standard-basic" name="title" label="Title" variant="filled" />
             <TextField id="standard-basic" name='type' label="Type" variant="filled" />

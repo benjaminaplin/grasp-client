@@ -6,6 +6,7 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  height: 100%;
 }
 
 a {
@@ -19,9 +20,9 @@ a:hover {
 
 body {
   margin: 0;
-  /* display: flex; */
   min-width: 320px;
-  min-height: 100vh;
+  min-height: 100%;
+  background-color: var(--davysgrey-lighter);
 }
 
 h1 {
@@ -51,7 +52,7 @@ button:focus-visible {
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
-    background-color: #ffffff;
+    background-color: var(--davysgrey-lighter);
   }
   a:hover {
     color: #747bff;
