@@ -1,4 +1,5 @@
 import { Application } from "./application"
+import { User } from "./user"
 
 export type Company = {
   id?: number
@@ -7,4 +8,5 @@ export type Company = {
   notes: string | null
   type: string | null
   jobApplications: Application[]
+  users: User[]
 }

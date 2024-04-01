@@ -23,7 +23,9 @@ export const NextSteps
     userId: 2,
     contactId: undefined,
     action: null,
-    contacts: []
+    contacts: [],
+    completed: false,
+    completedDate: undefined
   })
   const { data: nextSteps, refetch: refetchNextSteps } = useQuery({
     queryKey: ['next-steps'],
@@ -31,6 +33,11 @@ export const NextSteps
       return res.json()
     }),
   })
+
+  const onMutateSuccess = () => {
+    setIsNextStepFormOpen(false)
+    refetchNextSteps()
+  }
 
   const {mutate: mutateCreateNextStep  } = useMutation({
     mutationFn: (nextStep: NextStep) => {
@@ -41,10 +48,7 @@ export const NextSteps
         }
       })
     },
-    onSuccess: () => {
-      setIsNextStepFormOpen(false)
-      refetchNextSteps()
-    }
+    onSuccess:onMutateSuccess
   })
 
   const { data: contacts } = useQuery({
@@ -54,6 +58,17 @@ export const NextSteps
     }),
   })
 
+
+  const {mutate: mutateDeleteNextStep } = useMutation({
+    mutationFn: (nextStepId: number) => {
+      return axios.delete(`${DEV_API_URL}/next-steps/${nextStepId}`, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+    },
+    onSuccess: onMutateSuccess
+  })
 
   const {mutate: mutateUpdateNextStep } = useMutation({
     mutationFn: ({nextStep, id} :{nextStep: Partial<NextStep>, id: number}) => {
@@ -77,6 +92,11 @@ export const NextSteps
   const handleFormChange = (evt: any) => {
     setFormState((formState: any) => ({...formState, [evt.target.name]: evt.target.value}))
   }
+
+  const deleteNextStep = (nextStepId: number) => {
+    mutateDeleteNextStep(nextStepId)
+  }
+
   const nextStepTableData = nextSteps?.map((a: NextStep) =>  {
     const contact = contacts?.find((c: Contact) => c.id === a.contactId)
     return (
@@ -96,6 +116,7 @@ export const NextSteps
           updateNextStep={updateNextStep}
           tableData={nextStepTableData}
           refreshTableData={refetchNextSteps}
+          deleteNextStep={deleteNextStep}
           />
         <NextStepForm
           contactId={formState.contacts?.[0]?.id}

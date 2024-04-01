@@ -21,7 +21,8 @@ export const Companies
     type: null,
     notes: null,
     userId: 2,
-    jobApplications: []
+    jobApplications: [],
+    users: []
   })
 
   const onMutateSuccess = () => {

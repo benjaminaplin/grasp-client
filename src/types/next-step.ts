@@ -8,4 +8,6 @@ export type NextStep = {
   notes: string | null
   type: string | null
   contacts: Contact[] | undefined
+  completed: boolean
+  completedDate?: string
 }

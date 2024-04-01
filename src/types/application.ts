@@ -8,4 +8,5 @@ export type Application = {
   userId: number | null
   companyId: number | null
   companies: Company[]
+  dateApplied: string
 }

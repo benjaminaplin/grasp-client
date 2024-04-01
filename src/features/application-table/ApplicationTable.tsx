@@ -5,7 +5,9 @@ import {
   getFilteredRowModel,
   flexRender,
   RowData,
+  getSortedRowModel,
 } from '@tanstack/react-table'
+import { format } from 'date-fns'
 import { ReactNode, useEffect, useMemo, useState } from 'react'
 import './application-table.css'
 import { Filter } from '../../components/table-filter/TableFilter'
@@ -79,25 +81,36 @@ export const ApplicationsTable = ({
     mutateDeleteContact(applicationId)
   }
 
-
   const columns = useMemo<ColumnDef<Application>[]>(()=>[
     {
       id: 'index',
-      cell: (info) => {
-        return <span >{`${info.row.index + 1}`}</span>
-      },
+      cell: (info) => (
+         <span >{`${info.row.index + 1}`}</span>
+      )
     },
     {
       accessorFn: row => row.role,
       id: 'role',
       header: () => <span>Role</span>,
       footer: props => props.column.id,
+      enableSorting: true
     },
     {
       accessorFn: row => row.type,
       id: 'type',
       header: () => <span>Type</span>,
       footer: props => props.column.id,
+      enableSorting: true
+    },
+    {
+      accessorFn: row => row.dateApplied,
+      id: 'dateApplied',
+      header: () => <span>Date Applied</span>,
+      cell: (info) => {
+        return <span >{`${format(info.row.original.dateApplied, "MM/dd/yyyy")}`}</span>
+      },
+      footer: props => props.column.id,
+      sortingFn: 'datetime',
     },
     {
       accessorKey: 'company',
@@ -107,17 +120,20 @@ export const ApplicationsTable = ({
       cell: (info) => {
         return <Link to={`/companies/${info.row.original.companyId}`}>{info.getValue() as ReactNode}</Link>
       },
-      filterFn: relationFilterFn<Application>()
+      filterFn: relationFilterFn<Application>(),
+      enableSorting: true
     },  
     {
       accessorKey: 'status',
       header: () => <span>Status</span>,
       footer: props => props.column.id,
+      enableSorting: true
     },
     {
       accessorKey: 'link',
       header: () => <span>Link</span>,
       footer: props => props.column.id,
+      enableSorting: true
     },
     {
       accessorFn: row => row.notes,
@@ -127,7 +143,7 @@ export const ApplicationsTable = ({
     },
     {
       header: 'Delete',
-      cell: ({row}) => <DeleteButtonCell row={row} deleteResource={(id: number) => deleteContact(id)} />
+      cell: ({row}) => <DeleteButtonCell row={row} deleteResource={(id: number) => deleteContact(id)} />,
     }
   ],[])
 
@@ -138,7 +154,16 @@ export const ApplicationsTable = ({
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     debugTable: true,
-    rowCount: tableData?.length
+    rowCount: tableData?.length,
+    initialState: {
+      sorting: [
+        {
+          id: 'dateApplied',
+          desc: true,  
+        },
+      ],
+    },
+    getSortedRowModel: getSortedRowModel(), //provide a sorting row model
   })
 
   return (
@@ -152,15 +177,23 @@ export const ApplicationsTable = ({
                   <th key={header.id} colSpan={header.colSpan}>
                     {header.isPlaceholder ? null : (
                       <div>
+                        <div style={{cursor: 'pointer'}} onClick={header.column.getToggleSortingHandler()} >
+
                         {flexRender(
                           header.column.columnDef.header,
                           header.getContext()
-                        )}
+                          )}
+                        </div>
                         {header.column.getCanFilter() ? (
-                          <div>
-                            <Filter column={header.column} table={table} />
+                          <div style={{display: 'flex'}}>
+                          <Filter column={header.column} table={table} />
+                          {{
+                            asc: " 🔼",
+                            desc: " 🔽",
+                          }[header.column.getIsSorted() as string] ?? null}
                           </div>
                         ) : null}
+                   
                       </div>
                     )}
                   </th>

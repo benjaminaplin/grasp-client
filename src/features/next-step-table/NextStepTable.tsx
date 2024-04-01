@@ -23,12 +23,14 @@ declare module '@tanstack/react-table' {
 type NextStepTableType = {
   updateNextStep: (updatedNextStep: {nextStep: Partial<NextStep>, id: number}) => void,
   tableData: NextStep[] | undefined,
-  refreshTableData: () => void
+  refreshTableData: () => void,
+  deleteNextStep: (id: number) => void
 }
 
 export const NextStepTable = ({
   updateNextStep,
   tableData,
+  deleteNextStep
 }: NextStepTableType)=>  {
   const defaultColumn: Partial<ColumnDef<NextStep>> = {
     cell: ({ getValue, row, column, table }) => {
@@ -58,12 +60,7 @@ export const NextStepTable = ({
   }
 
   const columns = useMemo<ColumnDef<NextStep>[]>(()=>[
-      {
-        accessorKey: 'type',
-        header: () => <span>Type</span>,
-        footer: props => props.column.id,
-      },
-      {
+    {
         accessorFn: row => row.action,
         id: 'action',
         header: () => <span>Action</span>,
@@ -86,8 +83,14 @@ export const NextStepTable = ({
         filterFn: relationFilterFn<NextStep>()
       },
       {
+        accessorFn: row => row.completed,
+        id: 'completed',
+        header: () => <span>Completed</span>,
+        footer: props => props.column.id,
+      },
+      {
         header: 'Delete',
-        cell: ({row}) => <DeleteButtonCell row={row} deleteResource={(id: number) => console.log('deleting', id)} />
+        cell: ({row}) => <DeleteButtonCell row={row} deleteResource={deleteNextStep} />
       }
   ],[])
 
