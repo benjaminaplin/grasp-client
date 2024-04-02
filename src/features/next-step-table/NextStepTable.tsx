@@ -5,14 +5,16 @@ import {
   getFilteredRowModel,
   flexRender,
   RowData,
+  getSortedRowModel,
 } from '@tanstack/react-table'
 import { ReactNode, useEffect, useMemo, useState } from 'react'
 import './next-step-table.css'
-import { Filter } from '../../components/table-filter/TableFilter'
+import { Filter } from '../../components/table/table-filter/TableFilter'
 import { NextStep } from '../../types/next-step'
 import { Link } from 'react-router-dom'
 import { relationFilterFn } from '../../utils/FilterFn'
 import { DeleteButtonCell } from '../../components/delete-button-cell/DeleteButtonCell'
+import { getTableHeader } from '../../components/table/table-header/TableHeader'
 
 declare module '@tanstack/react-table' {
   interface TableMeta<TData extends RowData> {
@@ -101,37 +103,15 @@ export const NextStepTable = ({
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     debugTable: true,
-    rowCount: tableData?.length
+    rowCount: tableData?.length,
+    getSortedRowModel: getSortedRowModel(), //provide a sorting row model
+
   })
 
   return (
     <>
       <table>
-        <thead>
-          {table.getHeaderGroups().map(headerGroup => (
-            <tr key={headerGroup.id}>
-              {headerGroup.headers.map(header => {
-                return (
-                  <th key={header.id} colSpan={header.colSpan}>
-                    {header.isPlaceholder ? null : (
-                      <div>
-                        {flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                        {header.column.getCanFilter() ? (
-                          <div>
-                            <Filter column={header.column} table={table} />
-                          </div>
-                        ) : null}
-                      </div>
-                    )}
-                  </th>
-                )
-              })}
-            </tr>
-          ))}
-        </thead>
+        {getTableHeader<NextStep>(table)}
         <tbody>
           {table.getRowModel().rows.map(row => {
             return (

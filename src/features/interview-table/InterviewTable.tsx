@@ -7,11 +7,9 @@ import {
   RowData,
   getSortedRowModel,
 } from '@tanstack/react-table'
-import { format } from 'date-fns'
-import { ReactNode, useEffect, useMemo, useState } from 'react'
-import './application-table.css'
-import { Filter } from '../../components/table/table-filter/TableFilter'
-import { Application } from '../../types/application'
+import { useEffect, useMemo, useState } from 'react'
+import './interview-table.css'
+import { Interview } from '../../types/interview'
 import { Link } from 'react-router-dom'
 import { relationFilterFn } from '../../utils/FilterFn'
 import { DeleteButtonCell } from '../../components/delete-button-cell/DeleteButtonCell'
@@ -25,18 +23,21 @@ declare module '@tanstack/react-table' {
   }
 }
 
-type ApplicationsTableType = {
-  updateApplication: (updatedApplication: {application: Partial<Application>, id: number}) => void,
-  tableData: Application[] | undefined,
+type InterviewsTableType = {
+  updateInterview: (updatedInterview: {interview: Partial<Interview>, id: number}) => void,
+  tableData: Interview[] | undefined,
   refreshTableData: () => void
+  companyMap: {[key: string]: string}
 }
 
-export const ApplicationsTable = ({
-  updateApplication,
+export const InterviewsTable = ({
+  updateInterview,
   tableData,
-  refreshTableData
-}: ApplicationsTableType)=>  {
-  const defaultColumn: Partial<ColumnDef<Application>> = {
+  refreshTableData,
+  companyMap
+}: InterviewsTableType)=>  {
+  console.log('companyMap', companyMap)
+  const defaultColumn: Partial<ColumnDef<Interview>> = {
     cell: ({ getValue, row, column, table }) => {
       const initialValue = getValue()
       // We need to keep and update the state of the cell normally
@@ -45,7 +46,7 @@ export const ApplicationsTable = ({
       // When the input is blurred, we'll call our table meta's updateData function
       const onBlur = () => {
         table.options.meta?.updateData(row.index, column.id, value)
-        updateApplication({application: {[column.id]: value}, id: row.original.id as number})
+        updateInterview({interview: {[column.id]: value}, id: row.original.id as number})
       }
   
       // If the initialValue is changed external, sync it up with our state
@@ -64,13 +65,13 @@ export const ApplicationsTable = ({
   }
 
   const onMutateSuccess = () => {
-    // setIsApplicationFormOpen(false)
+    // setIsInterviewFormOpen(false)
     refreshTableData()
   }
 
   const {mutate: mutateDeleteContact } = useMutation({
-    mutationFn: (applicationId: number) => {
-      return axios.delete(`${import.meta.env.VITE_DEV_API_URL}/job-applications/${applicationId}`, {
+    mutationFn: (interviewId: number) => {
+      return axios.delete(`${import.meta.env.VITE_DEV_API_URL}/job-Interviews/${interviewId}`, {
         headers: {
           'Content-Type': 'application/json'
         }
@@ -78,11 +79,10 @@ export const ApplicationsTable = ({
     },
     onSuccess: onMutateSuccess
   })
-  const deleteContact = (applicationId: number) => {
-    mutateDeleteContact(applicationId)
+  const deleteContact = (interviewId: number) => {
+    mutateDeleteContact(interviewId)
   }
-
-  const columns = useMemo<ColumnDef<Application>[]>(()=>[
+  const columns = useMemo<ColumnDef<Interview>[]>(()=>[
     {
       id: 'index',
       cell: (info) => (
@@ -90,49 +90,31 @@ export const ApplicationsTable = ({
       )
     },
     {
-      accessorFn: row => row.role,
-      id: 'role',
-      header: () => <span>Role</span>,
+      accessorFn: row => row.round,
+      id: 'round',
+      header: () => <span>Round</span>,
       footer: props => props.column.id,
       enableSorting: true
     },
     {
-      accessorFn: row => row.type,
-      id: 'type',
-      header: () => <span>Type</span>,
+      accessorKey: 'jobApplication',
+      id: 'jobApplication',
+      header: () => <span>Application</span>,
       footer: props => props.column.id,
-      enableSorting: true
-    },
-    {
-      accessorFn: row => row.dateApplied,
-      id: 'dateApplied',
-      header: () => <span>Date Applied</span>,
-      cell: (info) => {
-        return <span >{`${format(info.row.original.dateApplied, "MM/dd/yyyy")}`}</span>
+      cell: ({row: {original: {jobApplication, jobApplicationId }}}) => {
+        console.log('jobApp', jobApplication)
+        console.log("companyMap", companyMap)
+        const role = jobApplication?.role
+        const company = jobApplication?.companyId && companyMap?.[jobApplication?.companyId]
+        console.log('companyId', jobApplication?.companyId)
+        return <Link to={`/job-applications/${jobApplicationId}`}>{`${role} ${company}`}</Link>
       },
-      footer: props => props.column.id,
-      sortingFn: 'datetime',
-    },
-    {
-      accessorKey: 'company',
-      id: 'company',
-      header: () => <span>Company</span>,
-      footer: props => props.column.id,
-      cell: (info) => {
-        return <Link to={`/companies/${info.row.original.companyId}`}>{info.getValue() as ReactNode}</Link>
-      },
-      filterFn: relationFilterFn<Application>(),
+      filterFn: relationFilterFn<Interview>(),
       enableSorting: true
     },  
     {
       accessorKey: 'status',
       header: () => <span>Status</span>,
-      footer: props => props.column.id,
-      enableSorting: true
-    },
-    {
-      accessorKey: 'link',
-      header: () => <span>Link</span>,
       footer: props => props.column.id,
       enableSorting: true
     },
@@ -168,9 +150,8 @@ export const ApplicationsTable = ({
   })
 
   return (
-    <>
       <table>
-        {getTableHeader<Application>(table)}
+       {getTableHeader<Interview>(table)}
         <tbody>
           {table.getRowModel().rows.map(row => {
             return (
@@ -190,7 +171,5 @@ export const ApplicationsTable = ({
           })}
         </tbody>
       </table>
-      <div/>
-    </>
   )
 }

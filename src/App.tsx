@@ -15,6 +15,7 @@ import { Companies } from './pages/companies';
 import { ResourceView } from './components/resource-view/ResourceView';
 import {NextSteps} from './pages/next-steps';
 import { Dashboard } from './pages/dashboard';
+import {Interviews} from './pages/interviews';
 
 
 const queryClient = new QueryClient()
@@ -31,6 +32,7 @@ function App() {
           <Route path="/next-steps" element={<NextSteps />} />
           <Route path="/next-steps/:id" element={<ResourceView />} />
           <Route path="/job-applications" element={<Applications />} />
+          <Route path="/interviews" element={<Interviews />} />
           <Route path="/job-applications/:id" element={<ResourceView />} />
           <Route path="/companies" element={<Companies />} />
           <Route path="/companies/:id" element={<ResourceView />} />

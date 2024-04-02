@@ -17,7 +17,7 @@ import Typography from '@mui/material/Typography';
 import { ArrowForward, Business, Dashboard, Work } from '@mui/icons-material';
 import { Link, useNavigate } from "react-router-dom";
 import HandshakeIcon from '@mui/icons-material/Handshake';
-
+import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
 import './layout.css'
 
 const drawerWidth = 240;
@@ -28,6 +28,7 @@ const menuItems = [
   { name: 'Next Steps', link: '/next-steps', icon: <ArrowForward />},
   { name: 'Applications', link: '/job-applications', icon: <Work />},
   { name:'Companies', link: '/companies', icon: <Business />},
+  { name:'Interviews', link: '/interviews', icon: <QuestionAnswerIcon />},
  
 ]
 
