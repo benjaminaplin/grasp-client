@@ -41,7 +41,6 @@ export const NextSteps
 
   const {mutate: mutateCreateNextStep  } = useMutation({
     mutationFn: (nextStep: NextStep) => {
-      console.log('nextStep', nextStep)
       return axios.post(`${DEV_API_URL}/next-steps`, JSON.stringify(nextStep),{
         headers: {
           'Content-Type': 'application/json'

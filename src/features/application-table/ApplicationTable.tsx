@@ -108,7 +108,7 @@ export const ApplicationsTable = ({
       id: 'dateApplied',
       header: () => <span>Date Applied</span>,
       cell: (info) => {
-        return <span >{`${format(info.row.original.dateApplied, "MM/dd/yyyy")}`}</span>
+        return <span >{info.row.original.dateApplied ? `${format(info.row.original.dateApplied, "MM/dd/yyyy")}` : ''}</span>
       },
       footer: props => props.column.id,
       sortingFn: 'datetime',

@@ -11,4 +11,5 @@ export type Interview = {
   userId: number | null
   contactId: number | null
   applications: Application[]
+  date: string | null
 }

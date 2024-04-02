@@ -23,7 +23,8 @@ export const Applications
     role: null,
     userId: 2,
     companies: [],
-    companyId: null
+    companyId: null,
+    dateApplied: null
   })
 
   const {mutate: mutateCreateapplication  } = useMutation({

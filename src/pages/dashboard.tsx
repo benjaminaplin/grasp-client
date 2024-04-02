@@ -38,6 +38,13 @@ export const Dashboard = () => {
     ),
   })
 
+  const { data: interviews } = useQuery({
+    queryKey: ['interviews'],
+    queryFn: () => fetch(`${DEV_API_URL}/interviews`).then((res: any) => {
+      return res.json()
+    }),
+  })
+
   const recruiters = contacts?.filter((contact: Contact) => contact.type === 'Recruiter')?.length
   const recruiterApplications = applications?.filter((application: Application) => application.type?.includes('recruiter'))?.length
   const coldApplications = applications?.filter((application: Application) => application.type?.includes('cold'))?.length
@@ -54,6 +61,7 @@ export const Dashboard = () => {
         <DashboardCard title='Recruiters'  color='powder-blue' destinationOnClick='/contacts' content={<StatContainer>{recruiters}</StatContainer> || 0} />
         <DashboardCard title='Companies' color='powder-blue'  destinationOnClick='/companies' content={<StatContainer>{companies?.length}</StatContainer> || 0}/>
         <DashboardCard title='Next Steps'  color='powder-blue' destinationOnClick='/next-steps' content={<StatContainer>{nextSteps?.length}</StatContainer> || 0} />
+        <DashboardCard title='Interviews'  color='powder-blue-darker' destinationOnClick='/interviews' content={<StatContainer>{interviews?.length}</StatContainer> || 0} />
       </div>
     </Layout>
   )

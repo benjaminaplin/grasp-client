@@ -16,6 +16,7 @@ import { DeleteButtonCell } from '../../components/delete-button-cell/DeleteButt
 import { useMutation } from '@tanstack/react-query'
 import axios from 'axios'
 import { getTableHeader } from '../../components/table/table-header/TableHeader'
+import { format } from 'date-fns'
 
 declare module '@tanstack/react-table' {
   interface TableMeta<TData extends RowData> {
@@ -36,7 +37,6 @@ export const InterviewsTable = ({
   refreshTableData,
   companyMap
 }: InterviewsTableType)=>  {
-  console.log('companyMap', companyMap)
   const defaultColumn: Partial<ColumnDef<Interview>> = {
     cell: ({ getValue, row, column, table }) => {
       const initialValue = getValue()
@@ -69,9 +69,9 @@ export const InterviewsTable = ({
     refreshTableData()
   }
 
-  const {mutate: mutateDeleteContact } = useMutation({
+  const {mutate: mutateDeleteInterview } = useMutation({
     mutationFn: (interviewId: number) => {
-      return axios.delete(`${import.meta.env.VITE_DEV_API_URL}/job-Interviews/${interviewId}`, {
+      return axios.delete(`${import.meta.env.VITE_DEV_API_URL}/interviews/${interviewId}`, {
         headers: {
           'Content-Type': 'application/json'
         }
@@ -79,16 +79,11 @@ export const InterviewsTable = ({
     },
     onSuccess: onMutateSuccess
   })
-  const deleteContact = (interviewId: number) => {
-    mutateDeleteContact(interviewId)
+  const deleteInterview = (interviewId: number) => {
+    mutateDeleteInterview(interviewId)
   }
+
   const columns = useMemo<ColumnDef<Interview>[]>(()=>[
-    {
-      id: 'index',
-      cell: (info) => (
-         <span >{`${info.row.index + 1}`}</span>
-      )
-    },
     {
       accessorFn: row => row.round,
       id: 'round',
@@ -97,16 +92,23 @@ export const InterviewsTable = ({
       enableSorting: true
     },
     {
+      accessorFn: row => row.date,
+      id: 'date',
+      header: () => <span>Date</span>,
+      footer: props => props.column.id,
+      enableSorting: true,
+      cell: (info) => {
+        return <span >{info.row.original.date ? `${format(info.row.original.date, "MM/dd/yyyy")}` : ''}</span>
+      },
+    },
+    {
       accessorKey: 'jobApplication',
       id: 'jobApplication',
       header: () => <span>Application</span>,
       footer: props => props.column.id,
       cell: ({row: {original: {jobApplication, jobApplicationId }}}) => {
-        console.log('jobApp', jobApplication)
-        console.log("companyMap", companyMap)
         const role = jobApplication?.role
         const company = jobApplication?.companyId && companyMap?.[jobApplication?.companyId]
-        console.log('companyId', jobApplication?.companyId)
         return <Link to={`/job-applications/${jobApplicationId}`}>{`${role} ${company}`}</Link>
       },
       filterFn: relationFilterFn<Interview>(),
@@ -126,7 +128,7 @@ export const InterviewsTable = ({
     },
     {
       header: 'Delete',
-      cell: ({row}) => <DeleteButtonCell row={row} deleteResource={(id: number) => deleteContact(id)} />,
+      cell: ({row}) => <DeleteButtonCell row={row} deleteResource={(id: number) => deleteInterview(id)} />,
     }
   ],[])
 

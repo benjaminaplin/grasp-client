@@ -8,6 +8,8 @@ import Layout from "../components/layout/Layout";
 import { InterviewForm } from "../features/interview-form/InterviewForm";
 import { Company } from "../types/company";
 import { Application } from "../types/application";
+import { format, isValid, parse } from "date-fns";
+import { isValidDate } from "../utils/is-valid-date";
 
 const DEV_API_URL = import.meta.env.VITE_DEV_API_URL
 
@@ -23,7 +25,8 @@ export const Interviews
     userId: 2,
     contactId: null,
     applications: [],
-    jobApplication: undefined
+    jobApplication: undefined,
+    date: null
   })
 
   const {mutate: mutateCreateInterview  } = useMutation({
@@ -60,7 +63,6 @@ export const Interviews
       return res.json()
     }),
   })
-console.log('companues', companies)
   const {mutate: mutateUpdateInterview } = useMutation({
     mutationFn: ({interview, id} :{interview: Partial<Interview>, id: number}) => {
       return axios.patch(`${DEV_API_URL}/interviews/${id}`, JSON.stringify(interview),{
@@ -81,7 +83,11 @@ console.log('companues', companies)
   }
 
   const handleFormChange = (evt: any) => {
-    setFormState((formState: any) => ({...formState, [evt.target.name]: evt.target.value}))
+    setFormState((formState: any) => {
+      const name = evt.target.name === 'applicationId' ? 'jobApplicationId' : evt.target.name
+      const value = (isValidDate(evt.target.value)) ? format(new Date(evt.target.value), "yyyy-MM-dd") : evt.target.value
+      return ({...formState, [name]: value})
+    })
   }
   const interviewTableData = () => interviews?.map((interview: Interview) =>  {
     const application = applications?.find((a: Application) => a.id === interview.jobApplicationId)?.name || null
