@@ -27,7 +27,7 @@ export const NextSteps
     completed: false,
     completedDate: undefined
   })
-  const { data: nextSteps, refetch: refetchNextSteps } = useQuery({
+  const { data: nextSteps, refetch: refetchNextSteps, isLoading: areNextStepsLoading, isFetching: areNextStepsFetching } = useQuery({
     queryKey: ['next-steps'],
     queryFn: () => fetch(`${DEV_API_URL}/next-steps`).then((res: any) => {
       return res.json()
@@ -112,6 +112,7 @@ export const NextSteps
         </Button >
         <Button style={{marginLeft: '1rem'}} onClick={() => refetchNextSteps()}>Refresh Data</Button>
         <NextStepTable
+        areNextStepsLoading={areNextStepsLoading || areNextStepsFetching}
           updateNextStep={updateNextStep}
           tableData={nextStepTableData}
           refreshTableData={refetchNextSteps}

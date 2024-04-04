@@ -1,17 +1,28 @@
 :root {
-  --secondary-bg-color: #1976d2;
+  /* pallete 1 */
+  --dutch-white: #FAEDCA;
   --coral: #ff7f50;
+  --powder-blue: #8eb1c7;
+  --jet: #353535;
+  --davysgrey: #5e5d5c;
   --coral-dark: color-mix(in srgb, #ff7f50, black);
   --coral-darker: color-mix(in srgb, var(--coral), black 15%);
   --coral-light: color-mix(in srgb, var(--coral), white);
   --coral-lighter: color-mix(in srgb, var(--coral), white 75%);
-  --powder-blue: #8eb1c7;
   --powder-blue-darker: color-mix(in srgb, var(--powder-blue), black 15%);
   --powder-blue-light: color-mix(in srgb, var(--powder-blue), white);
   --powder-blue-lighter: color-mix(in srgb, var(--powder-blue), white 75%);
-  --white: #fefdff;
-  --davysgrey: #5e5d5c;
   --davysgrey-lighter: color-mix(in srgb, var(--davysgrey), white 85%);
-  --main-bg-color: var(--davysgrey-lighter);
-  --dark: #272d2d;
+ 
+   /* pallete 2 */
+   --coral: #ff7f50;
+   --mikdado-yellow: #FFEFCF;
+   --verdigris: #73BFB8;
+   --picton-blue: #3DA5D9;
+   --green-blue: #2364AA;
+   --green-blue-light: color-mix(in srgb, var(--green-blue), white 35%);
+  /* other */
+   --secondary-bg-color: #2364AA;
+   --main-bg-color: var(--davysgrey-lighter);
+   --white: #fefdff;
 }

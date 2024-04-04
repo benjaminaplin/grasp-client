@@ -18,6 +18,7 @@ import { DeleteButtonCell } from '../../components/delete-button-cell/DeleteButt
 import { useMutation } from '@tanstack/react-query'
 import axios from 'axios'
 import { getTableHeader } from '../../components/table/table-header/TableHeader'
+import Skeleton from '@mui/material/Skeleton'
 
 declare module '@tanstack/react-table' {
   interface TableMeta<TData extends RowData> {
@@ -28,13 +29,15 @@ declare module '@tanstack/react-table' {
 type ApplicationsTableType = {
   updateApplication: (updatedApplication: {application: Partial<Application>, id: number}) => void,
   tableData: Application[] | undefined,
-  refreshTableData: () => void
+  refreshTableData: () => void,
+  areApplicationsLoading: boolean
 }
 
 export const ApplicationsTable = ({
   updateApplication,
   tableData,
-  refreshTableData
+  refreshTableData,
+  areApplicationsLoading
 }: ApplicationsTableType)=>  {
   const defaultColumn: Partial<ColumnDef<Application>> = {
     cell: ({ getValue, row, column, table }) => {
@@ -148,8 +151,17 @@ export const ApplicationsTable = ({
     }
   ],[])
 
+    const memoColumns = useMemo<ColumnDef<Application>[]>(() => 
+      areApplicationsLoading
+      ? columns.map((column) => ({
+        ...column,
+        cell: () => <Skeleton />,
+      }))
+    : columns,
+    [areApplicationsLoading])
+
   const table = useReactTable({
-    columns,
+    columns: memoColumns,
     defaultColumn,
     data: tableData || [],
     getCoreRowModel: getCoreRowModel(),

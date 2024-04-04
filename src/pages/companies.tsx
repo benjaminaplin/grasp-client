@@ -41,7 +41,7 @@ export const Companies
     onSuccess: onMutateSuccess
   })
 
-  const { data, refetch: refetchCompanies } = useQuery({
+  const { data, refetch: refetchCompanies, isLoading: areCompaniesLoading, isFetching: areCompaniesFetching } = useQuery({
     queryKey: ['companies'],
     queryFn: () => fetch(`${DEV_API_URL}/users/2/companies`).then((res: any) => {
       return res.json()
@@ -85,6 +85,7 @@ export const Companies
   const deleteCompany = (companyId: number) => {
     mutateDeleteCompany(companyId)
   }
+  
   return (
      <Layout title="Companies" >
         <Button
@@ -95,6 +96,7 @@ export const Companies
         </Button >
         <Button style={{marginLeft: '1rem'}} onClick={() => refetchCompanies()}>Refresh Data</Button>
         <CompanyTable
+          companiesAreLoading={areCompaniesLoading || areCompaniesFetching}
           updateCompany={updateCompany}
           tableData={data}
           refreshTableData={refetchCompanies}

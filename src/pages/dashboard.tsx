@@ -51,17 +51,62 @@ export const Dashboard = () => {
   const connectionApplications = applications?.filter((application: Application) => application.type?.includes('connection'))?.length
 
   return (
-    <Layout title="Next Steps" >
+    <Layout title="Dashboard" >
       <div className='stat-cards-container'>
-        <DashboardCard title='Applications' color='coral' destinationOnClick='/job-applications' content={<StatContainer>{applications?.length}</StatContainer> || 0}/>
-        <DashboardCard title='Recruiter Applications' color='coral-lighter' destinationOnClick='/job-applications' content={<StatContainer>{recruiterApplications}</StatContainer> || 0}/>
-        <DashboardCard title='Cold Applications' color='coral-lighter' destinationOnClick='/job-applications' content={<StatContainer>{coldApplications}</StatContainer> || 0}/>
-        <DashboardCard title='Connection Applications' color='coral-lighter' destinationOnClick='/job-applications' content={<StatContainer>{connectionApplications}</StatContainer> || 0}/>
-        <DashboardCard title='Contacts'  color='powder-blue' destinationOnClick='/contacts' content={<StatContainer>{contacts?.length}</StatContainer> || 0} />
-        <DashboardCard title='Recruiters'  color='powder-blue' destinationOnClick='/contacts' content={<StatContainer>{recruiters}</StatContainer> || 0} />
-        <DashboardCard title='Companies' color='powder-blue'  destinationOnClick='/companies' content={<StatContainer>{companies?.length}</StatContainer> || 0}/>
-        <DashboardCard title='Next Steps'  color='powder-blue' destinationOnClick='/next-steps' content={<StatContainer>{nextSteps?.length}</StatContainer> || 0} />
-        <DashboardCard title='Interviews'  color='powder-blue-darker' destinationOnClick='/interviews' content={<StatContainer>{interviews?.length}</StatContainer> || 0} />
+        <DashboardCard
+          title='Applications'
+          color='coral'
+          destinationOnClick='/job-applications'
+          content={<StatContainer>{applications?.length}</StatContainer> || 0}
+          />
+        <DashboardCard
+          title='Recruiter Applications'
+          color='green-blue-light'
+          destinationOnClick='/job-applications'
+          content={<StatContainer>{recruiterApplications}</StatContainer> || 0}
+          />
+        <DashboardCard
+          title='Cold Applications'
+          color='green-blue-light'
+          destinationOnClick='/job-applications'
+          content={<StatContainer>{coldApplications}</StatContainer> || 0}
+          />
+        <DashboardCard
+          title='Connection Applications'
+          color='green-blue-light'
+          destinationOnClick='/job-applications'
+          content={<StatContainer>{connectionApplications}</StatContainer> || 0}
+          />
+        <DashboardCard
+          title='Contacts' 
+          color='verdigris'
+          destinationOnClick='/contacts'
+          content={<StatContainer>{contacts?.length}</StatContainer> || 0} 
+          />
+        <DashboardCard
+          title='Recruiters' 
+          color='verdigris'
+          destinationOnClick='/contacts'
+          content={<StatContainer>{recruiters}</StatContainer> || 0} 
+          />
+        <DashboardCard
+          title='Companies'
+          color='verdigris' 
+          destinationOnClick='/companies'
+          content={<StatContainer>{companies?.length}</StatContainer> || 0}
+          />
+        <DashboardCard
+          title='Next Steps' 
+          color='verdigris'
+          destinationOnClick='/next-steps'
+          content={<StatContainer>{nextSteps?.length}</StatContainer> || 0} 
+          />
+        <DashboardCard
+          title='Interviews' 
+          color='picton-blue'
+          destinationOnClick='/interviews'
+          content={<StatContainer>{interviews?.length}</StatContainer> || 0} 
+          />
       </div>
     </Layout>
   )

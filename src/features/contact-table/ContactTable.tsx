@@ -15,6 +15,8 @@ import { Filter } from '../../components/table/table-filter/TableFilter'
 import { Link } from 'react-router-dom'
 import { DeleteButtonCell } from '../../components/delete-button-cell/DeleteButtonCell'
 import { getTableHeader } from '../../components/table/table-header/TableHeader'
+import { Loader } from '../../components/loaders/Loader'
+import { Skeleton } from '@mui/material'
 
 declare module '@tanstack/react-table' {
   interface TableMeta<TData extends RowData> {
@@ -27,6 +29,7 @@ const linkToContactCellFn = (info: CellContext<Contact, unknown>)  => {
 }
 
 type ContactsTableType = {
+  contactsAreLoading: boolean
   updateContact: (updatedContact: {contact: Partial<Contact>, id: number}) => void,
   tableData: Contact[] | undefined,
   refreshTableData: () => void
@@ -36,8 +39,10 @@ type ContactsTableType = {
 export const ContactsTable = ({
   updateContact,
   tableData,
-  deleteContact
+  deleteContact,
+  contactsAreLoading
 }: ContactsTableType)=>  {
+  console.log('loading',contactsAreLoading)
   const defaultColumn: Partial<ColumnDef<Contact>> = {
     cell: ({ getValue, row, column, table }) => {
       const initialValue = getValue()
@@ -65,59 +70,68 @@ export const ContactsTable = ({
     },
   }
 
-  const columns = useMemo<ColumnDef<Contact>[]>(()=>[
+  const columns = [
       {
         accessorKey: 'firstName',
         header: () => <span>First Name</span>,
-        footer: props => props.column.id,
+        footer: (props: { column: { id: any } }) => props.column.id,
         cell: linkToContactCellFn
       },
       {
-        accessorFn: row => row.lastName,
+        accessorFn: (row: { lastName: any }) => row.lastName,
         id: 'lastName',
         header: () => <span>Last Name</span>,
-        footer: props => props.column.id,
+        footer: (props: { column: { id: any } }) => props.column.id,
         cell: linkToContactCellFn
       },
       {
-        accessorFn: row => row.closeness,
+        accessorFn: (row: { closeness: any }) => row.closeness,
         id: 'closeness',
         header: () => <span>Closeness</span>,
-        footer: props => props.column.id,
+        footer: (props: { column: { id: any } }) => props.column.id,
       },
       {
-        accessorFn: row => row.title,
+        accessorFn: (row: { title: any }) => row.title,
         id: 'title',
         header: () => <span>Title</span>,
-        footer: props => props.column.id,
+        footer: (props: { column: { id: any } }) => props.column.id,
       },
       {
-        accessorFn: row => row.type,
+        accessorFn: (row: { type: any }) => row.type,
         id: 'type',
         header: () => <span>Type</span>,
-        footer: props => props.column.id,
+        footer: (props: { column: { id: any } }) => props.column.id,
       },
       {
-        accessorFn: row => row.notes,
+        accessorFn: (row: { notes: any }) => row.notes,
         id: 'notes',
         header: () => <span>Notes</span>,
-        footer: props => props.column.id,
+        footer: (props: { column: { id: any } }) => props.column.id,
       },
       {
-        accessorFn: row => row.nextSteps.length,
+        accessorFn: (row: { nextSteps: string | any[] }) => row.nextSteps.length,
         id: 'nextSteps',
         header: () => <span>NextSteps</span>,
-        footer: props => props.column.id,
+        footer: (props: { column: { id: any } }) => props.column.id,
         cell: linkToContactCellFn
       },
       {
         header: 'Delete',
         cell: ({row}: CellContext<Contact, unknown>) => <DeleteButtonCell row={row} deleteResource={deleteContact} />
       }
-  ],[])
+  ]
+  
+  const memoColumns = useMemo<ColumnDef<Contact>[]>(() => 
+     contactsAreLoading
+      ? columns.map((column) => ({
+          ...column,
+          cell: () => <Skeleton />,
+        }))
+      : columns,
+  [contactsAreLoading])
 
   const table = useReactTable({
-    columns,
+    columns: memoColumns,
     defaultColumn,
     data: tableData || [],
     getCoreRowModel: getCoreRowModel(),

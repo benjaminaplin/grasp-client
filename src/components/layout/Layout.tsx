@@ -83,7 +83,7 @@ export default function ResponsiveDrawer({title, children}:{title: string, child
           ml: { sm: `${drawerWidth}px` },
         }}
       >
-        <Toolbar>
+        <Toolbar style={{backgroundColor: 'var(--green-blue)'}}>
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -93,7 +93,7 @@ export default function ResponsiveDrawer({title, children}:{title: string, child
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div">
+          <Typography  variant="h6" noWrap component="div">
             {title}
           </Typography>
         </Toolbar>

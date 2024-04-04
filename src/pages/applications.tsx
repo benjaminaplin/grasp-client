@@ -48,7 +48,7 @@ export const Applications
     }),
   })
 
-  const { data: applications, refetch: refetchApplications } = useQuery({
+  const { data: applications, refetch: refetchApplications, isLoading: areApplicationsLoading, isFetching: areApplicationsFetching } = useQuery({
     queryKey: ['applications'],
     queryFn: () => fetch(`${DEV_API_URL}/job-applications`).then((res: any) => {
       return res.json()
@@ -95,6 +95,7 @@ export const Applications
           <div>Applications: {`${applications?.length || 0}`}</div>
         </div>
         <ApplicationsTable
+          areApplicationsLoading={areApplicationsLoading || areApplicationsFetching}
           updateApplication={updateApplication}
           tableData={applicationTableData}
           refreshTableData={refetchApplications}

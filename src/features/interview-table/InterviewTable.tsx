@@ -17,6 +17,7 @@ import { useMutation } from '@tanstack/react-query'
 import axios from 'axios'
 import { getTableHeader } from '../../components/table/table-header/TableHeader'
 import { format } from 'date-fns'
+import Skeleton from '@mui/material/Skeleton'
 
 declare module '@tanstack/react-table' {
   interface TableMeta<TData extends RowData> {
@@ -25,17 +26,19 @@ declare module '@tanstack/react-table' {
 }
 
 type InterviewsTableType = {
-  updateInterview: (updatedInterview: {interview: Partial<Interview>, id: number}) => void,
-  tableData: Interview[] | undefined,
+  updateInterview: (updatedInterview: {interview: Partial<Interview>, id: number}) => void
+  tableData: Interview[] | undefined
   refreshTableData: () => void
   companyMap: {[key: string]: string}
+  interviewsAreLoading: boolean
 }
 
 export const InterviewsTable = ({
   updateInterview,
   tableData,
   refreshTableData,
-  companyMap
+  companyMap,
+  interviewsAreLoading
 }: InterviewsTableType)=>  {
   const defaultColumn: Partial<ColumnDef<Interview>> = {
     cell: ({ getValue, row, column, table }) => {
@@ -82,6 +85,7 @@ export const InterviewsTable = ({
   const deleteInterview = (interviewId: number) => {
     mutateDeleteInterview(interviewId)
   }
+
 
   const columns = useMemo<ColumnDef<Interview>[]>(()=>[
     {
@@ -132,8 +136,18 @@ export const InterviewsTable = ({
     }
   ],[])
 
+
+  const memoColumns = useMemo<ColumnDef<Interview>[]>(() => 
+     interviewsAreLoading
+      ? columns.map((column) => ({
+          ...column,
+          cell: () => <Skeleton />,
+        }))
+      : columns,
+  [interviewsAreLoading])
+
   const table = useReactTable({
-    columns,
+    columns: memoColumns,
     defaultColumn,
     data: tableData || [],
     getCoreRowModel: getCoreRowModel(),

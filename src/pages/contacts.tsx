@@ -54,7 +54,7 @@ export const Contacts
     onSuccess: onMutateSuccess
   })
 
-  const { data, refetch: refetchContacts } = useQuery({
+  const { data, refetch: refetchContacts, isLoading: contactsAreLoading, isFetching: contactsAreFetching } = useQuery({
     queryKey: ['contacts'],
     queryFn: () => fetch(`${DEV_API_URL}/contacts`).then((res: any) => {
       return res.json()
@@ -98,6 +98,7 @@ export const Contacts
         </Button >
         <Button style={{marginLeft: '1rem'}} onClick={() => refetchContacts()}>Refresh Data</Button>
         <ContactsTable
+          contactsAreLoading={contactsAreLoading || contactsAreFetching}
           updateContact={updateContact}
           tableData={data}
           refreshTableData={refetchContacts}

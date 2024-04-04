@@ -15,6 +15,7 @@ import { Link } from 'react-router-dom'
 import { relationFilterFn } from '../../utils/FilterFn'
 import { DeleteButtonCell } from '../../components/delete-button-cell/DeleteButtonCell'
 import { getTableHeader } from '../../components/table/table-header/TableHeader'
+import Skeleton from '@mui/material/Skeleton'
 
 declare module '@tanstack/react-table' {
   interface TableMeta<TData extends RowData> {
@@ -26,13 +27,15 @@ type NextStepTableType = {
   updateNextStep: (updatedNextStep: {nextStep: Partial<NextStep>, id: number}) => void,
   tableData: NextStep[] | undefined,
   refreshTableData: () => void,
-  deleteNextStep: (id: number) => void
+  deleteNextStep: (id: number) => void,
+  areNextStepsLoading: boolean
 }
 
 export const NextStepTable = ({
   updateNextStep,
   tableData,
-  deleteNextStep
+  deleteNextStep,
+  areNextStepsLoading
 }: NextStepTableType)=>  {
   const defaultColumn: Partial<ColumnDef<NextStep>> = {
     cell: ({ getValue, row, column, table }) => {
@@ -96,8 +99,19 @@ export const NextStepTable = ({
       }
   ],[])
 
+
+  const memoColumns = useMemo<ColumnDef<NextStep>[]>(() => 
+      areNextStepsLoading
+      ? columns.map((column) => ({
+        ...column,
+        cell: () => <Skeleton />,
+      }))
+    : columns,
+    [areNextStepsLoading]
+  )
+
   const table = useReactTable({
-    columns,
+    columns: memoColumns,
     defaultColumn,
     data: tableData || [],
     getCoreRowModel: getCoreRowModel(),

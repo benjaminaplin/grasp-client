@@ -10,11 +10,11 @@ import {
 } from '@tanstack/react-table'
 import { ReactNode, useEffect, useMemo, useState } from 'react'
 import './company-table.css'
-import { Filter } from '../../components/table/table-filter/TableFilter'
 import { Company } from '../../types/company'
 import { DeleteButtonCell } from '../../components/delete-button-cell/DeleteButtonCell'
 import { Link } from 'react-router-dom'
 import { getTableHeader } from '../../components/table/table-header/TableHeader'
+import Skeleton from '@mui/material/Skeleton'
 
 declare module '@tanstack/react-table' {
   interface TableMeta<TData extends RowData> {
@@ -30,13 +30,15 @@ type CompanysTableType = {
   updateCompany: (updatedCompany: {company: Partial<Company>, id: number}) => void,
   tableData: Company[] | undefined,
   refreshTableData: () => void,
-  deleteCompany: (id: number) => void
+  deleteCompany: (id: number) => void,
+  companiesAreLoading: boolean
 }
 
 export const CompanyTable = ({
   updateCompany,
   tableData,
-  deleteCompany
+  deleteCompany,
+  companiesAreLoading
 }: CompanysTableType)=>  {
   const defaultColumn: Partial<ColumnDef<Company>> = {
     cell: ({ getValue, row, column, table }) => {
@@ -85,8 +87,17 @@ export const CompanyTable = ({
       },
   ],[])
 
+  const memoColumns = useMemo<ColumnDef<Company>[]>(() => 
+     companiesAreLoading
+      ? columns.map((column) => ({
+          ...column,
+          cell: () => <Skeleton />,
+        }))
+      : columns,
+  [companiesAreLoading])
+
   const table = useReactTable({
-    columns,
+    columns: memoColumns,
     defaultColumn,
     data: tableData || [],
     getCoreRowModel: getCoreRowModel(),

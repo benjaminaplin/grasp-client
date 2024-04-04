@@ -8,7 +8,7 @@ import Layout from "../components/layout/Layout";
 import { InterviewForm } from "../features/interview-form/InterviewForm";
 import { Company } from "../types/company";
 import { Application } from "../types/application";
-import { format, isValid, parse } from "date-fns";
+import { format } from "date-fns";
 import { isValidDate } from "../utils/is-valid-date";
 
 const DEV_API_URL = import.meta.env.VITE_DEV_API_URL
@@ -50,7 +50,7 @@ export const Interviews
     }),
   })
 
-  const { data: interviews, refetch: refetchInterviews } = useQuery({
+  const { data: interviews, refetch: refetchInterviews, isLoading: interviewsAreLoading, isFetching: interviewsAreFetching } = useQuery({
     queryKey: ['interviews'],
     queryFn: () => fetch(`${DEV_API_URL}/interviews`).then((res: any) => {
       return res.json()
@@ -119,6 +119,7 @@ export const Interviews
           <div>Interviews: {`${interviews?.length || 0}`}</div>
         </div>
        {companyMap && <InterviewsTable
+          interviewsAreLoading={interviewsAreLoading || interviewsAreFetching}
           companyMap={companyMap}
           updateInterview={updateInterview}
           tableData={interviewTableData()}
