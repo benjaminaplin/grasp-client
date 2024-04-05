@@ -11,12 +11,11 @@ import {
 import { Contact } from '../../types/contact'
 import { ReactNode, useEffect, useMemo, useState } from 'react'
 import './contact-table.css'
-import { Filter } from '../../components/table/table-filter/TableFilter'
 import { Link } from 'react-router-dom'
 import { DeleteButtonCell } from '../../components/delete-button-cell/DeleteButtonCell'
 import { getTableHeader } from '../../components/table/table-header/TableHeader'
-import { Loader } from '../../components/loaders/Loader'
-import { InputBase, Skeleton, TextField } from '@mui/material'
+import { Skeleton } from '@mui/material'
+import { TableCellInput } from '../../components/table/table-cell-input/TableCellInput'
 
 declare module '@tanstack/react-table' {
   interface TableMeta<TData extends RowData> {
@@ -42,7 +41,7 @@ export const ContactsTable = ({
   deleteContact,
   contactsAreLoading
 }: ContactsTableType)=>  {
-  console.log('loading',contactsAreLoading)
+  
   const defaultColumn: Partial<ColumnDef<Contact>> = {
     cell: ({ getValue, row, column, table }) => {
       const initialValue = getValue()
@@ -59,14 +58,12 @@ export const ContactsTable = ({
       useEffect(() => {
         setValue(initialValue)
       }, [initialValue])
-  
+      const onChange = (e: { target: { value: unknown } }) => setValue(e.target.value)
       return (
-        <InputBase
-          sx={{bgcolor: 'background.paper'}}
+        <TableCellInput
           value={value as string}
-          onChange={e => setValue(e.target.value)}
+          onChange={onChange}
           onBlur={onBlur}
-          // variant="standard"
           />
         )
     },

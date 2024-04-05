@@ -18,6 +18,7 @@ import axios from 'axios'
 import { getTableHeader } from '../../components/table/table-header/TableHeader'
 import { format } from 'date-fns'
 import Skeleton from '@mui/material/Skeleton'
+import { TableCellInput } from '../../components/table/table-cell-input/TableCellInput'
 
 declare module '@tanstack/react-table' {
   interface TableMeta<TData extends RowData> {
@@ -57,13 +58,14 @@ export const InterviewsTable = ({
         setValue(initialValue)
       }, [initialValue])
   
+      const onChange = (e: { target: { value: unknown } }) => setValue(e.target.value)
       return (
-        <input
+        <TableCellInput
           value={value as string}
-          onChange={e => setValue(e.target.value)}
+          onChange={onChange}
           onBlur={onBlur}
-        />
-      )
+          />
+        )
     },
   }
 

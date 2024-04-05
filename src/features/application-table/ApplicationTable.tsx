@@ -10,7 +10,6 @@ import {
 import { format } from 'date-fns'
 import { ReactNode, useEffect, useMemo, useState } from 'react'
 import './application-table.css'
-import { Filter } from '../../components/table/table-filter/TableFilter'
 import { Application } from '../../types/application'
 import { Link } from 'react-router-dom'
 import { relationFilterFn } from '../../utils/FilterFn'
@@ -19,6 +18,7 @@ import { useMutation } from '@tanstack/react-query'
 import axios from 'axios'
 import { getTableHeader } from '../../components/table/table-header/TableHeader'
 import Skeleton from '@mui/material/Skeleton'
+import { TableCellInput } from '../../components/table/table-cell-input/TableCellInput'
 
 declare module '@tanstack/react-table' {
   interface TableMeta<TData extends RowData> {
@@ -39,6 +39,7 @@ export const ApplicationsTable = ({
   refreshTableData,
   areApplicationsLoading
 }: ApplicationsTableType)=>  {
+
   const defaultColumn: Partial<ColumnDef<Application>> = {
     cell: ({ getValue, row, column, table }) => {
       const initialValue = getValue()
@@ -56,13 +57,14 @@ export const ApplicationsTable = ({
         setValue(initialValue)
       }, [initialValue])
   
+     const onChange = (e: { target: { value: unknown } }) => setValue(e.target.value)
       return (
-        <input
+        <TableCellInput
           value={value as string}
-          onChange={e => setValue(e.target.value)}
+          onChange={onChange}
           onBlur={onBlur}
-        />
-      )
+          />
+        )
     },
   }
 

@@ -9,13 +9,13 @@ import {
 } from '@tanstack/react-table'
 import { ReactNode, useEffect, useMemo, useState } from 'react'
 import './next-step-table.css'
-import { Filter } from '../../components/table/table-filter/TableFilter'
 import { NextStep } from '../../types/next-step'
 import { Link } from 'react-router-dom'
 import { relationFilterFn } from '../../utils/FilterFn'
 import { DeleteButtonCell } from '../../components/delete-button-cell/DeleteButtonCell'
 import { getTableHeader } from '../../components/table/table-header/TableHeader'
 import Skeleton from '@mui/material/Skeleton'
+import { TableCellInput } from '../../components/table/table-cell-input/TableCellInput'
 
 declare module '@tanstack/react-table' {
   interface TableMeta<TData extends RowData> {
@@ -54,13 +54,14 @@ export const NextStepTable = ({
         setValue(initialValue)
       }, [initialValue])
   
+      const onChange = (e: { target: { value: unknown } }) => setValue(e.target.value)
       return (
-        <input
+        <TableCellInput
           value={value as string}
-          onChange={e => setValue(e.target.value)}
+          onChange={onChange}
           onBlur={onBlur}
-        />
-      )
+          />
+        )
     },
   }
 

@@ -15,6 +15,7 @@ import { DeleteButtonCell } from '../../components/delete-button-cell/DeleteButt
 import { Link } from 'react-router-dom'
 import { getTableHeader } from '../../components/table/table-header/TableHeader'
 import Skeleton from '@mui/material/Skeleton'
+import { TableCellInput } from '../../components/table/table-cell-input/TableCellInput'
 
 declare module '@tanstack/react-table' {
   interface TableMeta<TData extends RowData> {
@@ -40,6 +41,7 @@ export const CompanyTable = ({
   deleteCompany,
   companiesAreLoading
 }: CompanysTableType)=>  {
+
   const defaultColumn: Partial<ColumnDef<Company>> = {
     cell: ({ getValue, row, column, table }) => {
       const initialValue = getValue()
@@ -57,13 +59,14 @@ export const CompanyTable = ({
         setValue(initialValue)
       }, [initialValue])
   
+      const onChange = (e: { target: { value: unknown } }) => setValue(e.target.value)
       return (
-        <input
+        <TableCellInput
           value={value as string}
-          onChange={e => setValue(e.target.value)}
+          onChange={onChange}
           onBlur={onBlur}
-        />
-      )
+          />
+        )
     },
   }
 
