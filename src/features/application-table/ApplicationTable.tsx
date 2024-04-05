@@ -87,12 +87,6 @@ export const ApplicationsTable = ({
 
   const columns = useMemo<ColumnDef<Application>[]>(()=>[
     {
-      id: 'index',
-      cell: (info) => (
-         <span >{`${info.row.index + 1}`}</span>
-      )
-    },
-    {
       accessorFn: row => row.role,
       id: 'role',
       header: () => <span>Role</span>,

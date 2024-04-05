@@ -19,22 +19,27 @@ import { Link, useNavigate } from "react-router-dom";
 import HandshakeIcon from '@mui/icons-material/Handshake';
 import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
 import './layout.css'
+import { ColorModeContext } from '../../context/ColorMode';
+import { Switch, ToggleButton, useTheme } from '@mui/material';
 
 const drawerWidth = 240;
 
 const menuItems = [
-  { name:'Dashboard', link: '/dashboard', icon: <Dashboard />},
-  { name: 'Contacts', link: '/contacts', icon: <PersonIcon />},
-  { name: 'Next Steps', link: '/next-steps', icon: <ArrowForward />},
-  { name: 'Applications', link: '/job-applications', icon: <Work />},
-  { name:'Companies', link: '/companies', icon: <Business />},
-  { name:'Interviews', link: '/interviews', icon: <QuestionAnswerIcon />},
- 
+  { name: 'Dashboard', link: '/dashboard', icon: <Dashboard style={{color: 'var(--green-blue)'}}/>},
+  { name: 'Contacts', link: '/contacts', icon: <PersonIcon style={{color: 'var(--green-blue)'}}/>},
+  { name: 'Next Steps', link: '/next-steps', icon: <ArrowForward style={{color: 'var(--green-blue)'}}/>},
+  { name: 'Applications', link: '/job-applications', icon: <Work style={{color: 'var(--green-blue)'}}/>},
+  { name: 'Companies', link: '/companies', icon: <Business style={{color: 'var(--green-blue)'}}/>},
+  { name: 'Interviews', link: '/interviews', icon: <QuestionAnswerIcon style={{color: 'var(--green-blue)'}}/>}
 ]
 
 export default function ResponsiveDrawer({title, children}:{title: string, children: React.ReactNode}) {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [isClosing, setIsClosing] = React.useState(false);
+
+  const colorMode = React.useContext(ColorModeContext);
+  const theme = useTheme();
+
   const navigate = useNavigate()
   const handleDrawerClose = () => {
     setIsClosing(true);
@@ -57,7 +62,7 @@ export default function ResponsiveDrawer({title, children}:{title: string, child
       <HandshakeIcon /> Grasp 
       </div>
       <Divider />
-      <List>
+      <List >
         {menuItems.map((item) => (
           <ListItem key={item.name} disablePadding>
             <ListItemButton onClick={() => navigate(`${item.link}`)}>
@@ -75,7 +80,6 @@ export default function ResponsiveDrawer({title, children}:{title: string, child
 
   return (
     <Box sx={{ display: 'flex' , height: '100%'}}>
-      <CssBaseline />
       <AppBar
         position="fixed"
         sx={{
@@ -96,6 +100,12 @@ export default function ResponsiveDrawer({title, children}:{title: string, child
           <Typography  variant="h6" noWrap component="div">
             {title}
           </Typography>
+          <Switch
+            checked={theme.palette.mode === 'dark'}
+            // onChange={handleChange}
+            inputProps={{ 'aria-label': 'controlled' }}
+            onClick={()=> colorMode.toggleColorMode()}
+          />
         </Toolbar>
       </AppBar>
       <Box
@@ -131,7 +141,6 @@ export default function ResponsiveDrawer({title, children}:{title: string, child
         </Drawer>
       </Box>
       <Box
-      
         component="main"
         sx={{ flexGrow: 1,   width: { sm: `calc(100% - ${drawerWidth}px)` } }}
       >

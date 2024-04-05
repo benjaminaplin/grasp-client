@@ -16,7 +16,7 @@ import { Link } from 'react-router-dom'
 import { DeleteButtonCell } from '../../components/delete-button-cell/DeleteButtonCell'
 import { getTableHeader } from '../../components/table/table-header/TableHeader'
 import { Loader } from '../../components/loaders/Loader'
-import { Skeleton } from '@mui/material'
+import { InputBase, Skeleton, TextField } from '@mui/material'
 
 declare module '@tanstack/react-table' {
   interface TableMeta<TData extends RowData> {
@@ -61,12 +61,14 @@ export const ContactsTable = ({
       }, [initialValue])
   
       return (
-        <input
+        <InputBase
+          sx={{bgcolor: 'background.paper'}}
           value={value as string}
           onChange={e => setValue(e.target.value)}
           onBlur={onBlur}
-        />
-      )
+          // variant="standard"
+          />
+        )
     },
   }
 
