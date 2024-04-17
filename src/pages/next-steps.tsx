@@ -1,5 +1,5 @@
 import axios from "axios"
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 import Button from '@mui/material/Button';
 import {  useState } from "react";
 import { NextStepTable } from "../features/next-step-table/NextStepTable";
@@ -7,6 +7,7 @@ import { NextStep } from "../types/next-step";
 import Layout from "../components/layout/Layout";
 import { NextStepForm } from "../features/next-step-form/NextStepForm";
 import { Contact } from "../types/contact";
+import { useQueryWrapper } from "../context/WrapUseQuery";
 
 const DEV_API_URL = import.meta.env.VITE_DEV_API_URL
 
@@ -27,12 +28,12 @@ export const NextSteps
     completed: false,
     completedDate: undefined
   })
-  const { data: nextSteps, refetch: refetchNextSteps, isLoading: areNextStepsLoading, isFetching: areNextStepsFetching } = useQuery({
-    queryKey: ['next-steps'],
-    queryFn: () => fetch(`${DEV_API_URL}/next-steps`).then((res: any) => {
-      return res.json()
-    }),
-  })
+ 
+  const { data: nextSteps,
+    refetch: refetchNextSteps,
+    isLoading: areNextStepsLoading,
+    isFetching: areNextStepsFetching
+  } = useQueryWrapper<NextStep>(`next-steps`)
 
   const onMutateSuccess = () => {
     setIsNextStepFormOpen(false)
@@ -50,13 +51,7 @@ export const NextSteps
     onSuccess:onMutateSuccess
   })
 
-  const { data: contacts } = useQuery({
-    queryKey: ['contacts'],
-    queryFn: () => fetch(`${DEV_API_URL}/contacts`).then((res: any) => {
-      return res.json()
-    }),
-  })
-
+  const { data: contacts  } = useQueryWrapper<Contact>(`contacts`)
 
   const {mutate: mutateDeleteNextStep } = useMutation({
     mutationFn: (nextStepId: number) => {

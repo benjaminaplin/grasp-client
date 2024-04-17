@@ -113,7 +113,7 @@ export const TouchesTable = ({
     {
       accessorFn: row => row.scheduledDate,
       id: 'scheduledDate',
-      header: () => <span>Scheduled Date</span>,
+      header: () => <span>Date</span>,
       footer: props => props.column.id,
       enableSorting: true,
       cell: (info) => {

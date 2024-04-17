@@ -1,11 +1,13 @@
 import axios from "axios"
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 import Button from '@mui/material/Button';
 import {  useState } from "react";
 import { ContactsTable } from "../features/contact-table/ContactTable";
 import { Contact } from "../types/contact";
 import { ContactForm } from "../features/contact-form/ContactForm";
 import Layout from "../components/layout/Layout";
+import { useQueryWrapper } from "../context/WrapUseQuery";
+import { Company } from "../types/company";
 
 const DEV_API_URL = import.meta.env.VITE_DEV_API_URL
 
@@ -56,23 +58,16 @@ export const Contacts
     onSuccess: onMutateSuccess
   })
 
-  const { data, refetch: refetchContacts, isLoading: contactsAreLoading, isFetching: contactsAreFetching } = useQuery({
-    queryKey: ['contacts'],
-    queryFn: () => fetch(`${DEV_API_URL}/contacts`).then((res: any) => {
-      return res.json()
-    }),
-  })
-  const { data: companies, refetch: refetchCompanies, isLoading: companiesAreLoading, isFetching: companiesAreFetching } = useQuery({
-    queryKey: ['companies'],
-    queryFn: () => fetch(`${DEV_API_URL}/companies`).then((res: any) => {
-      return res.json()
-    }),
-  })
-  const { data: contact, refetch: refetchContact, isLoading: contactIsLoading, isFetching: contactIsFetching } = useQuery({
-    queryKey: ['contact'],
-    queryFn: () => fetch(`${DEV_API_URL}/contacts/${contactToEditId}`).then((res: any) => {
-      return res.json()
-    }),
+  const {
+    data,
+    refetch: refetchContacts,
+    isLoading: contactsAreLoading,
+    isFetching: contactsAreFetching
+  } = useQueryWrapper<Contact>('contacts')
+
+  const { data: companies } = useQueryWrapper<Company>('companies')
+
+  const { data: contact } = useQueryWrapper(`contacts/${contactToEditId}`, undefined, {
     enabled: !!contactToEditId
   })
   
@@ -107,6 +102,7 @@ export const Contacts
     setContactToEditId(contactId)
     setIsContactFormOpen(true)
   }
+  console.log('data', data)
   return (
      <Layout title="Contacts" >
         <Button
@@ -116,15 +112,15 @@ export const Contacts
             Add Contact
         </Button >
         <Button style={{marginLeft: '1rem'}} onClick={() => refetchContacts()}>Refresh Data</Button>
-        <ContactsTable
+        {data && <ContactsTable
           contactsAreLoading={contactsAreLoading || contactsAreFetching}
           updateContact={updateContact}
           tableData={data}
           refreshTableData={refetchContacts}
           deleteContact={deleteContact}
           handleOpenContactForm={openContactForm} 
-        />
-        <ContactForm
+        />}
+        {companies && formState.companyId && <ContactForm
           companies={companies}
           companyId={formState.companyId}
           contact={contact}
@@ -132,7 +128,7 @@ export const Contacts
           handleClose={()=>setIsContactFormOpen(false)} 
           createContact={createContact}
           handleFormChange={handleFormChange}
-        />
+        />}
     </Layout>
   )
 }

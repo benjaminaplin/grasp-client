@@ -1,5 +1,5 @@
 import axios from "axios"
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 import Button from '@mui/material/Button';
 import {  useState } from "react";
 import { TouchesTable } from "../features/touch-table/TouchTable";
@@ -9,6 +9,8 @@ import { TouchForm } from "../features/touch-form/TouchForm";
 import { Company } from "../types/company";
 import { Application } from "../types/application";
 import dayjs from "dayjs";
+import { useQueryWrapper } from "../context/WrapUseQuery";
+import { Contact } from "../types/contact";
 
 const DEV_API_URL = import.meta.env.VITE_DEV_API_URL
 
@@ -38,31 +40,14 @@ export const Touches
     }
   })
 
-  const { data: applications } = useQuery({
-    queryKey: ['applications'],
-    queryFn: () => fetch(`${DEV_API_URL}/job-applications`).then((res: any) => {
-      return res.json()
-    }),
-  })
-
-  const { data: touches, refetch: refetchTouches, isLoading: touchesAreLoading, isFetching: touchesAreFetching } = useQuery({
-    queryKey: ['touches'],
-    queryFn: () => fetch(`${DEV_API_URL}/touches`).then((res: any) => {
-      return res.json()
-    }),
-  })
-  const { data: companies } = useQuery({
-    queryKey: ['companies'],
-    queryFn: () => fetch(`${DEV_API_URL}/companies`).then((res: any) => {
-      return res.json()
-    }),
-  })
-  const { data: contacts } = useQuery({
-    queryKey: ['contacts'],
-    queryFn: () => fetch(`${DEV_API_URL}/contacts`).then((res: any) => {
-      return res.json()
-    }),
-  })
+  const { data: companies } = useQueryWrapper<Company>(`companies`)
+  const { data: applications  } = useQueryWrapper<Application>(`job-applications`)
+  const { data: contacts  } = useQueryWrapper<Contact>(`contacts`)
+  const { data: touches,
+    refetch: refetchTouches,
+    isLoading: touchesAreLoading,
+    isFetching: touchesAreFetching
+  } = useQueryWrapper<Contact>(`touches`)
 
   const {mutate: mutateUpdateTouch } = useMutation({
     mutationFn: ({touch, id} :{touch: Partial<Touch>, id: number}) => {
@@ -72,7 +57,6 @@ export const Touches
         }
       })
     },
-   
   })
 
   const createTouch = () => {
@@ -130,7 +114,7 @@ export const Touches
           refreshTableData={refetchTouches}
           />}
         <TouchForm
-          companyMap={companyMap}
+          companyMap={companyMap || {}}
           contactId={formState.contactId}
           isOpen={isTouchFormOpen}
           handleClose={()=>setIsTouchFormOpen(false)} 

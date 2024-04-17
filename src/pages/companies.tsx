@@ -1,11 +1,12 @@
 import axios from "axios"
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 import Button from '@mui/material/Button';
 import {  useState } from "react";
 import { CompanyTable } from "../features/company-table/CompanyTable";
 import { Company } from "../types/company";
 import Layout from "../components/layout/Layout";
 import { CompanyForm } from "../features/company-form/CompanyForm";
+import { useQueryWrapper } from "../context/WrapUseQuery";
 
 const DEV_API_URL = import.meta.env.VITE_DEV_API_URL
 
@@ -41,16 +42,18 @@ export const Companies
     onSuccess: onMutateSuccess
   })
 
-  const { data, refetch: refetchCompanies, isLoading: areCompaniesLoading, isFetching: areCompaniesFetching } = useQuery({
-    queryKey: ['companies'],
-    queryFn: () => fetch(`${DEV_API_URL}/users/2/companies`).then((res: any) => {
-      return res.json()
-    }),
-  })
+
+  const {
+    data,
+    refetch: refetchCompanies,
+    isLoading: companiesAreLoading,
+    isFetching: companiesAreFetching
+  } = useQueryWrapper<Company>('users/2/companies')
 
   const {mutate: mutateDeleteCompany } = useMutation({
     mutationFn: (companyId: number) => {
-      return axios.delete(`${DEV_API_URL}/companies/${companyId}`, {
+      return axios.delete(`${DEV_API_URL}/companies/${companyId}`,
+      {
         headers: {
           'Content-Type': 'application/json'
         }
@@ -96,7 +99,7 @@ export const Companies
         </Button >
         <Button style={{marginLeft: '1rem'}} onClick={() => refetchCompanies()}>Refresh Data</Button>
         <CompanyTable
-          companiesAreLoading={areCompaniesLoading || areCompaniesFetching}
+          companiesAreLoading={companiesAreLoading || companiesAreFetching}
           updateCompany={updateCompany}
           tableData={data}
           refreshTableData={refetchCompanies}

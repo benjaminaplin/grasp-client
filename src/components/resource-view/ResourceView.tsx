@@ -15,6 +15,7 @@ export const ResourceView = ({relation} : {relation?: string | string[]}) => {
     }),
   })
 
+
   const title = data?.firstName ? `${data.firstName} ${data.lastName}` : (data?.name || data?.id)
   return (
     <Layout title={title}>

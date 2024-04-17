@@ -1,5 +1,5 @@
 import axios from "axios"
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 import Button from '@mui/material/Button';
 import {  useState } from "react";
 import { ApplicationsTable } from "../features/application-table/ApplicationTable";
@@ -7,6 +7,7 @@ import { Application } from "../types/application";
 import Layout from "../components/layout/Layout";
 import { ApplicationForm } from "../features/application-form/ApplicationForm";
 import { Company } from "../types/company";
+import { useQueryWrapper } from "../context/WrapUseQuery";
 
 const DEV_API_URL = import.meta.env.VITE_DEV_API_URL
 
@@ -41,19 +42,13 @@ export const Applications
     }
   })
 
-  const { data: companies } = useQuery({
-    queryKey: ['companies'],
-    queryFn: () => fetch(`${DEV_API_URL}/companies`).then((res: any) => {
-      return res.json()
-    }),
-  })
+  const { data: companies } = useQueryWrapper<Company>('companies')
+  const { data: applications,
+    refetch: refetchApplications,
+    isLoading: areApplicationsLoading,
+    isFetching: areApplicationsFetching
+  } = useQueryWrapper<Application>('job-applications')
 
-  const { data: applications, refetch: refetchApplications, isLoading: areApplicationsLoading, isFetching: areApplicationsFetching } = useQuery({
-    queryKey: ['applications'],
-    queryFn: () => fetch(`${DEV_API_URL}/job-applications`).then((res: any) => {
-      return res.json()
-    }),
-  })
 
   const {mutate: mutateUpdateApplication } = useMutation({
     mutationFn: ({application, id} :{application: Partial<Application>, id: number}) => {

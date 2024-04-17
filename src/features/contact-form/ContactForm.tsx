@@ -21,7 +21,7 @@ const style = {
 type ContactFormPropsType = {
   companies: Company[],
   companyId: number,
-  contact: Contact,
+  contact: Contact | null,
   isOpen: boolean,
   handleClose: (arg: boolean)=>void,
   handleFormChange: (evt: any) => void,
@@ -35,13 +35,14 @@ export const ContactForm = ({
   createContact,
   companies,
   companyId,
-  contact }: ContactFormPropsType) => {
+  contact
+}: ContactFormPropsType) => {
 
   const companyOptions = [
     ...(companies?.map((c: Company) => ({value: c.id, label: c.name})) || []),
     { value: null, label: 'Please choose a company' }
   ]
-console.log('companies', companies)
+// console.log('companies', companies)
   return (
     <Modal
       open={isOpen}

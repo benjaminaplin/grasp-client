@@ -1,5 +1,5 @@
 import axios from "axios"
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 import Button from '@mui/material/Button';
 import {  useState } from "react";
 import { InterviewsTable } from "../features/interview-table/InterviewTable";
@@ -10,6 +10,7 @@ import { Company } from "../types/company";
 import { Application } from "../types/application";
 import { format } from "date-fns";
 import { isValidDate } from "../utils/is-valid-date";
+import { useQueryWrapper } from "../context/WrapUseQuery";
 
 const DEV_API_URL = import.meta.env.VITE_DEV_API_URL
 
@@ -43,26 +44,15 @@ export const Interviews
     }
   })
 
-  const { data: applications } = useQuery({
-    queryKey: ['applications'],
-    queryFn: () => fetch(`${DEV_API_URL}/job-applications`).then((res: any) => {
-      return res.json()
-    }),
-  })
+  const { data: applications  } = useQueryWrapper<Application>(`job-applications`)
 
-  const { data: interviews, refetch: refetchInterviews, isLoading: interviewsAreLoading, isFetching: interviewsAreFetching } = useQuery({
-    queryKey: ['interviews'],
-    queryFn: () => fetch(`${DEV_API_URL}/interviews`).then((res: any) => {
-      return res.json()
-    }),
-  })
+  const {  data: interviews,
+    refetch: refetchInterviews,
+    isLoading: interviewsAreLoading,
+    isFetching: interviewsAreFetching } = useQueryWrapper<Interview>(`interviews`)
 
-  const { data: companies } = useQuery({
-    queryKey: ['companies'],
-    queryFn: () => fetch(`${DEV_API_URL}/companies`).then((res: any) => {
-      return res.json()
-    }),
-  })
+    const { data: companies } = useQueryWrapper<Company>(`companies`)
+
   const {mutate: mutateUpdateInterview } = useMutation({
     mutationFn: ({interview, id} :{interview: Partial<Interview>, id: number}) => {
       return axios.patch(`${DEV_API_URL}/interviews/${id}`, JSON.stringify(interview),{
@@ -85,19 +75,10 @@ export const Interviews
   const handleFormChange = (evt: any) => {
     setFormState((formState: any) => {
       const name = evt.target.name === 'applicationId' ? 'jobApplicationId' : evt.target.name
-      debugger
       const value = ( evt.target.name === 'date' && isValidDate(evt.target.value)) ? format(new Date(evt.target.value), "yyyy-MM-dd") : evt.target.value
       return ({...formState, [name]: value})
     })
   }
-  const interviewTableData = () => interviews?.map((interview: Interview) =>  {
-    const application = applications?.find((a: Application) => a.id === interview.jobApplicationId)?.name || null
-    return (
-      {
-        ...interview,
-        application
-      }
-    )})
   
   const companyMap = companies?.reduce((acc: {[key: string]: string}, c: Company)=> {
     const companyId = c.id as unknown as string
@@ -123,11 +104,11 @@ export const Interviews
           interviewsAreLoading={interviewsAreLoading || interviewsAreFetching}
           companyMap={companyMap}
           updateInterview={updateInterview}
-          tableData={interviewTableData()}
+          tableData={interviews}
           refreshTableData={refetchInterviews}
           />}
         <InterviewForm
-          companyMap={companyMap}
+          companyMap={companyMap || {}}
           applicationId={formState.applications[0]?.id}
           isOpen={isInterviewFormOpen}
           handleClose={()=>setIsInterviewFormOpen(false)} 

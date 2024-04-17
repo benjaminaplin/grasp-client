@@ -1,54 +1,26 @@
-import { useQuery } from "@tanstack/react-query"
 import { DashboardCard } from "../components/dashboard-card/DashboardCard"
 import Layout from "../components/layout/Layout"
 import Typography from "@mui/material/Typography"
 import '../styles/dashboard.css'
 import { Contact } from "../types/contact"
 import { Application } from "../types/application"
-
-const DEV_API_URL = import.meta.env.VITE_DEV_API_URL
+import { useQueryWrapper } from "../context/WrapUseQuery"
+import { Company } from "../types/company"
+import { NextStep } from "../types/next-step"
+import { Interview } from "../types/interview"
 
 export const Dashboard = () => {
+  const { data: companies } = useQueryWrapper<Company>(`companies`)
+  const { data: applications  } = useQueryWrapper<Application>(`job-applications`)
+  const { data: nextSteps  } = useQueryWrapper<NextStep>(`next-steps`)
+  const { data: contacts  } = useQueryWrapper<Contact>(`contacts`)
+  const { data: interviews  } = useQueryWrapper<Interview>(`interviews`)
+  const { data: touches } = useQueryWrapper<Contact>(`touches`)
 
-  const { data: companies } = useQuery({
-    queryKey: ['companies'],
-    queryFn: () => fetch(`${DEV_API_URL}/companies`).then((res: any) => 
-      res.json()
-    ),
-  })
-
-  const { data: applications  } = useQuery({
-    queryKey: ['applications'],
-    queryFn: () => fetch(`${DEV_API_URL}/job-applications`).then((res: any) => 
-      res.json()
-    ),
-  })
-
-  const { data: nextSteps  } = useQuery({
-    queryKey: ['nextSteps'],
-    queryFn: () => fetch(`${DEV_API_URL}/next-steps`).then((res: any) => 
-       res.json()
-    ),
-  })
-
-  const { data: contacts } = useQuery({
-    queryKey: ['contacts'],
-    queryFn: () => fetch(`${DEV_API_URL}/contacts`).then((res: any) => 
-      res.json()
-    ),
-  })
-
-  const { data: interviews } = useQuery({
-    queryKey: ['interviews'],
-    queryFn: () => fetch(`${DEV_API_URL}/interviews`).then((res: any) => {
-      return res.json()
-    }),
-  })
-
-  const recruiters = contacts?.filter((contact: Contact) => contact.type === 'Recruiter')?.length
-  const recruiterApplications = applications?.filter((application: Application) => application.type?.includes('recruiter'))?.length
-  const coldApplications = applications?.filter((application: Application) => application.type?.includes('cold'))?.length
-  const connectionApplications = applications?.filter((application: Application) => application.type?.includes('connection'))?.length
+  const recruiters = contacts?.filter((contact: Contact) => contact.type === 'Recruiter')?.length || 0
+  const recruiterApplications = applications?.filter((application: Application) => application.type?.includes('recruiter'))?.length || 0
+  const coldApplications = applications?.filter((application: Application) => application.type?.includes('cold'))?.length || 0
+  const connectionApplications = applications?.filter((application: Application) => application.type?.includes('connection'))?.length || 0
 
   return (
     <Layout title="Dashboard" >
@@ -57,55 +29,61 @@ export const Dashboard = () => {
           title='Applications'
           color='coral'
           destinationOnClick='/job-applications'
-          content={<StatContainer>{applications?.length}</StatContainer> || 0}
+          content={<StatContainer>{applications?.length || 0}</StatContainer>}
           />
         <DashboardCard
           title='Recruiter Applications'
           color='green-blue-light'
           destinationOnClick='/job-applications'
-          content={<StatContainer>{recruiterApplications}</StatContainer> || 0}
+          content={<StatContainer>{recruiterApplications}</StatContainer>}
           />
         <DashboardCard
           title='Cold Applications'
           color='green-blue-light'
           destinationOnClick='/job-applications'
-          content={<StatContainer>{coldApplications}</StatContainer> || 0}
+          content={<StatContainer>{coldApplications}</StatContainer>}
           />
         <DashboardCard
           title='Connection Applications'
           color='green-blue-light'
           destinationOnClick='/job-applications'
-          content={<StatContainer>{connectionApplications}</StatContainer> || 0}
+          content={<StatContainer>{connectionApplications}</StatContainer>}
           />
         <DashboardCard
           title='Contacts' 
           color='verdigris'
           destinationOnClick='/contacts'
-          content={<StatContainer>{contacts?.length}</StatContainer> || 0} 
+          content={<StatContainer>{contacts?.length  || 0}</StatContainer>} 
           />
         <DashboardCard
           title='Recruiters' 
           color='verdigris'
           destinationOnClick='/contacts'
-          content={<StatContainer>{recruiters}</StatContainer> || 0} 
+          content={<StatContainer>{recruiters}</StatContainer>} 
           />
         <DashboardCard
           title='Companies'
           color='verdigris' 
           destinationOnClick='/companies'
-          content={<StatContainer>{companies?.length}</StatContainer> || 0}
+          content={<StatContainer>{companies?.length || 0}</StatContainer>}
           />
         <DashboardCard
           title='Next Steps' 
           color='verdigris'
           destinationOnClick='/next-steps'
-          content={<StatContainer>{nextSteps?.length}</StatContainer> || 0} 
+          content={<StatContainer>{nextSteps?.length || 0}</StatContainer>} 
           />
         <DashboardCard
           title='Interviews' 
           color='picton-blue'
           destinationOnClick='/interviews'
-          content={<StatContainer>{interviews?.length}</StatContainer> || 0} 
+          content={<StatContainer>{interviews?.length || 0}</StatContainer>} 
+          />
+        <DashboardCard
+          title='Touches' 
+          color='picton-blue'
+          destinationOnClick='/touches'
+          content={<StatContainer>{touches?.length || 0}</StatContainer>} 
           />
       </div>
     </Layout>

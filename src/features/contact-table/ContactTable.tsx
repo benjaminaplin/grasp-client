@@ -44,7 +44,7 @@ export const ContactsTable = ({
   contactsAreLoading,
   handleOpenContactForm
 }: ContactsTableType)=>  {
-  
+ 
   const defaultColumn: Partial<ColumnDef<Contact>> = {
     cell: ({ getValue, row, column, table }) => {
       const initialValue = getValue()

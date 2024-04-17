@@ -61,7 +61,6 @@ export const NextStepTable = ({
         if(isCheckBox){
           updateNextStep({nextStep: {...row.original, [column.id]: e.target?.checked}, id: row.original.id as number})
         }
-        debugger
         setValue(inputValue)
       }
 
