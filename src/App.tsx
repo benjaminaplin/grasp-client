@@ -19,17 +19,14 @@ import {Interviews} from './pages/interviews';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { PaletteMode } from '@mui/material';
-import { grey , amber,deepOrange} from '@mui/material/colors';
-import { createContext, useMemo, useState } from 'react';
+import { grey , amber} from '@mui/material/colors';
+import { useMemo, useState } from 'react';
 import { ColorModeContext } from './context/ColorMode';
+import { Touches } from './pages/touches';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider/LocalizationProvider';
 
 const queryClient = new QueryClient()
-
-const darkTheme = createTheme({
-  palette: {
-    mode: 'dark',
-  },
-});
 
 const palette = {
   light: {
@@ -101,27 +98,31 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ColorModeContext.Provider value={colorMode}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/contacts" element={<Contacts />} />
-            <Route path="/contacts/:id" element={<ResourceView relation='nextSteps'/>} />
-            <Route path="/next-steps" element={<NextSteps />} />
-            <Route path="/next-steps/:id" element={<ResourceView />} />
-            <Route path="/job-applications" element={<Applications />} />
-            <Route path="/interviews" element={<Interviews />} />
-            <Route path="/job-applications/:id" element={<ResourceView />} />
-            <Route path="/companies" element={<Companies />} />
-            <Route path="/companies/:id" element={<ResourceView />} />
-            <Route path="*" element={<NoMatch />} />
-          </Routes>
-        </BrowserRouter>
-      </ThemeProvider>
-      </ColorModeContext.Provider>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <ColorModeContext.Provider value={colorMode}>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/contacts" element={<Contacts />} />
+              <Route path="/contacts/:id" element={<ResourceView relation='nextSteps'/>} />
+              <Route path="/next-steps" element={<NextSteps />} />
+              <Route path="/next-steps/:id" element={<ResourceView />} />
+              <Route path="/job-applications" element={<Applications />} />
+              <Route path="/interviews" element={<Interviews />} />
+              <Route path="/job-applications/:id" element={<ResourceView />} />
+              <Route path="/companies" element={<Companies />} />
+              <Route path="/companies/:id" element={<ResourceView />} />
+              <Route path="/touches" element={<Touches />} />
+              <Route path="/touches/:id" element={<ResourceView />} />
+              <Route path="*" element={<NoMatch />} />
+            </Routes>
+          </BrowserRouter>
+        </ThemeProvider>
+        </ColorModeContext.Provider>
+      </LocalizationProvider>
     </QueryClientProvider>
   )
 }

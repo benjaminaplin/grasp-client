@@ -10,4 +10,5 @@ export type Contact = {
   type: string | null
   closeness: 'A' | 'B' | 'C' | 'D' | 'E' | null
   nextSteps: NextStep[]
+  companyId: number | null
 }

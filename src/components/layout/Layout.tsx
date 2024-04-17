@@ -14,7 +14,7 @@ import ListItemText from '@mui/material/ListItemText';
 import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import { ArrowForward, Business, Dashboard, Work } from '@mui/icons-material';
+import { ArrowForward, Business, Dashboard, EmojiPeople, Work } from '@mui/icons-material';
 import { Link, useNavigate } from "react-router-dom";
 import HandshakeIcon from '@mui/icons-material/Handshake';
 import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
@@ -30,7 +30,8 @@ const menuItems = [
   { name: 'Next Steps', link: '/next-steps', icon: <ArrowForward style={{color: 'var(--green-blue)'}}/>},
   { name: 'Applications', link: '/job-applications', icon: <Work style={{color: 'var(--green-blue)'}}/>},
   { name: 'Companies', link: '/companies', icon: <Business style={{color: 'var(--green-blue)'}}/>},
-  { name: 'Interviews', link: '/interviews', icon: <QuestionAnswerIcon style={{color: 'var(--green-blue)'}}/>}
+  { name: 'Interviews', link: '/interviews', icon: <QuestionAnswerIcon style={{color: 'var(--green-blue)'}}/>},
+  { name: 'Touches', link: '/touches', icon: <EmojiPeople style={{color: 'var(--green-blue)'}}/>}
 ]
 
 export default function ResponsiveDrawer({title, children}:{title: string, children: React.ReactNode}) {

@@ -143,7 +143,7 @@ export const InterviewsTable = ({
      interviewsAreLoading
       ? columns.map((column) => ({
           ...column,
-          cell: () => <Skeleton />,
+          cell: () => <Skeleton height='32' />,
         }))
       : columns,
   [interviewsAreLoading])

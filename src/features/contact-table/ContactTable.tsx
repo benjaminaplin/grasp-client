@@ -16,6 +16,7 @@ import { DeleteButtonCell } from '../../components/delete-button-cell/DeleteButt
 import { getTableHeader } from '../../components/table/table-header/TableHeader'
 import { Skeleton } from '@mui/material'
 import { TableCellInput } from '../../components/table/table-cell-input/TableCellInput'
+import { EditButtonCell } from '../../components/edit-button-cell/EditButtonCell'
 
 declare module '@tanstack/react-table' {
   interface TableMeta<TData extends RowData> {
@@ -33,13 +34,15 @@ type ContactsTableType = {
   tableData: Contact[] | undefined,
   refreshTableData: () => void
   deleteContact: (id: number) => void
+  handleOpenContactForm: (contactId: number | undefined) => void
 }
 
 export const ContactsTable = ({
   updateContact,
   tableData,
   deleteContact,
-  contactsAreLoading
+  contactsAreLoading,
+  handleOpenContactForm
 }: ContactsTableType)=>  {
   
   const defaultColumn: Partial<ColumnDef<Contact>> = {
@@ -108,11 +111,24 @@ export const ContactsTable = ({
         footer: (props: { column: { id: any } }) => props.column.id,
       },
       {
+        accessorFn: (row: { company: any }) => row.company,
+        id: 'company',
+        header: () => <span>Company</span>,
+        footer: (props: { column: { id: any } }) => props.column.id,
+        // @ts-ignore
+        cell: ({row: {original }}) => <div>{ original?.company?.name}</div>
+      },
+      
+      {
         accessorFn: (row: { nextSteps: string | any[] }) => row.nextSteps.length,
         id: 'nextSteps',
         header: () => <span>NextSteps</span>,
         footer: (props: { column: { id: any } }) => props.column.id,
         cell: linkToContactCellFn
+      },
+      {
+        header: 'Edit',
+        cell: ({row}: CellContext<Contact, unknown>) => <EditButtonCell row={row} editResource={() => handleOpenContactForm(row.original?.id)} />
       },
       {
         header: 'Delete',
@@ -124,7 +140,7 @@ export const ContactsTable = ({
      contactsAreLoading
       ? columns.map((column) => ({
           ...column,
-          cell: () => <Skeleton />,
+          cell: () => <Skeleton height='32' />,
         }))
       : columns,
   [contactsAreLoading])

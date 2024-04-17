@@ -4,7 +4,6 @@ import {
   getCoreRowModel,
   getFilteredRowModel,
   flexRender,
-  RowData,
   getSortedRowModel,
 } from '@tanstack/react-table'
 import { ReactNode, useEffect, useMemo, useState } from 'react'
@@ -16,12 +15,7 @@ import { DeleteButtonCell } from '../../components/delete-button-cell/DeleteButt
 import { getTableHeader } from '../../components/table/table-header/TableHeader'
 import Skeleton from '@mui/material/Skeleton'
 import { TableCellInput } from '../../components/table/table-cell-input/TableCellInput'
-
-declare module '@tanstack/react-table' {
-  interface TableMeta<TData extends RowData> {
-    updateData: (rowIndex: number, columnId: string, value: unknown) => void
-  }
-}
+import { coerceStringToBool } from '../../utils/coerce-str-bool'
 
 type NextStepTableType = {
   updateNextStep: (updatedNextStep: {nextStep: Partial<NextStep>, id: number}) => void,
@@ -37,28 +31,44 @@ export const NextStepTable = ({
   deleteNextStep,
   areNextStepsLoading
 }: NextStepTableType)=>  {
+
+
   const defaultColumn: Partial<ColumnDef<NextStep>> = {
     cell: ({ getValue, row, column, table }) => {
-      const initialValue = getValue()
+      const getInitialValue = () => {
+        const initialValue = getValue()
+        const inputValue = coerceStringToBool(initialValue)
+        return inputValue
+      }
       // We need to keep and update the state of the cell normally
-      const [value, setValue] = useState(initialValue)
-  
+      const [value, setValue] = useState(getInitialValue)
       // When the input is blurred, we'll call our table meta's updateData function
       const onBlur = () => {
         table.options.meta?.updateData(row.index, column.id, value)
-        updateNextStep({nextStep: {[column.id]: value}, id: row.original.id as number})
+        updateNextStep({nextStep: {...row.original, [column.id]: value}, id: row.original.id as number})
       }
   
       // If the initialValue is changed external, sync it up with our state
       useEffect(() => {
+        const initialValue = getInitialValue()
         setValue(initialValue)
-      }, [initialValue])
+      }, [])
   
-      const onChange = (e: { target: { value: unknown } }) => setValue(e.target.value)
+      const onChange = (e: { target: { value: unknown, checked: boolean | undefined } }) => {
+        const isCheckBox = (typeof e.target?.checked === 'boolean' && (e.target.value === 'on' || e.target.value === 'off'))
+
+        let inputValue = isCheckBox ? e.target.checked : e.target.value
+        if(isCheckBox){
+          updateNextStep({nextStep: {...row.original, [column.id]: e.target?.checked}, id: row.original.id as number})
+        }
+        debugger
+        setValue(inputValue)
+      }
+
       return (
         <TableCellInput
           value={value as string}
-          onChange={onChange}
+          onChange={onChange as any}
           onBlur={onBlur}
           />
         )
@@ -105,7 +115,7 @@ export const NextStepTable = ({
       areNextStepsLoading
       ? columns.map((column) => ({
         ...column,
-        cell: () => <Skeleton />,
+        cell: () => <Skeleton height='32' />,
       }))
     : columns,
     [areNextStepsLoading]

@@ -85,7 +85,8 @@ export const Interviews
   const handleFormChange = (evt: any) => {
     setFormState((formState: any) => {
       const name = evt.target.name === 'applicationId' ? 'jobApplicationId' : evt.target.name
-      const value = (isValidDate(evt.target.value)) ? format(new Date(evt.target.value), "yyyy-MM-dd") : evt.target.value
+      debugger
+      const value = ( evt.target.name === 'date' && isValidDate(evt.target.value)) ? format(new Date(evt.target.value), "yyyy-MM-dd") : evt.target.value
       return ({...formState, [name]: value})
     })
   }

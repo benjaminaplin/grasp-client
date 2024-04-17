@@ -3,6 +3,9 @@ import Button from "@mui/material/Button"
 import FormGroup from "@mui/material/FormGroup"
 import Modal from "@mui/material/Modal"
 import TextField from "@mui/material/TextField"
+import { Contact } from "../../types/contact"
+import {SelectInput } from "../../components/form/SelectInput"
+import { Company } from "../../types/company"
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -15,9 +18,30 @@ const style = {
   p: 4,
 };
 
-type ContactFormPropsType = { isOpen: boolean, handleClose: (arg: boolean)=>void, handleFormChange: (evt: any) => void,  createContact: () => void}
+type ContactFormPropsType = {
+  companies: Company[],
+  companyId: number,
+  contact: Contact,
+  isOpen: boolean,
+  handleClose: (arg: boolean)=>void,
+  handleFormChange: (evt: any) => void,
+  createContact: () => void
+}
 
-export const ContactForm = ({ isOpen, handleClose, handleFormChange, createContact}: ContactFormPropsType) => {
+export const ContactForm = ({
+  isOpen,
+  handleClose,
+  handleFormChange,
+  createContact,
+  companies,
+  companyId,
+  contact }: ContactFormPropsType) => {
+
+  const companyOptions = [
+    ...(companies?.map((c: Company) => ({value: c.id, label: c.name})) || []),
+    { value: null, label: 'Please choose a company' }
+  ]
+console.log('companies', companies)
   return (
     <Modal
       open={isOpen}
@@ -32,6 +56,7 @@ export const ContactForm = ({ isOpen, handleClose, handleFormChange, createConta
             <TextField id="standard-basic" name="notes" label="Notes" variant="filled" />
             <TextField id="standard-basic" name="firstName" label="First Name" variant="filled" />
             <TextField id="standard-basic" name="lastName" label="Last Name" variant="filled" />
+            <SelectInput name="companyId" handleChange={handleFormChange} value={companyId} options={companyOptions}/>
             <TextField id="standard-basic" name="closeness" label="Closeness" variant="filled" />
             <Button color='primary' variant="contained" onClick={createContact}>Create Contact</Button >
           </FormGroup>

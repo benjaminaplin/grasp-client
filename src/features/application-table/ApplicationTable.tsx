@@ -151,7 +151,7 @@ export const ApplicationsTable = ({
       areApplicationsLoading
       ? columns.map((column) => ({
         ...column,
-        cell: () => <Skeleton />,
+        cell: () => <Skeleton height='32px' />,
       }))
     : columns,
     [areApplicationsLoading])

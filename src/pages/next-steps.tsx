@@ -71,7 +71,7 @@ export const NextSteps
 
   const {mutate: mutateUpdateNextStep } = useMutation({
     mutationFn: ({nextStep, id} :{nextStep: Partial<NextStep>, id: number}) => {
-      return axios.patch(`${DEV_API_URL}/next-steps/${id}`, JSON.stringify(nextStep),{
+      return axios.put(`${DEV_API_URL}/next-steps/${id}`, JSON.stringify(nextStep),{
         headers: {
           'Content-Type': 'application/json'
         }
@@ -112,7 +112,7 @@ export const NextSteps
         </Button >
         <Button style={{marginLeft: '1rem'}} onClick={() => refetchNextSteps()}>Refresh Data</Button>
         <NextStepTable
-        areNextStepsLoading={areNextStepsLoading || areNextStepsFetching}
+          areNextStepsLoading={areNextStepsLoading || areNextStepsFetching}
           updateNextStep={updateNextStep}
           tableData={nextStepTableData}
           refreshTableData={refetchNextSteps}

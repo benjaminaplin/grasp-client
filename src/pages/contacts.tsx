@@ -16,7 +16,8 @@ export default function ButtonUsage() {
 export const Contacts
  = () => {
   const [isContactFormOpen, setIsContactFormOpen] = useState(false)
-  const [formState, setFormState] = useState<(Contact)>({
+  const [contactToEditId, setContactToEditId] = useState<number | undefined>()
+  const [formState, setFormState] = useState<Contact>({
     title: null,
     type: null,
     notes: null,
@@ -24,7 +25,8 @@ export const Contacts
     lastName: null,
     userId: 2,
     closeness: null,
-    nextSteps: []
+    nextSteps: [],
+    companyId: null
   })
 
   const onMutateSuccess = () => {
@@ -60,7 +62,20 @@ export const Contacts
       return res.json()
     }),
   })
-
+  const { data: companies, refetch: refetchCompanies, isLoading: companiesAreLoading, isFetching: companiesAreFetching } = useQuery({
+    queryKey: ['companies'],
+    queryFn: () => fetch(`${DEV_API_URL}/companies`).then((res: any) => {
+      return res.json()
+    }),
+  })
+  const { data: contact, refetch: refetchContact, isLoading: contactIsLoading, isFetching: contactIsFetching } = useQuery({
+    queryKey: ['contact'],
+    queryFn: () => fetch(`${DEV_API_URL}/contacts/${contactToEditId}`).then((res: any) => {
+      return res.json()
+    }),
+    enabled: !!contactToEditId
+  })
+  
   const {mutate: mutateUpdateContact } = useMutation({
     mutationFn: ({contact, id} :{contact: Partial<Contact>, id: number}) => {
       return axios.patch(`${DEV_API_URL}/contacts/${id}`, JSON.stringify(contact),{
@@ -88,6 +103,10 @@ export const Contacts
     setFormState((formState: any) => ({...formState, [evt.target.name]: evt.target.value}))
   }
 
+  const openContactForm = (contactId: number | undefined) => {
+    setContactToEditId(contactId)
+    setIsContactFormOpen(true)
+  }
   return (
      <Layout title="Contacts" >
         <Button
@@ -103,8 +122,12 @@ export const Contacts
           tableData={data}
           refreshTableData={refetchContacts}
           deleteContact={deleteContact}
+          handleOpenContactForm={openContactForm} 
         />
         <ContactForm
+          companies={companies}
+          companyId={formState.companyId}
+          contact={contact}
           isOpen={isContactFormOpen}
           handleClose={()=>setIsContactFormOpen(false)} 
           createContact={createContact}
