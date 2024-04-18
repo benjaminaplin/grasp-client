@@ -129,6 +129,14 @@ export const NextStepTable = ({
     debugTable: true,
     rowCount: tableData?.length,
     getSortedRowModel: getSortedRowModel(), //provide a sorting row model
+    initialState: {
+      sorting: [
+        {
+          id: 'completed',
+          desc: false,  
+        },
+      ],
+    },
 
   })
 

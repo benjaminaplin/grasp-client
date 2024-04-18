@@ -50,7 +50,7 @@ export const InterviewForm = ({
           <FormGroup onChange={handleFormChange}>
             <TextField id="standard-basic" name="round" label="Round" variant="filled" />
             <TextField id="standard-basic" name="status" label="Status" variant="filled" />
-            <SelectInput name="applicationId" handleChange={handleFormChange} value={applicationId} options={jobApplicationOptions}/>
+            <SelectInput label='Application' name="applicationId" handleChange={handleFormChange} value={applicationId} options={jobApplicationOptions}/>
             <TextField id="standard-basic" name='date' label="Date" variant="filled" />
             <TextField id="standard-basic" name="notes" label="Notes" variant="filled" />
             <Button color='primary' variant="contained" onClick={createInterview}>Create Interview</Button >

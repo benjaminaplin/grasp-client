@@ -127,6 +127,14 @@ export const ContactsTable = ({
         cell: linkToContactCellFn
       },
       {
+        accessorFn: (row: { touches: string | any[] }) => row.touches.length,
+        id: 'touches',
+        header: () => <span>Touches</span>,
+        footer: (props: { column: { id: any } }) => props.column.id,
+        // @ts-ignore
+        cell: ({row: { original }}) => <Link to={`/touches`}>{original?.touches?.length}</Link>
+      },
+      {
         header: 'Edit',
         cell: ({row}: CellContext<Contact, unknown>) => <EditButtonCell row={row} editResource={() => handleOpenContactForm(row.original?.id)} />
       },

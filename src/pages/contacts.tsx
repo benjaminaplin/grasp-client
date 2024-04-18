@@ -28,7 +28,7 @@ export const Contacts
     userId: 2,
     closeness: null,
     nextSteps: [],
-    companyId: null
+    companyId: 0
   })
 
   const onMutateSuccess = () => {
@@ -71,7 +71,7 @@ export const Contacts
     enabled: !!contactToEditId
   })
   
-  const {mutate: mutateUpdateContact } = useMutation({
+  const { mutate: mutateUpdateContact } = useMutation({
     mutationFn: ({contact, id} :{contact: Partial<Contact>, id: number}) => {
       return axios.patch(`${DEV_API_URL}/contacts/${id}`, JSON.stringify(contact),{
         headers: {
@@ -102,7 +102,6 @@ export const Contacts
     setContactToEditId(contactId)
     setIsContactFormOpen(true)
   }
-  console.log('data', data)
   return (
      <Layout title="Contacts" >
         <Button
@@ -120,10 +119,10 @@ export const Contacts
           deleteContact={deleteContact}
           handleOpenContactForm={openContactForm} 
         />}
-        {companies && formState.companyId && <ContactForm
+        {companies && <ContactForm
           companies={companies}
-          companyId={formState.companyId}
-          contact={contact}
+          companyId={formState.companyId || 0}
+          contact={contact as unknown as Contact | null}
           isOpen={isContactFormOpen}
           handleClose={()=>setIsContactFormOpen(false)} 
           createContact={createContact}

@@ -6,10 +6,12 @@ import Select from "@mui/material/Select"
 type SelectProps = {name: string,
   value: any,
   handleChange: (evt: any) => void,
-  options: any[]
+  options: any[],
+  label: string
 }
 
-export const SelectInput = ({name, value, handleChange, options}: SelectProps) => {
+export const SelectInput = ({label , name, value, handleChange, options}: SelectProps) => {
+  console.log(name, value)
   return (
     <FormControl fullWidth>
     <InputLabel id="demo-simple-select-label">{name}</InputLabel>
@@ -17,7 +19,7 @@ export const SelectInput = ({name, value, handleChange, options}: SelectProps) =
       labelId="demo-simple-select-label"
       id="demo-simple-select"
       value={value}
-      label={name}
+      label={label}
       name={name}
       onChange={handleChange}
     >

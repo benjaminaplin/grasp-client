@@ -55,7 +55,7 @@ export const TouchForm = ({
           <FormGroup onChange={handleFormChange}>
             <TextField id="standard-basic" name="type" label="Type" variant="filled" />
             <TextField id="standard-basic" name="company" label="Company" variant="filled" />
-            <SelectInput name="contactId" handleChange={handleFormChange} value={contactId} options={options}/>
+            <SelectInput label='Contact' name="contactId" handleChange={handleFormChange} value={contactId} options={options}/>
             <DatePicker label="Date" name="scheduledDate" onChange={handleFormChange} />
             <TextField id="standard-basic" name="notes" label="Notes" variant="filled" />
             <Button color='primary' variant="contained" onClick={createTouch}>Create Touch</Button >

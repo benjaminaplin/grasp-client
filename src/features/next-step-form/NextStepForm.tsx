@@ -44,7 +44,7 @@ export const NextStepForm = ({
       <Box  my={4} display="flex" alignItems="center" gap={4} p={2} sx={style}>
        <div style={{display: "flex", flexDirection: 'column', backgroundColor: "var(--davysgrey-lighter)", width: '100%', height: '100%'}}>
           <FormGroup onChange={handleFormChange}>
-            <SelectInput name="contactId" handleChange={handleFormChange} value={contactId} options={companyOptions}/>
+            <SelectInput label='Contact'  name="contactId" handleChange={handleFormChange} value={contactId} options={companyOptions}/>
             <TextField id="standard-basic" name='type' label="Type" variant="filled" />
             <TextField id="standard-basic" name="notes" label="Notes" variant="filled" />
             <TextField id="standard-basic" name="action" label="Action" variant="filled" />

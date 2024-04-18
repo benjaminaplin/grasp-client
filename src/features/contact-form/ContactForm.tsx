@@ -57,7 +57,7 @@ export const ContactForm = ({
             <TextField id="standard-basic" name="notes" label="Notes" variant="filled" />
             <TextField id="standard-basic" name="firstName" label="First Name" variant="filled" />
             <TextField id="standard-basic" name="lastName" label="Last Name" variant="filled" />
-            <SelectInput name="companyId" handleChange={handleFormChange} value={companyId} options={companyOptions}/>
+            <SelectInput label='Company' name="companyId" handleChange={handleFormChange} value={companyId} options={companyOptions}/>
             <TextField id="standard-basic" name="closeness" label="Closeness" variant="filled" />
             <Button color='primary' variant="contained" onClick={createContact}>Create Contact</Button >
           </FormGroup>
