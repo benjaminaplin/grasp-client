@@ -38,7 +38,6 @@ export const TouchesTable = ({
   updateTouch,
   tableData,
   refreshTableData,
-  companyMap,
   touchesAreLoading
 }: TouchesTableType)=>  {
 

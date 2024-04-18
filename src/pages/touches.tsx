@@ -77,7 +77,7 @@ export const Touches
     })
   }
   const touchTableData = () => touches?.map((touch: Touch) =>  {
-    const application = applications?.find((a: Application) => a.id === touch.jobApplicationId)?.name || null
+    const application = applications?.find((a: Application) => a.id === touch.jobApplicationId)?.role || null
     return (
       {
         ...touch,

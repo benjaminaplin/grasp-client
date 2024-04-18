@@ -1,7 +1,6 @@
 import * as React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
-import CssBaseline from '@mui/material/CssBaseline';
 import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
@@ -20,7 +19,7 @@ import HandshakeIcon from '@mui/icons-material/Handshake';
 import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
 import './layout.css'
 import { ColorModeContext } from '../../context/ColorMode';
-import { Switch, ToggleButton, useTheme } from '@mui/material';
+import { Switch, useTheme } from '@mui/material';
 
 const drawerWidth = 240;
 

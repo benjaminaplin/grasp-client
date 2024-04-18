@@ -35,7 +35,6 @@ export const TouchForm = ({
   createTouch,
   contacts,
   contactId,
-  companyMap
 }: TouchFormPropsType) => {
 
   const contactOptions = contacts?.map((c: Contact) => ({

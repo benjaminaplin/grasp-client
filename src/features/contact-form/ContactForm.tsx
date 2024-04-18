@@ -35,7 +35,6 @@ export const ContactForm = ({
   createContact,
   companies,
   companyId,
-  contact
 }: ContactFormPropsType) => {
 
   const companyOptions = [
