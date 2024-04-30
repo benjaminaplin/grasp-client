@@ -24,8 +24,8 @@ type TouchFormPropsType = {
   handleFormChange: (evt: any) => void,
   createTouch: () => void,
   contacts: Contact[] | undefined
-  contactId?: number | null
-  companyMap: {[key: string]: string}
+  contactId?: number | null,
+  scheduledDate: any
 }
 
 export const TouchForm = ({
@@ -35,6 +35,7 @@ export const TouchForm = ({
   createTouch,
   contacts,
   contactId,
+  scheduledDate
 }: TouchFormPropsType) => {
 
   const contactOptions = contacts?.map((c: Contact) => ({
@@ -42,20 +43,14 @@ export const TouchForm = ({
     label: `${c.firstName} ${c.lastName}`
   })) || []
 
-  const options = [
-    ...contactOptions,
-    { value: null, label: 'Please choose a contact' }
-  ]
-
   return (
     <Modal open={isOpen} onClose={handleClose}>
       <Box  my={4} display="flex" alignItems="center" gap={4} p={2} sx={style}>
        <div style={{display: "flex", flexDirection: 'column', backgroundColor: "var(--davysgrey-lighter)", width: '100%', height: '100%'}}>
           <FormGroup onChange={handleFormChange}>
             <TextField id="standard-basic" name="type" label="Type" variant="filled" />
-            <TextField id="standard-basic" name="company" label="Company" variant="filled" />
-            <SelectInput label='Contact' name="contactId" handleChange={handleFormChange} value={contactId} options={options}/>
-            <DatePicker label="Date" name="scheduledDate" onChange={handleFormChange} />
+            <SelectInput label='Contact' name="contactId" handleChange={handleFormChange} value={contactId} options={contactOptions}/>
+            <DatePicker label="Date" value={scheduledDate} name="scheduledDate" onChange={handleFormChange} />
             <TextField id="standard-basic" name="notes" label="Notes" variant="filled" />
             <Button color='primary' variant="contained" onClick={createTouch}>Create Touch</Button >
           </FormGroup>

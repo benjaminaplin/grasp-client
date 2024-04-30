@@ -7,7 +7,9 @@ import { NextStep } from "../types/next-step";
 import Layout from "../components/layout/Layout";
 import { NextStepForm } from "../features/next-step-form/NextStepForm";
 import { Contact } from "../types/contact";
-import { useQueryWrapper } from "../context/WrapUseQuery";
+import { defaultHeaders, useQueryWrapper } from "../context/WrapUseQuery";
+import { orderBy } from "lodash";
+import dayjs from "dayjs";
 
 const DEV_API_URL = import.meta.env.VITE_DEV_API_URL
 
@@ -26,7 +28,7 @@ export const NextSteps
     action: null,
     contacts: [],
     completed: false,
-    completedDate: undefined
+    dueDate: undefined
   })
  
   const { data: nextSteps,
@@ -43,22 +45,21 @@ export const NextSteps
   const {mutate: mutateCreateNextStep  } = useMutation({
     mutationFn: (nextStep: NextStep) => {
       return axios.post(`${DEV_API_URL}/next-steps`, JSON.stringify(nextStep),{
-        headers: {
-          'Content-Type': 'application/json'
-        }
+        headers: defaultHeaders
       })
     },
     onSuccess:onMutateSuccess
   })
 
-  const { data: contacts  } = useQueryWrapper<Contact>(`contacts`)
+  const { data: contacts  } = useQueryWrapper<Contact>(
+    `contacts`,
+    undefined,
+    { select: (fetchedData: NextStep[]) => orderBy(fetchedData, ['firstName']) })
 
   const {mutate: mutateDeleteNextStep } = useMutation({
     mutationFn: (nextStepId: number) => {
       return axios.delete(`${DEV_API_URL}/next-steps/${nextStepId}`, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
+        headers: defaultHeaders
       })
     },
     onSuccess: onMutateSuccess
@@ -67,9 +68,7 @@ export const NextSteps
   const {mutate: mutateUpdateNextStep } = useMutation({
     mutationFn: ({nextStep, id} :{nextStep: Partial<NextStep>, id: number}) => {
       return axios.put(`${DEV_API_URL}/next-steps/${id}`, JSON.stringify(nextStep),{
-        headers: {
-          'Content-Type': 'application/json'
-        }
+        headers: defaultHeaders
       })
     },
    
@@ -82,9 +81,15 @@ export const NextSteps
   const updateNextStep = (updatedNextStep: {nextStep: Partial<NextStep>, id: number}) => {
     mutateUpdateNextStep(updatedNextStep)
   }
-
+  
   const handleFormChange = (evt: any) => {
-    setFormState((formState: any) => ({...formState, [evt.target.name]: evt.target.value}))
+    const targetName = evt.target?.name
+    setFormState((formState: any) => {
+      const name = !targetName ? 'dueDate' : targetName
+      const dateTimeValue = (!evt?.target && evt?.$d) ? dayjs(new Date(evt.$d)).format("YYYY-MM-DD") : evt.$d
+      const value = !targetName ? dateTimeValue : evt?.target?.value
+      return ({...formState, [name]: value})
+    })
   }
 
   const deleteNextStep = (nextStepId: number) => {
@@ -114,6 +119,7 @@ export const NextSteps
           deleteNextStep={deleteNextStep}
           />
         <NextStepForm
+          dueDate={formState.dueDate}
           contactId={formState.contacts?.[0]?.id}
           isOpen={isNextStepFormOpen}
           handleClose={()=>setIsNextStepFormOpen(false)} 

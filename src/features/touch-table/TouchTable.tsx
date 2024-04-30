@@ -19,6 +19,7 @@ import { getTableHeader } from '../../components/table/table-header/TableHeader'
 import { format } from 'date-fns'
 import Skeleton from '@mui/material/Skeleton'
 import { TableCellInput } from '../../components/table/table-cell-input/TableCellInput'
+import { defaultHeaders } from '../../context/WrapUseQuery'
 
 declare module '@tanstack/react-table' {
   interface TableMeta<TData extends RowData> {
@@ -30,7 +31,6 @@ type TouchesTableType = {
   updateTouch: (updatedTouch: {touch: Partial<Touch>, id: number}) => void
   tableData: Touch[] | undefined
   refreshTableData: () => void
-  companyMap: {[key: string]: string}
   touchesAreLoading: boolean
 }
 
@@ -77,9 +77,7 @@ export const TouchesTable = ({
   const {mutate: mutateDeleteTouch } = useMutation({
     mutationFn: (touchId: number) => {
       return axios.delete(`${import.meta.env.VITE_DEV_API_URL}/touches/${touchId}`, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
+        headers: defaultHeaders
       })
     },
     onSuccess: onMutateSuccess

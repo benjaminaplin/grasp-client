@@ -9,5 +9,5 @@ export type NextStep = {
   type: string | null
   contacts: Contact[] | undefined
   completed: boolean
-  completedDate?: string
+  dueDate?: string
 }

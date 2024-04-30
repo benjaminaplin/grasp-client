@@ -6,10 +6,9 @@ import { TouchesTable } from "../features/touch-table/TouchTable";
 import { Touch } from "../types/touch";
 import Layout from "../components/layout/Layout";
 import { TouchForm } from "../features/touch-form/TouchForm";
-import { Company } from "../types/company";
 import { Application } from "../types/application";
 import dayjs from "dayjs";
-import { useQueryWrapper } from "../context/WrapUseQuery";
+import { defaultHeaders, useQueryWrapper } from "../context/WrapUseQuery";
 import { Contact } from "../types/contact";
 
 const DEV_API_URL = import.meta.env.VITE_DEV_API_URL
@@ -24,14 +23,12 @@ export const Touches
     nextStep: null,
     jobApplicationId: undefined,
     userId: 2,
-    scheduledDate: null
+    scheduledDate: null,
   })
   const {mutate: mutateCreateTouch  } = useMutation({
     mutationFn: (touch: Touch) => {
       return axios.post(`${DEV_API_URL}/touches`, JSON.stringify(touch),{
-        headers: {
-          'Content-Type': 'application/json'
-        }
+        headers: defaultHeaders
       })
     },
     onSuccess: () => {
@@ -39,8 +36,7 @@ export const Touches
       refetchTouches()
     }
   })
-
-  const { data: companies } = useQueryWrapper<Company>(`companies`)
+  
   const { data: applications  } = useQueryWrapper<Application>(`job-applications`)
   const { data: contacts  } = useQueryWrapper<Contact>(`contacts`)
   const { data: touches,
@@ -52,9 +48,7 @@ export const Touches
   const {mutate: mutateUpdateTouch } = useMutation({
     mutationFn: ({touch, id} :{touch: Partial<Touch>, id: number}) => {
       return axios.patch(`${DEV_API_URL}/touches/${id}`, JSON.stringify(touch),{
-        headers: {
-          'Content-Type': 'application/json'
-        }
+        headers: defaultHeaders
       })
     },
   })
@@ -85,15 +79,6 @@ export const Touches
       }
     )})
   
-  const companyMap = companies?.reduce((acc: {[key: string]: string}, c: Company)=> {
-    const companyId = c.id as unknown as string
-    if(!acc[companyId]){
-      // @ts-ignore
-      acc[companyId] = c.name
-    }
-    return acc
-  },{})
-
   return (
      <Layout title="Touches">
         <div style={{display: 'flex', justifyContent: 'flex-start',alignItems: 'center', marginLeft: '1rem'}}>
@@ -106,15 +91,14 @@ export const Touches
           <Button style={{marginLeft: '1rem'}} onClick={() => refetchTouches()}>Refresh Data</Button>
           <div>Touches: {`${touches?.length || 0}`}</div>
         </div>
-       {companyMap && <TouchesTable
+        <TouchesTable
           touchesAreLoading={touchesAreLoading || touchesAreFetching}
-          companyMap={companyMap}
           updateTouch={updateTouch}
           tableData={touchTableData()}
           refreshTableData={refetchTouches}
-          />}
+          />
         <TouchForm
-          companyMap={companyMap || {}}
+          scheduledDate={formState.scheduledDate}
           contactId={formState.contactId}
           isOpen={isTouchFormOpen}
           handleClose={()=>setIsTouchFormOpen(false)} 

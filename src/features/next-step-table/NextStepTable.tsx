@@ -16,6 +16,7 @@ import { getTableHeader } from '../../components/table/table-header/TableHeader'
 import Skeleton from '@mui/material/Skeleton'
 import { TableCellInput } from '../../components/table/table-cell-input/TableCellInput'
 import { coerceStringToBool } from '../../utils/coerce-str-bool'
+import { format } from 'date-fns'
 
 type NextStepTableType = {
   updateNextStep: (updatedNextStep: {nextStep: Partial<NextStep>, id: number}) => void,
@@ -96,6 +97,15 @@ export const NextStepTable = ({
           return <Link to={`/contacts/${info.row.original.contactId}`}>{info.getValue() as ReactNode}</Link>
         },
         filterFn: relationFilterFn<NextStep>()
+      },
+      {
+        accessorKey: 'dueDate',
+        id: 'dueDate',
+        header: () => <span>Due Date</span>,
+        footer: props => props.column.id,
+        cell: (info) => {
+          return <span >{info.row.original.dueDate ? `${format(info.row.original.dueDate, "MM/dd/yyyy")}` : ''}</span>
+        },
       },
       {
         accessorFn: row => row.completed,

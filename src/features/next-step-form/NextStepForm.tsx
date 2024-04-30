@@ -5,6 +5,7 @@ import Modal from "@mui/material/Modal"
 import TextField from "@mui/material/TextField"
 import {SelectInput } from "../../components/form/SelectInput"
 import { Contact } from "../../types/contact"
+import DatePicker from "../../components/form/DatePicker"
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -23,7 +24,8 @@ type NextStepFormPropsType = {
   handleFormChange: (evt: any) => void,
   createNextStep: () => void,
   contacts: Contact[] | undefined
-  contactId?: number | null
+  contactId?: number | null,
+  dueDate: any
 }
 
 export const NextStepForm = ({
@@ -31,12 +33,11 @@ export const NextStepForm = ({
   handleClose,
   handleFormChange,
   createNextStep,
-  contacts, contactId
+  contacts, contactId,dueDate
 }: NextStepFormPropsType) => {
 
-  const companyOptions = [
-    ...(contacts?.map((c: Contact) => ({value: c.id, label: `${c.firstName} ${c.lastName}`})) || []),
-    { value: null, label: 'Please choose a contact' }
+  const contactOptions = [
+    ...(contacts?.map((c: Contact) => ({value: c.id, label: `${c.firstName} ${c.lastName}`})) || [])
   ]
 
   return (
@@ -44,8 +45,9 @@ export const NextStepForm = ({
       <Box  my={4} display="flex" alignItems="center" gap={4} p={2} sx={style}>
        <div style={{display: "flex", flexDirection: 'column', backgroundColor: "var(--davysgrey-lighter)", width: '100%', height: '100%'}}>
           <FormGroup onChange={handleFormChange}>
-            <SelectInput label='Contact'  name="contactId" handleChange={handleFormChange} value={contactId} options={companyOptions}/>
+            <SelectInput label='Contact'  name="contactId" handleChange={handleFormChange} value={contactId} options={contactOptions}/>
             <TextField id="standard-basic" name='type' label="Type" variant="filled" />
+            <DatePicker label="Due Date" value={dueDate} name="scheduledDate" onChange={handleFormChange} />
             <TextField id="standard-basic" name="notes" label="Notes" variant="filled" />
             <TextField id="standard-basic" name="action" label="Action" variant="filled" />
             <Button color='primary' variant="contained" onClick={createNextStep}>Create NextStep</Button >

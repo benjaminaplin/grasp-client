@@ -7,7 +7,8 @@ import { Application } from "../types/application";
 import Layout from "../components/layout/Layout";
 import { ApplicationForm } from "../features/application-form/ApplicationForm";
 import { Company } from "../types/company";
-import { useQueryWrapper } from "../context/WrapUseQuery";
+import { defaultHeaders, useQueryWrapper } from "../context/WrapUseQuery";
+import { orderBy } from "lodash";
 
 const DEV_API_URL = import.meta.env.VITE_DEV_API_URL
 
@@ -31,9 +32,7 @@ export const Applications
   const {mutate: mutateCreateapplication  } = useMutation({
     mutationFn: (application: Application) => {
       return axios.post(`${DEV_API_URL}/job-applications`, JSON.stringify(application),{
-        headers: {
-          'Content-Type': 'application/json'
-        }
+        headers: defaultHeaders
       })
     },
     onSuccess: () => {
@@ -42,7 +41,12 @@ export const Applications
     }
   })
 
-  const { data: companies } = useQueryWrapper<Company>('companies')
+  const { data: companies } = useQueryWrapper<Company>(
+    'companies',
+    undefined,
+    { select: (fetchedData: Company[]) =>  orderBy(fetchedData, ['name'])
+  })
+
   const { data: applications,
     refetch: refetchApplications,
     isLoading: areApplicationsLoading,
@@ -53,9 +57,7 @@ export const Applications
   const {mutate: mutateUpdateApplication } = useMutation({
     mutationFn: ({application, id} :{application: Partial<Application>, id: number}) => {
       return axios.patch(`${DEV_API_URL}/job-applications/${id}`, JSON.stringify(application),{
-        headers: {
-          'Content-Type': 'application/json'
-        }
+        headers: defaultHeaders
       })
     },
    

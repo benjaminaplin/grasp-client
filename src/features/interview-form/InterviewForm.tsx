@@ -5,6 +5,8 @@ import Modal from "@mui/material/Modal"
 import TextField from "@mui/material/TextField"
 import {SelectInput } from "../../components/form/SelectInput"
 import { Application } from "../../types/application"
+import { Company } from "../../types/company"
+import { orderBy } from "lodash"
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -24,7 +26,7 @@ type InterviewFormPropsType = {
   createInterview: () => void,
   applications: Application[] | undefined
   applicationId?: number | null
-  companyMap: {[key: string]: string}
+  companyMap: {[key: string]: Company[]}
 }
 
 export const InterviewForm = ({
@@ -36,12 +38,12 @@ export const InterviewForm = ({
   applicationId,
   companyMap
 }: InterviewFormPropsType) => {
-  const jobApplicationOptions = [
+  
+  const jobApplicationOptions = orderBy([
     ...(applications?.map((a: Application) => ({
       value: a.id,
-      label: `${a.role} ${a.companyId ? companyMap?.[a.companyId] : 'unknown company'}`})) || []),
-    { value: null, label: 'Please choose an application' }
-  ]
+      label: `${a.companyId ? companyMap?.[a.companyId][0]?.name : 'unknown company'} ${a.role}`})) || [])
+  ], ['label'])
 
   return (
     <Modal open={isOpen} onClose={handleClose}>

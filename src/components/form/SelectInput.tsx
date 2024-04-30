@@ -14,7 +14,7 @@ export const SelectInput = ({label , name, value, handleChange, options}: Select
   console.log(name, value)
   return (
     <FormControl fullWidth>
-    <InputLabel id="demo-simple-select-label">{name}</InputLabel>
+    <InputLabel id="demo-simple-select-label">{label}</InputLabel>
     <Select
       labelId="demo-simple-select-label"
       id="demo-simple-select"

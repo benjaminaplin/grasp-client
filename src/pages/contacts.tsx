@@ -6,8 +6,9 @@ import { ContactsTable } from "../features/contact-table/ContactTable";
 import { Contact } from "../types/contact";
 import { ContactForm } from "../features/contact-form/ContactForm";
 import Layout from "../components/layout/Layout";
-import { useQueryWrapper } from "../context/WrapUseQuery";
+import { defaultHeaders, useQueryWrapper } from "../context/WrapUseQuery";
 import { Company } from "../types/company";
+import { orderBy } from "lodash";
 
 const DEV_API_URL = import.meta.env.VITE_DEV_API_URL
 
@@ -39,9 +40,7 @@ export const Contacts
   const {mutate: mutateCreateContact } = useMutation({
     mutationFn: (contact: Contact) => {
       return axios.post(`${DEV_API_URL}/contacts`, JSON.stringify(contact),{
-        headers: {
-          'Content-Type': 'application/json'
-        }
+        headers: defaultHeaders
       })
     },
     onSuccess: onMutateSuccess
@@ -50,9 +49,7 @@ export const Contacts
   const {mutate: mutateDeleteContact } = useMutation({
     mutationFn: (contactId: number) => {
       return axios.delete(`${DEV_API_URL}/contacts/${contactId}`, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
+        headers: defaultHeaders
       })
     },
     onSuccess: onMutateSuccess
@@ -65,8 +62,11 @@ export const Contacts
     isFetching: contactsAreFetching
   } = useQueryWrapper<Contact>('contacts')
 
-  const { data: companies } = useQueryWrapper<Company>('companies')
-
+  const { data: companies } = useQueryWrapper<Company>(
+    'companies',
+    undefined,
+    { select: (fetchedData: Company[]) =>  orderBy(fetchedData, ['name'])
+  })
   const { data: contact } = useQueryWrapper(`contacts/${contactToEditId}`, undefined, {
     enabled: !!contactToEditId
   })
@@ -74,9 +74,7 @@ export const Contacts
   const { mutate: mutateUpdateContact } = useMutation({
     mutationFn: ({contact, id} :{contact: Partial<Contact>, id: number}) => {
       return axios.patch(`${DEV_API_URL}/contacts/${id}`, JSON.stringify(contact),{
-        headers: {
-          'Content-Type': 'application/json'
-        }
+        headers: defaultHeaders
       })
     },
    

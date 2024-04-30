@@ -19,6 +19,7 @@ import axios from 'axios'
 import { getTableHeader } from '../../components/table/table-header/TableHeader'
 import Skeleton from '@mui/material/Skeleton'
 import { TableCellInput } from '../../components/table/table-cell-input/TableCellInput'
+import { defaultHeaders } from '../../context/WrapUseQuery'
 
 declare module '@tanstack/react-table' {
   interface TableMeta<TData extends RowData> {
@@ -76,9 +77,7 @@ export const ApplicationsTable = ({
   const {mutate: mutateDeleteContact } = useMutation({
     mutationFn: (applicationId: number) => {
       return axios.delete(`${import.meta.env.VITE_DEV_API_URL}/job-applications/${applicationId}`, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
+        headers: defaultHeaders
       })
     },
     onSuccess: onMutateSuccess

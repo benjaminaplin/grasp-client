@@ -19,6 +19,8 @@ import { getTableHeader } from '../../components/table/table-header/TableHeader'
 import { format } from 'date-fns'
 import Skeleton from '@mui/material/Skeleton'
 import { TableCellInput } from '../../components/table/table-cell-input/TableCellInput'
+import { defaultHeaders } from '../../context/WrapUseQuery'
+import { Company } from '../../types/company'
 
 declare module '@tanstack/react-table' {
   interface TableMeta<TData extends RowData> {
@@ -30,7 +32,7 @@ type InterviewsTableType = {
   updateInterview: (updatedInterview: {interview: Partial<Interview>, id: number}) => void
   tableData: Interview[] | undefined
   refreshTableData: () => void
-  companyMap: {[key: string]: string}
+  companyMap: {[key: string]: Company[]}
   interviewsAreLoading: boolean
 }
 
@@ -77,9 +79,7 @@ export const InterviewsTable = ({
   const {mutate: mutateDeleteInterview } = useMutation({
     mutationFn: (interviewId: number) => {
       return axios.delete(`${import.meta.env.VITE_DEV_API_URL}/interviews/${interviewId}`, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
+        headers: defaultHeaders
       })
     },
     onSuccess: onMutateSuccess
@@ -87,7 +87,6 @@ export const InterviewsTable = ({
   const deleteInterview = (interviewId: number) => {
     mutateDeleteInterview(interviewId)
   }
-
 
   const columns = useMemo<ColumnDef<Interview>[]>(()=>[
     {
@@ -114,8 +113,8 @@ export const InterviewsTable = ({
       footer: props => props.column.id,
       cell: ({row: {original: {jobApplication, jobApplicationId }}}) => {
         const role = jobApplication?.role
-        const company = jobApplication?.companyId && companyMap?.[jobApplication?.companyId]
-        return <Link to={`/job-applications/${jobApplicationId}`}>{`${role} ${company}`}</Link>
+        const company = jobApplication?.companyId && companyMap?.[jobApplication?.companyId][0] || {name: null}
+        return <Link to={`/job-applications/${jobApplicationId}`}>{`${role} ${company?.name}`}</Link>
       },
       filterFn: relationFilterFn<Interview>(),
       enableSorting: true
@@ -137,7 +136,6 @@ export const InterviewsTable = ({
       cell: ({row}) => <DeleteButtonCell row={row} deleteResource={(id: number) => deleteInterview(id)} />,
     }
   ],[])
-
 
   const memoColumns = useMemo<ColumnDef<Interview>[]>(() => 
      interviewsAreLoading

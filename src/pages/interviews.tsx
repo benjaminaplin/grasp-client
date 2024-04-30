@@ -10,9 +10,11 @@ import { Company } from "../types/company";
 import { Application } from "../types/application";
 import { format } from "date-fns";
 import { isValidDate } from "../utils/is-valid-date";
-import { useQueryWrapper } from "../context/WrapUseQuery";
+import { defaultHeaders, useQueryWrapper } from "../context/WrapUseQuery";
+import { groupBy, orderBy } from "lodash";
 
 const DEV_API_URL = import.meta.env.VITE_DEV_API_URL
+type CompanyMap = {[key: string]: Company[]}
 
 export const Interviews
  = () => {
@@ -33,9 +35,7 @@ export const Interviews
   const {mutate: mutateCreateInterview  } = useMutation({
     mutationFn: (interview: Interview) => {
       return axios.post(`${DEV_API_URL}/interviews`, JSON.stringify(interview),{
-        headers: {
-          'Content-Type': 'application/json'
-        }
+        headers: defaultHeaders
       })
     },
     onSuccess: () => {
@@ -50,15 +50,17 @@ export const Interviews
     refetch: refetchInterviews,
     isLoading: interviewsAreLoading,
     isFetching: interviewsAreFetching } = useQueryWrapper<Interview>(`interviews`)
-
-    const { data: companies } = useQueryWrapper<Company>(`companies`)
+  
+  const { data: companyMap } = useQueryWrapper<Company>(
+    'companies',
+    undefined,
+    { select: (fetchedData: Company[]) =>  groupBy(orderBy(fetchedData, ['name']), (company: Company) => company.id)
+  })
 
   const {mutate: mutateUpdateInterview } = useMutation({
     mutationFn: ({interview, id} :{interview: Partial<Interview>, id: number}) => {
       return axios.patch(`${DEV_API_URL}/interviews/${id}`, JSON.stringify(interview),{
-        headers: {
-          'Content-Type': 'application/json'
-        }
+        headers: defaultHeaders
       })
     },
    
@@ -80,14 +82,6 @@ export const Interviews
     })
   }
   
-  const companyMap = companies?.reduce((acc: {[key: string]: string}, c: Company)=> {
-    const companyId = c.id as unknown as string
-    if(!acc[companyId]){
-      // @ts-ignore
-      acc[companyId] = c.name
-    }
-    return acc
-  },{})
   return (
      <Layout title="Interviews">
         <div style={{display: 'flex', justifyContent: 'flex-start',alignItems: 'center', marginLeft: '1rem'}}>
@@ -102,13 +96,13 @@ export const Interviews
         </div>
        {companyMap && <InterviewsTable
           interviewsAreLoading={interviewsAreLoading || interviewsAreFetching}
-          companyMap={companyMap}
+          companyMap={companyMap as unknown as CompanyMap}
           updateInterview={updateInterview}
           tableData={interviews}
           refreshTableData={refetchInterviews}
           />}
         <InterviewForm
-          companyMap={companyMap || {}}
+        companyMap={companyMap as unknown as CompanyMap}
           applicationId={formState.applications[0]?.id}
           isOpen={isInterviewFormOpen}
           handleClose={()=>setIsInterviewFormOpen(false)} 

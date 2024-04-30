@@ -6,7 +6,7 @@ import { CompanyTable } from "../features/company-table/CompanyTable";
 import { Company } from "../types/company";
 import Layout from "../components/layout/Layout";
 import { CompanyForm } from "../features/company-form/CompanyForm";
-import { useQueryWrapper } from "../context/WrapUseQuery";
+import { defaultHeaders, useQueryWrapper } from "../context/WrapUseQuery";
 
 const DEV_API_URL = import.meta.env.VITE_DEV_API_URL
 
@@ -34,9 +34,7 @@ export const Companies
   const {mutate: mutateCreateCompany } = useMutation({
     mutationFn: (company: Company) => {
       return axios.post(`${DEV_API_URL}/companies`, JSON.stringify(company),{
-        headers: {
-          'Content-Type': 'application/json'
-        }
+        headers:defaultHeaders
       })
     },
     onSuccess: onMutateSuccess
@@ -54,9 +52,7 @@ export const Companies
     mutationFn: (companyId: number) => {
       return axios.delete(`${DEV_API_URL}/companies/${companyId}`,
       {
-        headers: {
-          'Content-Type': 'application/json'
-        }
+        headers:defaultHeaders
       })
     },
     onSuccess: onMutateSuccess
@@ -65,9 +61,7 @@ export const Companies
   const {mutate: mutateUpdateCompany } = useMutation({
     mutationFn: ({company, id} :{company: Partial<Company>, id: number}) => {
       return axios.patch(`${DEV_API_URL}/companies/${id}`, JSON.stringify(company),{
-        headers: {
-          'Content-Type': 'application/json'
-        }
+        headers:defaultHeaders
       })
     },
    
