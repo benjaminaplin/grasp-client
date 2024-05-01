@@ -22,8 +22,7 @@ export function useQueryWrapper<ResourceType>(
   options?: any,
   method: Method | undefined = 'get',
 ) {
-  console.log('options', options)
-  const result =  useQuery<ResourceType[]>({
+  const result =  useQuery<ResourceType>({
     queryKey: [query],
     queryFn: () => fetcher(url || query, options, method),
     ...options

@@ -1,4 +1,6 @@
+import { Company } from "./company"
 import { NextStep } from "./next-step"
+import { Touch } from "./touch"
 
 export type Contact = {
   id?: number
@@ -10,5 +12,7 @@ export type Contact = {
   type: string | null
   closeness: 'A' | 'B' | 'C' | 'D' | 'E' | null
   nextSteps: NextStep[]
+  companies: Company
+  touches: Touch[]
   companyId: number | null
 }

@@ -46,7 +46,7 @@ export const Companies
     refetch: refetchCompanies,
     isLoading: companiesAreLoading,
     isFetching: companiesAreFetching
-  } = useQueryWrapper<Company>('users/2/companies')
+  } = useQueryWrapper<Company[]>('users/2/companies')
 
   const {mutate: mutateDeleteCompany } = useMutation({
     mutationFn: (companyId: number) => {

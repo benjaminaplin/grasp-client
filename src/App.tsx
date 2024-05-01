@@ -25,6 +25,7 @@ import { ColorModeContext } from './context/ColorMode';
 import { Touches } from './pages/touches';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider/LocalizationProvider';
+import { ContactDetails } from './pages/contact-details';
 
 const queryClient = new QueryClient()
 
@@ -113,7 +114,7 @@ function App() {
               <Route path="/" element={<Dashboard />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/contacts" element={<Contacts />} />
-              <Route path="/contacts/:id" element={<ResourceView relation='nextSteps'/>} />
+              <Route path="/contacts/:id" element={<ContactDetails />} />
               <Route path="/next-steps" element={<NextSteps />} />
               <Route path="/next-steps/:id" element={<ResourceView />} />
               <Route path="/job-applications" element={<Applications />} />

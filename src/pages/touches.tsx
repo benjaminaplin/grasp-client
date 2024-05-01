@@ -37,13 +37,13 @@ export const Touches
     }
   })
   
-  const { data: applications  } = useQueryWrapper<Application>(`job-applications`)
-  const { data: contacts  } = useQueryWrapper<Contact>(`contacts`)
+  const { data: applications  } = useQueryWrapper<Application[]>(`job-applications`)
+  const { data: contacts  } = useQueryWrapper<Contact[]>(`contacts`)
   const { data: touches,
     refetch: refetchTouches,
     isLoading: touchesAreLoading,
     isFetching: touchesAreFetching
-  } = useQueryWrapper<Contact>(`touches`)
+  } = useQueryWrapper<Touch[]>(`touches`)
 
   const {mutate: mutateUpdateTouch } = useMutation({
     mutationFn: ({touch, id} :{touch: Partial<Touch>, id: number}) => {

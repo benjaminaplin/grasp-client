@@ -104,7 +104,7 @@ export default function ResponsiveDrawer({title, children}:{title: string, child
           <Typography  variant="h6" noWrap component="div">
             {title}
           </Typography>
-          <div style={{display: 'flex', alignContent: 'center' }}>
+          <div style={{display: 'flex', alignItems: 'center' }}>
               <DarkModeIcon  />
               <Switch
                 checked={theme.palette.mode === 'dark'}

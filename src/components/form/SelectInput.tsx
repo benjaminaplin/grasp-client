@@ -11,7 +11,6 @@ type SelectProps = {name: string,
 }
 
 export const SelectInput = ({label , name, value, handleChange, options}: SelectProps) => {
-  console.log(name, value)
   return (
     <FormControl fullWidth>
     <InputLabel id="demo-simple-select-label">{label}</InputLabel>

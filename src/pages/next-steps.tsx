@@ -35,7 +35,7 @@ export const NextSteps
     refetch: refetchNextSteps,
     isLoading: areNextStepsLoading,
     isFetching: areNextStepsFetching
-  } = useQueryWrapper<NextStep>(`next-steps`)
+  } = useQueryWrapper<NextStep[]>(`next-steps`)
 
   const onMutateSuccess = () => {
     setIsNextStepFormOpen(false)
@@ -51,7 +51,7 @@ export const NextSteps
     onSuccess:onMutateSuccess
   })
 
-  const { data: contacts  } = useQueryWrapper<Contact>(
+  const { data: contacts  } = useQueryWrapper<Contact[]>(
     `contacts`,
     undefined,
     { select: (fetchedData: NextStep[]) => orderBy(fetchedData, ['firstName']) })

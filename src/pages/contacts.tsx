@@ -60,9 +60,9 @@ export const Contacts
     refetch: refetchContacts,
     isLoading: contactsAreLoading,
     isFetching: contactsAreFetching
-  } = useQueryWrapper<Contact>('contacts')
+  } = useQueryWrapper<Contact[]>('contacts')
 
-  const { data: companies } = useQueryWrapper<Company>(
+  const { data: companies } = useQueryWrapper<Company[]>(
     'companies',
     undefined,
     { select: (fetchedData: Company[]) =>  orderBy(fetchedData, ['name'])

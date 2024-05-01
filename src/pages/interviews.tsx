@@ -44,14 +44,14 @@ export const Interviews
     }
   })
 
-  const { data: applications  } = useQueryWrapper<Application>(`job-applications`)
+  const { data: applications  } = useQueryWrapper<Application[]>(`job-applications`)
 
   const {  data: interviews,
     refetch: refetchInterviews,
     isLoading: interviewsAreLoading,
-    isFetching: interviewsAreFetching } = useQueryWrapper<Interview>(`interviews`)
+    isFetching: interviewsAreFetching } = useQueryWrapper<Interview[]>(`interviews`)
   
-  const { data: companyMap } = useQueryWrapper<Company>(
+  const { data: companyMap } = useQueryWrapper<Company[]>(
     'companies',
     undefined,
     { select: (fetchedData: Company[]) =>  groupBy(orderBy(fetchedData, ['name']), (company: Company) => company.id)

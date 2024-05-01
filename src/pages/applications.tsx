@@ -41,7 +41,7 @@ export const Applications
     }
   })
 
-  const { data: companies } = useQueryWrapper<Company>(
+  const { data: companies } = useQueryWrapper<Company[]>(
     'companies',
     undefined,
     { select: (fetchedData: Company[]) =>  orderBy(fetchedData, ['name'])
@@ -51,7 +51,7 @@ export const Applications
     refetch: refetchApplications,
     isLoading: areApplicationsLoading,
     isFetching: areApplicationsFetching
-  } = useQueryWrapper<Application>('job-applications')
+  } = useQueryWrapper<Application[]>('job-applications')
 
 
   const {mutate: mutateUpdateApplication } = useMutation({

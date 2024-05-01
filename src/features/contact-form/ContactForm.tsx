@@ -41,7 +41,6 @@ export const ContactForm = ({
     ...(companies?.map((c: Company) => ({value: c.id, label: c.name})) || []),
     { value: null, label: 'Please choose a company' }
   ]
-// console.log('companies', companies)
   return (
     <Modal
       open={isOpen}
