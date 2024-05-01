@@ -17,9 +17,13 @@ import { ArrowForward, Business, Dashboard, EmojiPeople, Work } from '@mui/icons
 import { Link, useNavigate } from "react-router-dom";
 import HandshakeIcon from '@mui/icons-material/Handshake';
 import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
-import './layout.css'
+
 import { ColorModeContext } from '../../context/ColorMode';
 import { Switch, useTheme } from '@mui/material';
+import { ErrorBoundary } from 'react-error-boundary';
+import { ErrorBoundaryFallback } from '../error/ErrorBoundaryFallback';
+
+import './layout.css'
 
 const drawerWidth = 240;
 
@@ -145,7 +149,9 @@ export default function ResponsiveDrawer({title, children}:{title: string, child
         sx={{ flexGrow: 1,   width: { sm: `calc(100% - ${drawerWidth}px)` } }}
       >
         <div className='layout-main'>
+        <ErrorBoundary fallback={<ErrorBoundaryFallback />}>
          {children}
+         </ErrorBoundary >
         </div>
       </Box>
     </Box>

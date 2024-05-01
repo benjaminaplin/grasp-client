@@ -49,6 +49,9 @@ const getDesignTokens = (mode: PaletteMode) => ({
             primary: grey[900],
             secondary: grey[800],
           },
+          error: {
+            main: '#ffae00'
+          }
         }
       : {
           // palette values for dark mode
@@ -73,6 +76,9 @@ const getDesignTokens = (mode: PaletteMode) => ({
             selected: 'rgba(255, 255, 255, 0.16)',
             disabled: 'rgba(255, 255, 255, 0.3)',
             disabledBackground: 'rgba(255, 255, 255, 0.12)'
+          },
+          error: {
+            main: '#ffae00'
           }
         }),
   },
