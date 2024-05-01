@@ -17,7 +17,7 @@ import { ArrowForward, Business, Dashboard, EmojiPeople, Work } from '@mui/icons
 import { Link, useNavigate } from "react-router-dom";
 import HandshakeIcon from '@mui/icons-material/Handshake';
 import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
-
+import DarkModeIcon from '@mui/icons-material/DarkMode';
 import { ColorModeContext } from '../../context/ColorMode';
 import { Switch, useTheme } from '@mui/material';
 import { ErrorBoundary } from 'react-error-boundary';
@@ -91,7 +91,7 @@ export default function ResponsiveDrawer({title, children}:{title: string, child
           ml: { sm: `${drawerWidth}px` },
         }}
       >
-        <Toolbar style={{backgroundColor: 'var(--green-blue)'}}>
+        <Toolbar style={{backgroundColor: 'var(--green-blue)', justifyContent: 'space-between' }}>
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -104,12 +104,14 @@ export default function ResponsiveDrawer({title, children}:{title: string, child
           <Typography  variant="h6" noWrap component="div">
             {title}
           </Typography>
-          <Switch
-            checked={theme.palette.mode === 'dark'}
-            // onChange={handleChange}
-            inputProps={{ 'aria-label': 'controlled' }}
-            onClick={()=> colorMode.toggleColorMode()}
-          />
+          <div style={{display: 'flex', alignContent: 'center' }}>
+              <DarkModeIcon  />
+              <Switch
+                checked={theme.palette.mode === 'dark'}
+                inputProps={{ 'aria-label': 'controlled' }}
+                onClick={()=> colorMode.toggleColorMode()}
+              />
+          </div>
         </Toolbar>
       </AppBar>
       <Box
