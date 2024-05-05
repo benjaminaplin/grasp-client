@@ -17,10 +17,10 @@ export const ContactDetails = () => {
     isLoading: contactIsLoading,
     isFetching: contactIsFetching,
   } = useQueryWrapper<Contact>(`contacts/${params.id}`)
-  // @ts-expect-error
   const touches =
     contact?.touches?.sort(
       (a: Touch, b: Touch) =>
+        // @ts-expect-error expect error because TS thinks `a` could be undefined
         new Date(b.scheduledDate) - new Date(a.scheduledDate),
     ) || []
   if (!contact) {

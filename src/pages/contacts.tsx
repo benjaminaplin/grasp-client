@@ -1,26 +1,25 @@
-import axios from "axios"
+import axios from 'axios'
 import { useMutation } from '@tanstack/react-query'
-import Button from '@mui/material/Button';
-import {  useState } from "react";
-import { ContactsTable } from "../features/contact-table/ContactTable";
-import { Contact } from "../types/contact";
-import { ContactForm } from "../features/contact-form/ContactForm";
-import Layout from "../components/layout/Layout";
-import { defaultHeaders, useQueryWrapper } from "../context/WrapUseQuery";
-import { Company } from "../types/company";
-import { orderBy } from "lodash";
+import Button from '@mui/material/Button'
+import { useState } from 'react'
+import { ContactsTable } from '../features/contact-table/ContactTable'
+import { Contact } from '../types/contact'
+import { ContactForm } from '../features/contact-form/ContactForm'
+import Layout from '../components/layout/Layout'
+import { defaultHeaders, useQueryWrapper } from '../context/WrapUseQuery'
+import { Company } from '../types/company'
+import { orderBy } from 'lodash'
 
 const DEV_API_URL = import.meta.env.VITE_DEV_API_URL
 
 export default function ButtonUsage() {
-  return <Button variant="contained">Hello world</Button>;
+  return <Button variant='contained'>Hello world</Button>
 }
 
-export const Contacts
- = () => {
+export const Contacts = () => {
   const [isContactFormOpen, setIsContactFormOpen] = useState(false)
   const [contactToEditId, setContactToEditId] = useState<number | undefined>()
-  const [formState, setFormState] = useState<Contact>({
+  const [formState, setFormState] = useState<Partial<Contact>>({
     title: null,
     type: null,
     notes: null,
@@ -28,8 +27,7 @@ export const Contacts
     lastName: null,
     userId: 2,
     closeness: null,
-    nextSteps: [],
-    companyId: 0
+    companyId: 0,
   })
 
   const onMutateSuccess = () => {
@@ -37,47 +35,60 @@ export const Contacts
     refetchContacts()
   }
 
-  const {mutate: mutateCreateContact } = useMutation({
+  const { mutate: mutateCreateContact } = useMutation({
     mutationFn: (contact: Contact) => {
-      return axios.post(`${DEV_API_URL}/contacts`, JSON.stringify(contact),{
-        headers: defaultHeaders
+      return axios.post(`${DEV_API_URL}/contacts`, JSON.stringify(contact), {
+        headers: defaultHeaders,
       })
     },
-    onSuccess: onMutateSuccess
+    onSuccess: onMutateSuccess,
   })
 
-  const {mutate: mutateDeleteContact } = useMutation({
+  const { mutate: mutateDeleteContact } = useMutation({
     mutationFn: (contactId: number) => {
       return axios.delete(`${DEV_API_URL}/contacts/${contactId}`, {
-        headers: defaultHeaders
+        headers: defaultHeaders,
       })
     },
-    onSuccess: onMutateSuccess
+    onSuccess: onMutateSuccess,
   })
 
   const {
     data,
     refetch: refetchContacts,
     isLoading: contactsAreLoading,
-    isFetching: contactsAreFetching
+    isFetching: contactsAreFetching,
   } = useQueryWrapper<Contact[]>('contacts')
 
   const { data: companies } = useQueryWrapper<Company[]>(
     'companies',
     undefined,
-    { select: (fetchedData: Company[]) =>  orderBy(fetchedData, ['name'])
-  })
-  const { data: contact } = useQueryWrapper(`contacts/${contactToEditId}`, undefined, {
-    enabled: !!contactToEditId
-  })
-  
-  const { mutate: mutateUpdateContact } = useMutation({
-    mutationFn: ({contact, id} :{contact: Partial<Contact>, id: number}) => {
-      return axios.patch(`${DEV_API_URL}/contacts/${id}`, JSON.stringify(contact),{
-        headers: defaultHeaders
-      })
+    { select: (fetchedData: Company[]) => orderBy(fetchedData, ['name']) },
+  )
+  const { data: contact } = useQueryWrapper(
+    `contacts/${contactToEditId}`,
+    undefined,
+    {
+      enabled: !!contactToEditId,
     },
-   
+  )
+
+  const { mutate: mutateUpdateContact } = useMutation({
+    mutationFn: ({
+      contact,
+      id,
+    }: {
+      contact: Partial<Contact>
+      id: number
+    }) => {
+      return axios.patch(
+        `${DEV_API_URL}/contacts/${id}`,
+        JSON.stringify(contact),
+        {
+          headers: defaultHeaders,
+        },
+      )
+    },
   })
 
   const deleteContact = (contactId: number) => {
@@ -85,15 +96,21 @@ export const Contacts
   }
 
   const createContact = () => {
-    mutateCreateContact(formState)
+    mutateCreateContact(formState as Contact)
   }
 
-  const updateContact = (updatedContact: {contact: Partial<Contact>, id: number}) => {
+  const updateContact = (updatedContact: {
+    contact: Partial<Contact>
+    id: number
+  }) => {
     mutateUpdateContact(updatedContact)
   }
 
   const handleFormChange = (evt: any) => {
-    setFormState((formState: any) => ({...formState, [evt.target.name]: evt.target.value}))
+    setFormState((formState: any) => ({
+      ...formState,
+      [evt.target.name]: evt.target.value,
+    }))
   }
 
   const openContactForm = (contactId: number | undefined) => {
@@ -101,31 +118,38 @@ export const Contacts
     setIsContactFormOpen(true)
   }
   return (
-     <Layout title="Contacts" >
-        <Button
-          color='info'
-          variant="contained"
-          onClick={()=> setIsContactFormOpen(!isContactFormOpen)}>
-            Add Contact
-        </Button >
-        <Button style={{marginLeft: '1rem'}} onClick={() => refetchContacts()}>Refresh Data</Button>
-        {data && <ContactsTable
+    <Layout title='Contacts'>
+      <Button
+        color='info'
+        variant='contained'
+        onClick={() => setIsContactFormOpen(!isContactFormOpen)}
+      >
+        Add Contact
+      </Button>
+      <Button style={{ marginLeft: '1rem' }} onClick={() => refetchContacts()}>
+        Refresh Data
+      </Button>
+      {data && (
+        <ContactsTable
           contactsAreLoading={contactsAreLoading || contactsAreFetching}
           updateContact={updateContact}
           tableData={data}
           refreshTableData={refetchContacts}
           deleteContact={deleteContact}
-          handleOpenContactForm={openContactForm} 
-        />}
-        {companies && <ContactForm
+          handleOpenContactForm={openContactForm}
+        />
+      )}
+      {companies && (
+        <ContactForm
           companies={companies}
           companyId={formState.companyId || 0}
           contact={contact as unknown as Contact | null}
           isOpen={isContactFormOpen}
-          handleClose={()=>setIsContactFormOpen(false)} 
+          handleClose={() => setIsContactFormOpen(false)}
           createContact={createContact}
           handleFormChange={handleFormChange}
-        />}
+        />
+      )}
     </Layout>
   )
 }

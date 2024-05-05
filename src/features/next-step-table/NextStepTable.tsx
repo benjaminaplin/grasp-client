@@ -17,6 +17,7 @@ import Skeleton from '@mui/material/Skeleton'
 import { TableCellInput } from '../../components/table/table-cell-input/TableCellInput'
 import { coerceStringToBool } from '../../utils/coerce-str-bool'
 import { format } from 'date-fns'
+import { useLoadingColumns } from '../../components/table/hooks/use-loading-columns'
 
 type NextStepTableType = {
   updateNextStep: (updatedNextStep: {
@@ -145,15 +146,9 @@ export const NextStepTable = ({
     [],
   )
 
-  const memoColumns = useMemo<ColumnDef<NextStep>[]>(
-    () =>
-      areNextStepsLoading
-        ? columns.map((column) => ({
-            ...column,
-            cell: () => <Skeleton height='32' />,
-          }))
-        : columns,
-    [areNextStepsLoading],
+  const memoColumns = useLoadingColumns<NextStep>(
+    columns as ColumnDef<NextStep>[],
+    areNextStepsLoading,
   )
 
   const table = useReactTable({

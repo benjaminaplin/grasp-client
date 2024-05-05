@@ -1,31 +1,33 @@
 import './App.css'
-import Layout from './components/layout/Layout';
-import {Applications} from './pages/applications';
+import Layout from './components/layout/Layout'
+import { Applications } from './pages/applications'
 import { Contacts } from './pages/contacts'
-import {
-  QueryClient,
-  QueryClientProvider,
-} from '@tanstack/react-query'
-import {
-  BrowserRouter,
-  Route,
-  Routes,
-} from "react-router-dom";
-import { Companies } from './pages/companies';
-import { ResourceView } from './components/resource-view/ResourceView';
-import {NextSteps} from './pages/next-steps';
-import { Dashboard } from './pages/dashboard';
-import {Interviews} from './pages/interviews';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
-import { PaletteMode } from '@mui/material';
-import { grey , amber} from '@mui/material/colors';
-import { useMemo, useState } from 'react';
-import { ColorModeContext } from './context/ColorMode';
-import { Touches } from './pages/touches';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { Companies } from './pages/companies'
+import { ResourceView } from './components/resource-view/ResourceView'
+import { NextSteps } from './pages/next-steps'
+import { Dashboard } from './pages/dashboard'
+import { Interviews } from './pages/interviews'
+import { ThemeProvider, createTheme } from '@mui/material/styles'
+import CssBaseline from '@mui/material/CssBaseline'
+import { PaletteMode } from '@mui/material'
+import { grey, amber } from '@mui/material/colors'
+import { useMemo, useState } from 'react'
+import { ColorModeContext } from './context/ColorMode'
+import { Touches } from './pages/touches'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider/LocalizationProvider';
-import { ContactDetails } from './pages/contact-details';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider/LocalizationProvider'
+import { ContactDetails } from './pages/contact-details'
+import { RowData } from '@tanstack/react-table'
+
+declare module '@tanstack/react-table' {
+  // eslint ignore is needed because TS needs these parameters
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  interface TableMeta<TData extends RowData> {
+    updateData: (rowIndex: number, columnId: string, value: unknown) => void
+  }
+}
 
 const queryClient = new QueryClient()
 
@@ -37,7 +39,7 @@ const palette = {
       dark: '#00765A',
     },
   },
-};
+}
 const getDesignTokens = (mode: PaletteMode) => ({
   palette: {
     mode,
@@ -51,8 +53,8 @@ const getDesignTokens = (mode: PaletteMode) => ({
             secondary: grey[800],
           },
           error: {
-            main: '#ffae00'
-          }
+            main: '#ffae00',
+          },
         }
       : {
           // palette values for dark mode
@@ -69,65 +71,67 @@ const getDesignTokens = (mode: PaletteMode) => ({
           text: {
             primary: '#fff',
             secondary: 'rgba(255, 255, 255, 0.7)',
-            disabled: 'rgba(255, 255, 255, 0.5)'
+            disabled: 'rgba(255, 255, 255, 0.5)',
           },
           action: {
             active: '#fff',
             hover: 'rgba(255, 255, 255, 0.08)',
             selected: 'rgba(255, 255, 255, 0.16)',
             disabled: 'rgba(255, 255, 255, 0.3)',
-            disabledBackground: 'rgba(255, 255, 255, 0.12)'
+            disabledBackground: 'rgba(255, 255, 255, 0.12)',
           },
           error: {
-            main: '#ffae00'
-          }
+            main: '#ffae00',
+          },
         }),
   },
-});
-
+})
 
 function App() {
-  const [mode, setMode] = useState<PaletteMode>('light');
+  const [mode, setMode] = useState<PaletteMode>('light')
   const colorMode = useMemo(
     () => ({
       // The dark mode switch would invoke this method
       toggleColorMode: () => {
         setMode((prevMode: PaletteMode) =>
           prevMode === 'light' ? 'dark' : 'light',
-        );
+        )
       },
     }),
     [],
-  );
+  )
 
   // Update the theme only if the mode changes
-  const theme = useMemo(() => createTheme(getDesignTokens(mode)), [mode]);
+  const theme = useMemo(() => createTheme(getDesignTokens(mode)), [mode])
 
   return (
     <QueryClientProvider client={queryClient}>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <ColorModeContext.Provider value={colorMode}>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/contacts" element={<Contacts />} />
-              <Route path="/contacts/:id" element={<ContactDetails />} />
-              <Route path="/next-steps" element={<NextSteps />} />
-              <Route path="/next-steps/:id" element={<ResourceView />} />
-              <Route path="/job-applications" element={<Applications />} />
-              <Route path="/interviews" element={<Interviews />} />
-              <Route path="/job-applications/:id" element={<ResourceView />} />
-              <Route path="/companies" element={<Companies />} />
-              <Route path="/companies/:id" element={<ResourceView />} />
-              <Route path="/touches" element={<Touches />} />
-              <Route path="/touches/:id" element={<ResourceView />} />
-              <Route path="*" element={<NoMatch />} />
-            </Routes>
-          </BrowserRouter>
-        </ThemeProvider>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <BrowserRouter>
+              <Routes>
+                <Route path='/' element={<Dashboard />} />
+                <Route path='/dashboard' element={<Dashboard />} />
+                <Route path='/contacts' element={<Contacts />} />
+                <Route path='/contacts/:id' element={<ContactDetails />} />
+                <Route path='/next-steps' element={<NextSteps />} />
+                <Route path='/next-steps/:id' element={<ResourceView />} />
+                <Route path='/job-applications' element={<Applications />} />
+                <Route path='/interviews' element={<Interviews />} />
+                <Route
+                  path='/job-applications/:id'
+                  element={<ResourceView />}
+                />
+                <Route path='/companies' element={<Companies />} />
+                <Route path='/companies/:id' element={<ResourceView />} />
+                <Route path='/touches' element={<Touches />} />
+                <Route path='/touches/:id' element={<ResourceView />} />
+                <Route path='*' element={<NoMatch />} />
+              </Routes>
+            </BrowserRouter>
+          </ThemeProvider>
         </ColorModeContext.Provider>
       </LocalizationProvider>
     </QueryClientProvider>
@@ -136,4 +140,8 @@ function App() {
 
 export default App
 
-const NoMatch = () => <Layout title=""><div>Nothing to see here</div></Layout>
+const NoMatch = () => (
+  <Layout title=''>
+    <div>Nothing to see here</div>
+  </Layout>
+)
