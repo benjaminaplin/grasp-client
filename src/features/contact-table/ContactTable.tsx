@@ -8,16 +8,15 @@ import {
   getSortedRowModel,
 } from '@tanstack/react-table'
 import { Contact } from '../../types/contact'
-import { ReactNode, useEffect, useMemo, useState } from 'react'
-import './contact-table.css'
+import { ReactNode, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { DeleteButtonCell } from '../../components/delete-button-cell/DeleteButtonCell'
 import { getTableHeader } from '../../components/table/table-header/TableHeader'
-import { Skeleton } from '@mui/material'
 import { TableCellInput } from '../../components/table/table-cell-input/TableCellInput'
 import { EditButtonCell } from '../../components/edit-button-cell/EditButtonCell'
 import { Company } from '../../types/company'
 import { useLoadingColumns } from '../../components/table/hooks/use-loading-columns'
+import '../../styles/table-style.css'
 
 const linkToContactCellFn = (info: CellContext<Contact, unknown>) => {
   return (
@@ -171,7 +170,7 @@ export const ContactsTable = ({
     getFilteredRowModel: getFilteredRowModel(),
     debugTable: true,
     rowCount: tableData?.length,
-    getSortedRowModel: getSortedRowModel(), //provide a sorting row model
+    getSortedRowModel: getSortedRowModel(),
   })
 
   return (

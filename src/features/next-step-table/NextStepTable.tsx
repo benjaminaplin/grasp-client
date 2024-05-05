@@ -7,17 +7,16 @@ import {
   getSortedRowModel,
 } from '@tanstack/react-table'
 import { ReactNode, useEffect, useMemo, useState } from 'react'
-import './next-step-table.css'
 import { NextStep } from '../../types/next-step'
 import { Link } from 'react-router-dom'
 import { relationFilterFn } from '../../utils/FilterFn'
 import { DeleteButtonCell } from '../../components/delete-button-cell/DeleteButtonCell'
 import { getTableHeader } from '../../components/table/table-header/TableHeader'
-import Skeleton from '@mui/material/Skeleton'
 import { TableCellInput } from '../../components/table/table-cell-input/TableCellInput'
 import { coerceStringToBool } from '../../utils/coerce-str-bool'
 import { format } from 'date-fns'
 import { useLoadingColumns } from '../../components/table/hooks/use-loading-columns'
+import '../../styles/table-style.css'
 
 type NextStepTableType = {
   updateNextStep: (updatedNextStep: {
@@ -159,7 +158,7 @@ export const NextStepTable = ({
     getFilteredRowModel: getFilteredRowModel(),
     debugTable: true,
     rowCount: tableData?.length,
-    getSortedRowModel: getSortedRowModel(), //provide a sorting row model
+    getSortedRowModel: getSortedRowModel(),
     initialState: {
       sorting: [
         {

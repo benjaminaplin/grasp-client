@@ -1,40 +1,44 @@
+import TableHead from '@mui/material/TableHead'
 import { Filter } from '../table-filter/TableFilter'
-import { Table, flexRender } from "@tanstack/react-table"
+import { Table, flexRender } from '@tanstack/react-table'
+import TableRow from '@mui/material/TableRow'
+import TableCell from '@mui/material/TableCell'
 
-export const getTableHeader = <ResourceType,>( table: Table<ResourceType>) => {
+export const getTableHeader = <ResourceType,>(table: Table<ResourceType>) => {
   return (
-    <thead>
-    {table.getHeaderGroups().map(headerGroup => (
-      <tr key={headerGroup.id}>
-        {headerGroup.headers.map(header => {
-          return (
-            <th key={header.id} colSpan={header.colSpan}>
-              {header.isPlaceholder ? null : (
-                <div>
-                  <div style={{cursor: 'pointer'}} onClick={header.column.getToggleSortingHandler()} >
-
-                  {flexRender(
-                    header.column.columnDef.header,
-                    header.getContext()
-                    )}
-                  </div>
-                  {header.column.getCanFilter() ? (
-                    <div style={{display: 'flex'}}>
-                    <Filter column={header.column} table={table} />
-                    {{
-                      asc: " 🔼",
-                      desc: " 🔽",
-                    }[header.column.getIsSorted() as string] ?? null}
+    <TableHead>
+      {table.getHeaderGroups().map((headerGroup) => (
+        <TableRow key={headerGroup.id}>
+          {headerGroup.headers.map((header) => {
+            return (
+              <TableCell key={header.id} colSpan={header.colSpan}>
+                {header.isPlaceholder ? null : (
+                  <div>
+                    <div
+                      style={{ cursor: 'pointer' }}
+                      onClick={header.column.getToggleSortingHandler()}
+                    >
+                      {flexRender(
+                        header.column.columnDef.header,
+                        header.getContext(),
+                      )}
                     </div>
-                  ) : null}
-             
-                </div>
-              )}
-            </th>
-          )
-        })}
-      </tr>
-    ))}
-  </thead>
+                    {header.column.getCanFilter() ? (
+                      <div style={{ display: 'flex' }}>
+                        <Filter column={header.column} table={table} />
+                        {{
+                          asc: ' 🔼',
+                          desc: ' 🔽',
+                        }[header.column.getIsSorted() as string] ?? null}
+                      </div>
+                    ) : null}
+                  </div>
+                )}
+              </TableCell>
+            )
+          })}
+        </TableRow>
+      ))}
+    </TableHead>
   )
 }

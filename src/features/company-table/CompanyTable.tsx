@@ -8,14 +8,13 @@ import {
   getSortedRowModel,
 } from '@tanstack/react-table'
 import { ReactNode, useEffect, useMemo, useState } from 'react'
-import './company-table.css'
 import { Company } from '../../types/company'
 import { DeleteButtonCell } from '../../components/delete-button-cell/DeleteButtonCell'
 import { Link } from 'react-router-dom'
 import { getTableHeader } from '../../components/table/table-header/TableHeader'
-import Skeleton from '@mui/material/Skeleton'
 import { TableCellInput } from '../../components/table/table-cell-input/TableCellInput'
 import { useLoadingColumns } from '../../components/table/hooks/use-loading-columns'
+import '../../styles/table-style.css'
 
 const linkToCompanyCellFn = (info: CellContext<Company, unknown>) => {
   return (
@@ -115,7 +114,7 @@ export const CompanyTable = ({
     getFilteredRowModel: getFilteredRowModel(),
     debugTable: true,
     rowCount: tableData?.length,
-    getSortedRowModel: getSortedRowModel(), //provide a sorting row model
+    getSortedRowModel: getSortedRowModel(),
   })
 
   return (

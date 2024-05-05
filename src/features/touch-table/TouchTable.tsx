@@ -7,7 +7,6 @@ import {
   getSortedRowModel,
 } from '@tanstack/react-table'
 import { useEffect, useMemo, useState } from 'react'
-import './touch-table.css'
 import { Touch } from '../../types/touch'
 import { Link } from 'react-router-dom'
 import { relationFilterFn } from '../../utils/FilterFn'
@@ -16,10 +15,10 @@ import { useMutation } from '@tanstack/react-query'
 import axios from 'axios'
 import { getTableHeader } from '../../components/table/table-header/TableHeader'
 import { format } from 'date-fns'
-import Skeleton from '@mui/material/Skeleton'
 import { TableCellInput } from '../../components/table/table-cell-input/TableCellInput'
 import { defaultHeaders } from '../../context/WrapUseQuery'
 import { useLoadingColumns } from '../../components/table/hooks/use-loading-columns'
+import '../../styles/table-style.css'
 
 type TouchesTableType = {
   updateTouch: (updatedTouch: { touch: Partial<Touch>; id: number }) => void
@@ -179,7 +178,7 @@ export const TouchesTable = ({
         },
       ],
     },
-    getSortedRowModel: getSortedRowModel(), //provide a sorting row model
+    getSortedRowModel: getSortedRowModel(),
   })
 
   return (

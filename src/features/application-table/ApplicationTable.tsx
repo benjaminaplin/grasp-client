@@ -7,18 +7,31 @@ import {
   getSortedRowModel,
 } from '@tanstack/react-table'
 import { format } from 'date-fns'
-import { ReactNode, useEffect, useMemo, useState } from 'react'
-import './application-table.css'
+import { ReactNode, SyntheticEvent, useEffect, useMemo, useState } from 'react'
+import axios from 'axios'
+import Box from '@mui/material/Box'
+import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableContainer from '@mui/material/TableContainer'
+import TableHead from '@mui/material/TableHead'
+import TableRow from '@mui/material/TableRow'
+import TablePagination from '@mui/material/TablePagination'
+import InputBase from '@mui/material/InputBase'
+import Paper from '@mui/material/Paper'
 import { Application } from '../../types/application'
 import { Link } from 'react-router-dom'
 import { relationFilterFn } from '../../utils/FilterFn'
 import { DeleteButtonCell } from '../../components/delete-button-cell/DeleteButtonCell'
 import { useMutation } from '@tanstack/react-query'
-import axios from 'axios'
 import { getTableHeader } from '../../components/table/table-header/TableHeader'
 import { TableCellInput } from '../../components/table/table-cell-input/TableCellInput'
 import { defaultHeaders } from '../../context/WrapUseQuery'
 import { useLoadingColumns } from '../../components/table/hooks/use-loading-columns'
+import '../../styles/table-style.css'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import Switch from '@mui/material/Switch'
+import { AppTableContainer } from '../../components/table/table-container/TableContainer'
 
 type ApplicationsTableType = {
   updateApplication: (updatedApplication: {
@@ -36,6 +49,8 @@ export const ApplicationsTable = ({
   refreshTableData,
   areApplicationsLoading,
 }: ApplicationsTableType) => {
+  const [dense, setDense] = useState(false)
+
   const defaultColumn: Partial<ColumnDef<Application>> = {
     cell: ({ getValue, row, column, table }) => {
       const initialValue = getValue()
@@ -187,33 +202,34 @@ export const ApplicationsTable = ({
         },
       ],
     },
-    getSortedRowModel: getSortedRowModel(), //provide a sorting row model
+    getSortedRowModel: getSortedRowModel(),
   })
+  const handleChangeDense = (event: SyntheticEvent) => {
+    setDense((event.target as HTMLInputElement).checked)
+  }
 
+  const tableHeaders = getTableHeader<Application>(table)
   return (
     <>
-      <table>
-        {getTableHeader<Application>(table)}
-        <tbody>
-          {table.getRowModel().rows.map((row) => {
-            return (
-              <tr key={row.id}>
-                {row.getVisibleCells().map((cell) => {
-                  return (
-                    <td key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
-                    </td>
-                  )
-                })}
-              </tr>
-            )
-          })}
-        </tbody>
-      </table>
-      <div />
+      <AppTableContainer
+        dense={dense}
+        tableHeaders={tableHeaders}
+        handleChangeDense={handleChangeDense}
+      >
+        {table.getRowModel().rows.map((row) => {
+          return (
+            <TableRow key={row.id}>
+              {row.getVisibleCells().map((cell) => {
+                return (
+                  <TableCell key={cell.id}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
+                )
+              })}
+            </TableRow>
+          )
+        })}
+      </AppTableContainer>
     </>
   )
 }
