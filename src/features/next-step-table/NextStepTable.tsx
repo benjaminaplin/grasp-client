@@ -19,10 +19,13 @@ import { coerceStringToBool } from '../../utils/coerce-str-bool'
 import { format } from 'date-fns'
 
 type NextStepTableType = {
-  updateNextStep: (updatedNextStep: {nextStep: Partial<NextStep>, id: number}) => void,
-  tableData: NextStep[] | undefined,
-  refreshTableData: () => void,
-  deleteNextStep: (id: number) => void,
+  updateNextStep: (updatedNextStep: {
+    nextStep: Partial<NextStep>
+    id: number
+  }) => void
+  tableData: NextStep[] | undefined
+  refreshTableData: () => void
+  deleteNextStep: (id: number) => void
   areNextStepsLoading: boolean
 }
 
@@ -30,10 +33,8 @@ export const NextStepTable = ({
   updateNextStep,
   tableData,
   deleteNextStep,
-  areNextStepsLoading
-}: NextStepTableType)=>  {
-
-
+  areNextStepsLoading,
+}: NextStepTableType) => {
   const defaultColumn: Partial<ColumnDef<NextStep>> = {
     cell: ({ getValue, row, column, table }) => {
       const getInitialValue = () => {
@@ -46,21 +47,31 @@ export const NextStepTable = ({
       // When the input is blurred, we'll call our table meta's updateData function
       const onBlur = () => {
         table.options.meta?.updateData(row.index, column.id, value)
-        updateNextStep({nextStep: {...row.original, [column.id]: value}, id: row.original.id as number})
+        updateNextStep({
+          nextStep: { ...row.original, [column.id]: value },
+          id: row.original.id as number,
+        })
       }
-  
+
       // If the initialValue is changed external, sync it up with our state
       useEffect(() => {
         const initialValue = getInitialValue()
         setValue(initialValue)
       }, [])
-  
-      const onChange = (e: { target: { value: unknown, checked: boolean | undefined } }) => {
-        const isCheckBox = (typeof e.target?.checked === 'boolean' && (e.target.value === 'on' || e.target.value === 'off'))
 
-        let inputValue = isCheckBox ? e.target.checked : e.target.value
-        if(isCheckBox){
-          updateNextStep({nextStep: {...row.original, [column.id]: e.target?.checked}, id: row.original.id as number})
+      const onChange = (e: {
+        target: { value: unknown; checked: boolean | undefined }
+      }) => {
+        const isCheckBox =
+          typeof e.target?.checked === 'boolean' &&
+          (e.target.value === 'on' || e.target.value === 'off')
+
+        const inputValue = isCheckBox ? e.target.checked : e.target.value
+        if (isCheckBox) {
+          updateNextStep({
+            nextStep: { ...row.original, [column.id]: e.target?.checked },
+            id: row.original.id as number,
+          })
         }
         setValue(inputValue)
       }
@@ -70,64 +81,79 @@ export const NextStepTable = ({
           value={value as string}
           onChange={onChange as any}
           onBlur={onBlur}
-          />
-        )
+        />
+      )
     },
   }
 
-  const columns = useMemo<ColumnDef<NextStep>[]>(()=>[
-    {
-        accessorFn: row => row.action,
+  const columns = useMemo<ColumnDef<NextStep>[]>(
+    () => [
+      {
+        accessorFn: (row) => row.action,
         id: 'action',
         header: () => <span>Action</span>,
-        footer: props => props.column.id,
+        footer: (props) => props.column.id,
       },
       {
-        accessorFn: row => row.notes,
+        accessorFn: (row) => row.notes,
         id: 'notes',
         header: () => <span>Notes</span>,
-        footer: props => props.column.id,
+        footer: (props) => props.column.id,
       },
       {
         accessorKey: 'contact',
         id: 'contact',
         header: () => <span>Contact</span>,
-        footer: props => props.column.id,
+        footer: (props) => props.column.id,
         cell: (info) => {
-          return <Link to={`/contacts/${info.row.original.contactId}`}>{info.getValue() as ReactNode}</Link>
+          return (
+            <Link to={`/contacts/${info.row.original.contactId}`}>
+              {info.getValue() as ReactNode}
+            </Link>
+          )
         },
-        filterFn: relationFilterFn<NextStep>()
+        filterFn: relationFilterFn<NextStep>(),
       },
       {
         accessorKey: 'dueDate',
         id: 'dueDate',
         header: () => <span>Due Date</span>,
-        footer: props => props.column.id,
+        footer: (props) => props.column.id,
         cell: (info) => {
-          return <span >{info.row.original.dueDate ? `${format(info.row.original.dueDate, "MM/dd/yyyy")}` : ''}</span>
+          return (
+            <span>
+              {info.row.original.dueDate
+                ? `${format(info.row.original.dueDate, 'MM/dd/yyyy')}`
+                : ''}
+            </span>
+          )
         },
       },
       {
-        accessorFn: row => row.completed,
+        accessorFn: (row) => row.completed,
         id: 'completed',
         header: () => <span>Completed</span>,
-        footer: props => props.column.id,
+        footer: (props) => props.column.id,
       },
       {
         header: 'Delete',
-        cell: ({row}) => <DeleteButtonCell row={row} deleteResource={deleteNextStep} />
-      }
-  ],[])
+        cell: ({ row }) => (
+          <DeleteButtonCell row={row} deleteResource={deleteNextStep} />
+        ),
+      },
+    ],
+    [],
+  )
 
-
-  const memoColumns = useMemo<ColumnDef<NextStep>[]>(() => 
+  const memoColumns = useMemo<ColumnDef<NextStep>[]>(
+    () =>
       areNextStepsLoading
-      ? columns.map((column) => ({
-        ...column,
-        cell: () => <Skeleton height='32' />,
-      }))
-    : columns,
-    [areNextStepsLoading]
+        ? columns.map((column) => ({
+            ...column,
+            cell: () => <Skeleton height='32' />,
+          }))
+        : columns,
+    [areNextStepsLoading],
   )
 
   const table = useReactTable({
@@ -143,11 +169,10 @@ export const NextStepTable = ({
       sorting: [
         {
           id: 'completed',
-          desc: false,  
+          desc: false,
         },
       ],
     },
-
   })
 
   return (
@@ -155,15 +180,15 @@ export const NextStepTable = ({
       <table>
         {getTableHeader<NextStep>(table)}
         <tbody>
-          {table.getRowModel().rows.map(row => {
+          {table.getRowModel().rows.map((row) => {
             return (
               <tr key={row.id}>
-                {row.getVisibleCells().map(cell => {
+                {row.getVisibleCells().map((cell) => {
                   return (
                     <td key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </td>
                   )
@@ -173,7 +198,7 @@ export const NextStepTable = ({
           })}
         </tbody>
       </table>
-      <div/>
+      <div />
     </>
   )
 }
