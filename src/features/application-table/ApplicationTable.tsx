@@ -8,17 +8,8 @@ import {
 } from '@tanstack/react-table'
 import { format } from 'date-fns'
 import { ReactNode, SyntheticEvent, useEffect, useMemo, useState } from 'react'
-import axios from 'axios'
-import Box from '@mui/material/Box'
-import Table from '@mui/material/Table'
-import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
-import TableContainer from '@mui/material/TableContainer'
-import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
-import TablePagination from '@mui/material/TablePagination'
-import InputBase from '@mui/material/InputBase'
-import Paper from '@mui/material/Paper'
 import { Application } from '../../types/application'
 import { Link } from 'react-router-dom'
 import { relationFilterFn } from '../../utils/FilterFn'
@@ -29,9 +20,8 @@ import { TableCellInput } from '../../components/table/table-cell-input/TableCel
 import { defaultHeaders } from '../../context/WrapUseQuery'
 import { useLoadingColumns } from '../../components/table/hooks/use-loading-columns'
 import '../../styles/table-style.css'
-import FormControlLabel from '@mui/material/FormControlLabel'
-import Switch from '@mui/material/Switch'
 import { AppTableContainer } from '../../components/table/table-container/TableContainer'
+import axios from 'axios'
 
 type ApplicationsTableType = {
   updateApplication: (updatedApplication: {
