@@ -20,7 +20,7 @@ export const Contacts = () => {
     notes: null,
     firstName: null,
     lastName: null,
-    userId: 2,
+    userId: 3,
     closeness: null,
     companyId: 0,
   })

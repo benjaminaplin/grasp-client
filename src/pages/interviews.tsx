@@ -24,7 +24,7 @@ export const Interviews = () => {
     type: null,
     status: null,
     jobApplicationId: null,
-    userId: 2,
+    userId: 3,
     contactId: null,
     applications: [],
     jobApplication: undefined,

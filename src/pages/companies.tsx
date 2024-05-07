@@ -15,7 +15,7 @@ export const Companies = () => {
     name: null,
     type: null,
     notes: null,
-    userId: 2,
+    userId: 3,
     jobApplications: [],
     users: [],
   })
@@ -39,7 +39,7 @@ export const Companies = () => {
     refetch: refetchCompanies,
     isLoading: companiesAreLoading,
     isFetching: companiesAreFetching,
-  } = useQueryWrapper<Company[]>('users/2/companies')
+  } = useQueryWrapper<Company[]>('users/3/companies')
 
   const { mutate: mutateDeleteCompany } = useMutation({
     mutationFn: (companyId: number) => {

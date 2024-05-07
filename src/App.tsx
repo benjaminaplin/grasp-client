@@ -21,6 +21,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider/L
 import { ContactDetails } from './pages/contact-details'
 import { RowData } from '@tanstack/react-table'
 import { useLocalStorage } from 'usehooks-ts'
+import { faker } from '@faker-js/faker'
 
 declare module '@tanstack/react-table' {
   // eslint ignore is needed because TS needs these parameters
@@ -102,7 +103,7 @@ function App() {
     }),
     [],
   )
-
+  console.log('faker', faker.company.name())
   // Update the theme only if the mode changes
   const theme = useMemo(() => createTheme(getDesignTokens(mode)), [mode])
 

@@ -17,7 +17,7 @@ export const Applications = () => {
     type: null,
     notes: null,
     role: null,
-    userId: 2,
+    userId: 3,
     companies: [],
     companyId: null,
     dateApplied: null,
