@@ -42,6 +42,9 @@ jobs:
   deploy:
     executor: node/default
     steps:
+      - checkout
+      - node/install-packages:
+          pkg-manager: npm
       # Replace this with steps to deploy to users
       - run:
           name: deploy
