@@ -20,6 +20,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider/LocalizationProvider'
 import { ContactDetails } from './pages/contact-details'
 import { RowData } from '@tanstack/react-table'
+import { useLocalStorage } from 'usehooks-ts'
 
 declare module '@tanstack/react-table' {
   // eslint ignore is needed because TS needs these parameters
@@ -88,7 +89,8 @@ const getDesignTokens = (mode: PaletteMode) => ({
 })
 
 function App() {
-  const [mode, setMode] = useState<PaletteMode>('light')
+  const [mode, setMode] = useLocalStorage<PaletteMode>('mode', 'light')
+
   const colorMode = useMemo(
     () => ({
       // The dark mode switch would invoke this method
