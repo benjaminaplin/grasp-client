@@ -42,7 +42,7 @@ export const InterviewForm = ({
     [
       ...(applications?.map((a: Application) => ({
         value: a.id,
-        label: `${a.companyId ? companyMap?.[a.companyId][0]?.name : 'unknown company'} ${a.role}`,
+        label: `${a.companyId ? companyMap?.[a.companyId]?.[0]?.name : 'unknown company'} ${a.role}`,
       })) || []),
     ],
     ['label'],
