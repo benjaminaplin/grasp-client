@@ -12,10 +12,6 @@ import { orderBy } from 'lodash'
 import dayjs from 'dayjs'
 import { getBaseUrl } from '../service/getUrl'
 
-export default function ButtonUsage() {
-  return <Button variant='contained'>Hello world</Button>
-}
-
 export const NextSteps = () => {
   const [isNextStepFormOpen, setIsNextStepFormOpen] = useState(false)
   const [formState, setFormState] = useState<NextStep>({

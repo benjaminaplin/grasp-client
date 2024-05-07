@@ -11,10 +11,6 @@ import { defaultHeaders, useQueryWrapper } from '../context/WrapUseQuery'
 import { orderBy } from 'lodash'
 import { getBaseUrl } from '../service/getUrl'
 
-export default function ButtonUsage() {
-  return <Button variant='contained'>Hello world</Button>
-}
-
 export const Applications = () => {
   const [isapplicationFormOpen, setIsapplicationFormOpen] = useState(false)
   const [formState, setFormState] = useState<Application>({

@@ -9,10 +9,6 @@ import { CompanyForm } from '../features/company-form/CompanyForm'
 import { defaultHeaders, useQueryWrapper } from '../context/WrapUseQuery'
 import { getBaseUrl } from '../service/getUrl'
 
-export default function ButtonUsage() {
-  return <Button variant='contained'>Hello world</Button>
-}
-
 export const Companies = () => {
   const [isCompanyFormOpen, setIsCompanyFormOpen] = useState(false)
   const [formState, setFormState] = useState<Company>({

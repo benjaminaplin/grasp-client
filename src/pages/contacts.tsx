@@ -11,10 +11,6 @@ import { Company } from '../types/company'
 import { orderBy } from 'lodash'
 import { getBaseUrl } from '../service/getUrl'
 
-export default function ButtonUsage() {
-  return <Button variant='contained'>Hello world</Button>
-}
-
 export const Contacts = () => {
   const [isContactFormOpen, setIsContactFormOpen] = useState(false)
   const [contactToEditId, setContactToEditId] = useState<number | undefined>()
