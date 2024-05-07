@@ -126,7 +126,7 @@ export const InterviewsTable = ({
         }) => {
           const role = jobApplication?.role
           const company = (jobApplication?.companyId &&
-            companyMap?.[jobApplication?.companyId][0]) || { name: null }
+            companyMap?.[jobApplication?.companyId]?.[0]) || { name: null }
           return (
             <Link
               to={`/job-applications/${jobApplicationId}`}
