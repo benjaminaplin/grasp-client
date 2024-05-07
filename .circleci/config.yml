@@ -57,7 +57,7 @@ jobs:
           command: npm run deploy
       - run: aws cloudfront create-invalidation --distribution-id E2MERZF2O77WB7 --paths /\*
 workflows:
-  build-and-test:
+  build-test-and-deploy:
     jobs:
       - test-node
       - build-node:
