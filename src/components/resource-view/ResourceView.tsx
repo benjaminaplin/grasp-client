@@ -2,8 +2,7 @@ import { useLocation } from 'react-router-dom'
 import Layout from '../layout/Layout'
 import { useQuery } from '@tanstack/react-query'
 import { camelToHuman } from '../../utils/camel-to-human'
-
-const DEV_API_URL = import.meta.env.VITE_DEV_API_URL
+import { getBaseUrl } from '../../service/getUrl'
 
 export const ResourceView = ({
   relation,
@@ -15,7 +14,7 @@ export const ResourceView = ({
   const { data } = useQuery({
     queryKey: [location.pathname],
     queryFn: () =>
-      fetch(`${DEV_API_URL}${location.pathname}`).then((res: any) => {
+      fetch(`${getBaseUrl()}${location.pathname}`).then((res: any) => {
         return res.json()
       }),
   })

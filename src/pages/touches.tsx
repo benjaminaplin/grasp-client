@@ -10,8 +10,7 @@ import { Application } from '../types/application'
 import dayjs from 'dayjs'
 import { defaultHeaders, useQueryWrapper } from '../context/WrapUseQuery'
 import { Contact } from '../types/contact'
-
-const DEV_API_URL = import.meta.env.VITE_DEV_API_URL
+import { getBaseUrl } from '../service/getUrl'
 
 export const Touches = () => {
   const [isTouchFormOpen, setIsTouchFormOpen] = useState(false)
@@ -26,7 +25,7 @@ export const Touches = () => {
   })
   const { mutate: mutateCreateTouch } = useMutation({
     mutationFn: (touch: Touch) => {
-      return axios.post(`${DEV_API_URL}/touches`, JSON.stringify(touch), {
+      return axios.post(`${getBaseUrl()}/touches`, JSON.stringify(touch), {
         headers: defaultHeaders,
       })
     },
@@ -49,7 +48,7 @@ export const Touches = () => {
   const { mutate: mutateUpdateTouch } = useMutation({
     mutationFn: ({ touch, id }: { touch: Partial<Touch>; id: number }) => {
       return axios.patch(
-        `${DEV_API_URL}/touches/${id}`,
+        `${getBaseUrl()}/touches/${id}`,
         JSON.stringify(touch),
         {
           headers: defaultHeaders,

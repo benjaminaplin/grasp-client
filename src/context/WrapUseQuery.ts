@@ -1,9 +1,10 @@
 import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
+import { getBaseUrl } from '../service/getUrl'
+
 export const defaultHeaders = {
   'Content-Type': 'application/json',
 }
-const DEV_API_URL = import.meta.env.VITE_DEV_API_URL
 
 type Method = 'get' | 'out' | 'patch' | 'delete' | 'post'
 const defaultOptions = { method: 'GET' }
@@ -13,7 +14,7 @@ async function fetcher(
   method: Method,
 ) {
   // @ts-expect-error because TS telling us `axios` can't be accessed with string
-  const resp = await axios[method](`${DEV_API_URL}/${url}`, {
+  const resp = await axios[method](`${getBaseUrl()}/${url}`, {
     headers: defaultHeaders,
     ...options,
   })

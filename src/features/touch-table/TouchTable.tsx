@@ -19,6 +19,7 @@ import { TableCellInput } from '../../components/table/table-cell-input/TableCel
 import { defaultHeaders } from '../../context/WrapUseQuery'
 import { useLoadingColumns } from '../../components/table/hooks/use-loading-columns'
 import '../../styles/table-style.css'
+import { getBaseUrl } from '../../service/getUrl'
 
 type TouchesTableType = {
   updateTouch: (updatedTouch: { touch: Partial<Touch>; id: number }) => void
@@ -72,12 +73,9 @@ export const TouchesTable = ({
 
   const { mutate: mutateDeleteTouch } = useMutation({
     mutationFn: (touchId: number) => {
-      return axios.delete(
-        `${import.meta.env.VITE_DEV_API_URL}/touches/${touchId}`,
-        {
-          headers: defaultHeaders,
-        },
-      )
+      return axios.delete(`${getBaseUrl()}/touches/${touchId}`, {
+        headers: defaultHeaders,
+      })
     },
     onSuccess: onMutateSuccess,
   })

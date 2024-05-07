@@ -22,6 +22,7 @@ import { useLoadingColumns } from '../../components/table/hooks/use-loading-colu
 import '../../styles/table-style.css'
 import { AppTableContainer } from '../../components/table/table-container/TableContainer'
 import axios from 'axios'
+import { getBaseUrl } from '../../service/getUrl'
 
 type ApplicationsTableType = {
   updateApplication: (updatedApplication: {
@@ -80,12 +81,9 @@ export const ApplicationsTable = ({
 
   const { mutate: mutateDeleteContact } = useMutation({
     mutationFn: (applicationId: number) => {
-      return axios.delete(
-        `${import.meta.env.VITE_DEV_API_URL}/job-applications/${applicationId}`,
-        {
-          headers: defaultHeaders,
-        },
-      )
+      return axios.delete(`${getBaseUrl()}/job-applications/${applicationId}`, {
+        headers: defaultHeaders,
+      })
     },
     onSuccess: onMutateSuccess,
   })

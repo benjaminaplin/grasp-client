@@ -20,6 +20,7 @@ import { defaultHeaders } from '../../context/WrapUseQuery'
 import { Company } from '../../types/company'
 import { useLoadingColumns } from '../../components/table/hooks/use-loading-columns'
 import '../../styles/table-style.css'
+import { getBaseUrl } from '../../service/getUrl'
 
 type InterviewsTableType = {
   updateInterview: (updatedInterview: {
@@ -78,12 +79,9 @@ export const InterviewsTable = ({
 
   const { mutate: mutateDeleteInterview } = useMutation({
     mutationFn: (interviewId: number) => {
-      return axios.delete(
-        `${import.meta.env.VITE_DEV_API_URL}/interviews/${interviewId}`,
-        {
-          headers: defaultHeaders,
-        },
-      )
+      return axios.delete(`${getBaseUrl()}/interviews/${interviewId}`, {
+        headers: defaultHeaders,
+      })
     },
     onSuccess: onMutateSuccess,
   })

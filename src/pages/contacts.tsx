@@ -9,8 +9,7 @@ import Layout from '../components/layout/Layout'
 import { defaultHeaders, useQueryWrapper } from '../context/WrapUseQuery'
 import { Company } from '../types/company'
 import { orderBy } from 'lodash'
-
-const DEV_API_URL = import.meta.env.VITE_DEV_API_URL
+import { getBaseUrl } from '../service/getUrl'
 
 export default function ButtonUsage() {
   return <Button variant='contained'>Hello world</Button>
@@ -37,7 +36,7 @@ export const Contacts = () => {
 
   const { mutate: mutateCreateContact } = useMutation({
     mutationFn: (contact: Contact) => {
-      return axios.post(`${DEV_API_URL}/contacts`, JSON.stringify(contact), {
+      return axios.post(`${getBaseUrl()}/contacts`, JSON.stringify(contact), {
         headers: defaultHeaders,
       })
     },
@@ -46,7 +45,7 @@ export const Contacts = () => {
 
   const { mutate: mutateDeleteContact } = useMutation({
     mutationFn: (contactId: number) => {
-      return axios.delete(`${DEV_API_URL}/contacts/${contactId}`, {
+      return axios.delete(`${getBaseUrl()}/contacts/${contactId}`, {
         headers: defaultHeaders,
       })
     },
@@ -82,7 +81,7 @@ export const Contacts = () => {
       id: number
     }) => {
       return axios.patch(
-        `${DEV_API_URL}/contacts/${id}`,
+        `${getBaseUrl()}/contacts/${id}`,
         JSON.stringify(contact),
         {
           headers: defaultHeaders,
