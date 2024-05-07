@@ -56,7 +56,7 @@ export const Contacts = () => {
   } = useQueryWrapper<Contact[]>('contacts')
 
   const { data: companies } = useQueryWrapper<Company[]>(
-    'companies',
+    'users/3/companies',
     undefined,
     { select: (fetchedData: Company[]) => orderBy(fetchedData, ['name']) },
   )

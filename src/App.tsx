@@ -103,7 +103,10 @@ function App() {
     }),
     [],
   )
-  console.log('faker', faker.company.name())
+  console.log('faker', faker.person.firstName())
+  console.log('faker', faker.person.lastName())
+  console.log('faker', faker.person.jobTitle())
+  console.log('faker', faker.person.jobDescriptor())
   // Update the theme only if the mode changes
   const theme = useMemo(() => createTheme(getDesignTokens(mode)), [mode])
 
