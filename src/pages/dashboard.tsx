@@ -71,13 +71,13 @@ export const Dashboard = () => {
         />
         <DashboardCard
           title='Interviews'
-          color='picton-blue'
+          color='verdigris'
           destinationOnClick='/interviews'
           content={<StatContainer>{interviews?.length || 0}</StatContainer>}
         />
         <DashboardCard
           title='Touches'
-          color='picton-blue'
+          color='verdigris'
           destinationOnClick='/touches'
           content={<StatContainer>{touches?.length || 0}</StatContainer>}
         />
