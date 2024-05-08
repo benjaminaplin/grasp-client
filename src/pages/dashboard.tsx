@@ -14,13 +14,9 @@ export const Dashboard = () => {
   const { data: applications } =
     useQueryWrapper<Application[]>(`job-applications`)
   const { data: nextSteps } = useQueryWrapper<NextStep[]>(`next-steps`)
-  const { data: contacts } = useQueryWrapper<Contact[]>(`contacts`)
   const { data: interviews } = useQueryWrapper<Interview[]>(`interviews`)
   const { data: touches } = useQueryWrapper<Contact[]>(`touches`)
 
-  const recruiters =
-    contacts?.filter((contact: Contact) => contact.type === 'Recruiter')
-      ?.length || 0
   const recruiterApplications =
     applications?.filter((application: Application) =>
       application.type?.includes('recruiter'),

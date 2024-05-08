@@ -1,20 +1,8 @@
-import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import FormGroup from '@mui/material/FormGroup'
 import Modal from '@mui/material/Modal'
 import TextField from '@mui/material/TextField'
 import { FormContainer } from '../../components/form/form-container/FormContainer'
-
-const style = {
-  position: 'absolute' as const,
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  border: '2px solid #000',
-  boxShadow: 24,
-  p: 4,
-}
 
 type CompanyFormPropsType = {
   isOpen: boolean
