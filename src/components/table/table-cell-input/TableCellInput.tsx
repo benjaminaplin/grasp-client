@@ -28,7 +28,7 @@ export const TableCellInput = ({
 
   return (
     <InputBase
-      sx={{ bgcolor: 'background.paper' }}
+      sx={{ bgcolor: 'background.paper', width: '100%' }}
       value={inputVal}
       onChange={onChange}
       onBlur={onBlur}

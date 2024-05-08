@@ -8,3 +8,14 @@
   justify-content: right;
   align-items: center;
 }
+
+td {
+  padding-left: 1rem;
+}
+
+td:last-child {
+  padding-left: 4rem;
+}
+th:last-child {
+  padding-left: 4rem;
+}

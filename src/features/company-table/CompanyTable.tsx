@@ -75,6 +75,9 @@ export const CompanyTable = ({
         />
       )
     },
+    size: 200, //starting column size
+    minSize: 50, //enforced during column resizing
+    maxSize: 500, //enforced during column resizing
   }
 
   const columns = useMemo<ColumnDef<Company>[]>(
@@ -120,6 +123,7 @@ export const CompanyTable = ({
     rowCount: tableData?.length,
     getSortedRowModel: getSortedRowModel(),
   })
+
   const handleChangeDense = (event: SyntheticEvent) => {
     setDense((event.target as HTMLInputElement).checked)
   }
