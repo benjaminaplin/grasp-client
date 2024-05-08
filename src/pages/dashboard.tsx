@@ -1,13 +1,13 @@
+import Typography from '@mui/material/Typography'
 import { DashboardCard } from '../components/dashboard-card/DashboardCard'
 import Layout from '../components/layout/Layout'
-import Typography from '@mui/material/Typography'
-import '../styles/dashboard.css'
-import { Contact } from '../types/contact'
-import { Application } from '../types/application'
 import { useQueryWrapper } from '../context/WrapUseQuery'
+import '../styles/dashboard.css'
+import { Application } from '../types/application'
 import { Company } from '../types/company'
-import { NextStep } from '../types/next-step'
+import { Contact } from '../types/contact'
 import { Interview } from '../types/interview'
+import { NextStep } from '../types/next-step'
 
 export const Dashboard = () => {
   const { data: companies } = useQueryWrapper<Company[]>(`users/3/companies`)

@@ -1,30 +1,42 @@
-# React + TypeScript + Vite
+# Goals of Grasp App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+- Create full stack app, deployed on AWS, to try out new technologies and learn more about each layer of a deployed application.
 
-Currently, two official plugins are available:
+## New Technologies
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- vite, vitest, tanstack table, mui themes
 
-## Expanding the ESLint configuration
+## Tech Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+1.  Testing
 
-- Configure the top-level `parserOptions` property like this:
+    - Vitest
+    - React Testing Library
+    - Faker
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
+2.  UI
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+    - Material UI
+    - Tanstack React Table
+    - React Testing Library
+
+3.  Utility Libraries
+
+    - Axios
+    - Date-fns
+    - Dayjs
+    - Lodash
+    - Usehooks-ts
+
+4.  Linting / Formatting
+
+    - Prettier
+    - Eslint
+
+5.  Deployment
+    - CircleCi
+    - AWS Cloudfront
+
+## Code organization strategy
+
+[Feature-Driven Folder Structure](https://profy.dev/article/react-folder-structure)
