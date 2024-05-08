@@ -33,7 +33,10 @@ export const TableToolBar = ({
         <Button color='info' variant='contained' onClick={setIsFormOpen}>
           {`Add ${resourceName}`}
         </Button>
-        <RefreshIcon sx={{ marginLeft: '.5rem' }} onClick={refetchResource} />
+        <RefreshIcon
+          sx={{ marginLeft: '.5rem', cursor: 'pointer' }}
+          onClick={refetchResource}
+        />
       </div>
     </Toolbar>
   )

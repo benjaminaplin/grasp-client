@@ -14,6 +14,7 @@ import { groupBy, orderBy } from 'lodash'
 import { getBaseUrl } from '../service/getUrl'
 import { TableToolBar } from '../components/table/table-tool-bar/TableToolBar'
 import '../styles/table-style.css'
+import dayjs from 'dayjs'
 
 type CompanyMap = { [key: string]: Company[] }
 
@@ -100,15 +101,18 @@ export const Interviews = () => {
   }
 
   const handleFormChange = (evt: any) => {
+    const targetName = evt.target?.name
     setFormState((formState: any) => {
-      const name =
-        evt.target.name === 'applicationId'
+      const name = !targetName
+        ? 'scheduledDate'
+        : targetName === 'applicationId'
           ? 'jobApplicationId'
-          : evt.target.name
-      const value =
-        evt.target.name === 'date' && isValidDate(evt.target.value)
-          ? format(new Date(evt.target.value), 'yyyy-MM-dd')
-          : evt.target.value
+          : targetName
+      const dateTimeValue =
+        !evt?.target && evt?.$d
+          ? dayjs(new Date(evt.$d)).format('YYYY-MM-DD')
+          : evt.$d
+      const value = !targetName ? dateTimeValue : evt?.target?.value
       return { ...formState, [name]: value }
     })
   }
@@ -131,6 +135,7 @@ export const Interviews = () => {
         />
       )}
       <InterviewForm
+        interviewDate={formState.date}
         companyMap={companyMap as unknown as CompanyMap}
         applicationId={formState.applications[0]?.id}
         isOpen={isInterviewFormOpen}

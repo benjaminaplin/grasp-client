@@ -3,6 +3,7 @@ import Button from '@mui/material/Button'
 import FormGroup from '@mui/material/FormGroup'
 import Modal from '@mui/material/Modal'
 import TextField from '@mui/material/TextField'
+import { FormContainer } from '../../components/form/form-container/FormContainer'
 
 const style = {
   position: 'absolute' as const,
@@ -30,7 +31,7 @@ export const CompanyForm = ({
 }: CompanyFormPropsType) => {
   return (
     <Modal open={isOpen} onClose={handleClose}>
-      <Box my={4} display='flex' alignItems='center' gap={4} p={2} sx={style}>
+      <FormContainer>
         <div
           style={{
             display: 'flex',
@@ -58,7 +59,7 @@ export const CompanyForm = ({
             </Button>
           </FormGroup>
         </div>
-      </Box>
+      </FormContainer>
     </Modal>
   )
 }

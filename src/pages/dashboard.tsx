@@ -62,18 +62,6 @@ export const Dashboard = () => {
           content={<StatContainer>{connectionApplications}</StatContainer>}
         />
         <DashboardCard
-          title='Contacts'
-          color='verdigris'
-          destinationOnClick='/contacts'
-          content={<StatContainer>{contacts?.length || 0}</StatContainer>}
-        />
-        <DashboardCard
-          title='Recruiters'
-          color='verdigris'
-          destinationOnClick='/contacts'
-          content={<StatContainer>{recruiters}</StatContainer>}
-        />
-        <DashboardCard
           title='Companies'
           color='verdigris'
           destinationOnClick='/companies'
