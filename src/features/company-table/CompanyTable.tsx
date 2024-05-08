@@ -7,7 +7,7 @@ import {
   CellContext,
   getSortedRowModel,
 } from '@tanstack/react-table'
-import { ReactNode, useEffect, useMemo, useState } from 'react'
+import { ReactNode, SyntheticEvent, useEffect, useMemo, useState } from 'react'
 import { Company } from '../../types/company'
 import { DeleteButtonCell } from '../../components/delete-button-cell/DeleteButtonCell'
 import { Link } from 'react-router-dom'
@@ -15,6 +15,8 @@ import { getTableHeader } from '../../components/table/table-header/TableHeader'
 import { TableCellInput } from '../../components/table/table-cell-input/TableCellInput'
 import { useLoadingColumns } from '../../components/table/hooks/use-loading-columns'
 import '../../styles/table-style.css'
+import { AppTableContainer } from '../../components/table/table-container/TableContainer'
+import { useLocalStorage } from 'usehooks-ts'
 
 const linkToCompanyCellFn = (info: CellContext<Company, unknown>) => {
   return (
@@ -41,6 +43,8 @@ export const CompanyTable = ({
   deleteCompany,
   companiesAreLoading,
 }: CompanysTableType) => {
+  const [dense, setDense] = useLocalStorage('dense', false)
+
   const defaultColumn: Partial<ColumnDef<Company>> = {
     cell: ({ getValue, row, column, table }) => {
       const initialValue = getValue()
@@ -116,31 +120,30 @@ export const CompanyTable = ({
     rowCount: tableData?.length,
     getSortedRowModel: getSortedRowModel(),
   })
+  const handleChangeDense = (event: SyntheticEvent) => {
+    setDense((event.target as HTMLInputElement).checked)
+  }
 
+  const tableHeaders = getTableHeader<Company>(table)
   return (
-    <>
-      <table>
-        {getTableHeader<Company>(table)}
-        <tbody>
-          {table.getRowModel().rows.map((row) => {
-            return (
-              <tr key={row.id}>
-                {row.getVisibleCells().map((cell) => {
-                  return (
-                    <td key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
-                    </td>
-                  )
-                })}
-              </tr>
-            )
-          })}
-        </tbody>
-      </table>
-      <div />
-    </>
+    <AppTableContainer
+      dense={dense}
+      tableHeaders={tableHeaders}
+      handleChangeDense={handleChangeDense}
+    >
+      {table.getRowModel().rows.map((row) => {
+        return (
+          <tr key={row.id}>
+            {row.getVisibleCells().map((cell) => {
+              return (
+                <td key={cell.id}>
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </td>
+              )
+            })}
+          </tr>
+        )
+      })}
+    </AppTableContainer>
   )
 }

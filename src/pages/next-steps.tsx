@@ -1,6 +1,5 @@
 import axios from 'axios'
 import { useMutation } from '@tanstack/react-query'
-import Button from '@mui/material/Button'
 import { useState } from 'react'
 import { NextStepTable } from '../features/next-step-table/NextStepTable'
 import { NextStep } from '../types/next-step'
@@ -11,6 +10,7 @@ import { defaultHeaders, useQueryWrapper } from '../context/WrapUseQuery'
 import { orderBy } from 'lodash'
 import dayjs from 'dayjs'
 import { getBaseUrl } from '../service/getUrl'
+import { TableToolBar } from '../components/table/table-tool-bar/TableToolBar'
 
 export const NextSteps = () => {
   const [isNextStepFormOpen, setIsNextStepFormOpen] = useState(false)
@@ -119,16 +119,12 @@ export const NextSteps = () => {
 
   return (
     <Layout title='Next Steps'>
-      <Button
-        color='info'
-        variant='contained'
-        onClick={() => setIsNextStepFormOpen(!isNextStepFormOpen)}
-      >
-        Add next step
-      </Button>
-      <Button style={{ marginLeft: '1rem' }} onClick={() => refetchNextSteps()}>
-        Refresh Data
-      </Button>
+      <TableToolBar
+        resource={nextSteps}
+        resourceName='Next Step'
+        refetchResource={refetchNextSteps}
+        setIsFormOpen={() => setIsNextStepFormOpen(!isNextStepFormOpen)}
+      />
       <NextStepTable
         areNextStepsLoading={areNextStepsLoading || areNextStepsFetching}
         updateNextStep={updateNextStep}

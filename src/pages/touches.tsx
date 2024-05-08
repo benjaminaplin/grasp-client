@@ -1,6 +1,5 @@
 import axios from 'axios'
 import { useMutation } from '@tanstack/react-query'
-import Button from '@mui/material/Button'
 import { useState } from 'react'
 import { TouchesTable } from '../features/touch-table/TouchTable'
 import { Touch } from '../types/touch'
@@ -11,6 +10,7 @@ import dayjs from 'dayjs'
 import { defaultHeaders, useQueryWrapper } from '../context/WrapUseQuery'
 import { Contact } from '../types/contact'
 import { getBaseUrl } from '../service/getUrl'
+import { TableToolBar } from '../components/table/table-tool-bar/TableToolBar'
 
 export const Touches = () => {
   const [isTouchFormOpen, setIsTouchFormOpen] = useState(false)
@@ -94,26 +94,13 @@ export const Touches = () => {
 
   return (
     <Layout title='Touches'>
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'flex-start',
-          alignItems: 'center',
-          marginLeft: '1rem',
-        }}
-      >
-        <Button
-          color='info'
-          variant='contained'
-          onClick={() => setIsTouchFormOpen(!isTouchFormOpen)}
-        >
-          Add touch
-        </Button>
-        <Button style={{ marginLeft: '1rem' }} onClick={() => refetchTouches()}>
-          Refresh Data
-        </Button>
-        <div>Touches: {`${touches?.length || 0}`}</div>
-      </div>
+      <TableToolBar
+        resource={touches}
+        resourceName='Touch'
+        resourceNamePlural='Touches'
+        refetchResource={refetchTouches}
+        setIsFormOpen={() => setIsTouchFormOpen(!isTouchFormOpen)}
+      />
       <TouchesTable
         touchesAreLoading={touchesAreLoading || touchesAreFetching}
         updateTouch={updateTouch}

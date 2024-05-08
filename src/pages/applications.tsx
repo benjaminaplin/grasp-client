@@ -1,6 +1,5 @@
 import axios from 'axios'
 import { useMutation } from '@tanstack/react-query'
-import Button from '@mui/material/Button'
 import { useState } from 'react'
 import { ApplicationsTable } from '../features/application-table/ApplicationTable'
 import { Application } from '../types/application'
@@ -10,9 +9,10 @@ import { Company } from '../types/company'
 import { defaultHeaders, useQueryWrapper } from '../context/WrapUseQuery'
 import { orderBy } from 'lodash'
 import { getBaseUrl } from '../service/getUrl'
+import { TableToolBar } from '../components/table/table-tool-bar/TableToolBar'
 
 export const Applications = () => {
-  const [isapplicationFormOpen, setIsapplicationFormOpen] = useState(false)
+  const [isApplicationFormOpen, setIsApplicationFormOpen] = useState(false)
   const [formState, setFormState] = useState<Application>({
     type: null,
     notes: null,
@@ -34,7 +34,7 @@ export const Applications = () => {
       )
     },
     onSuccess: () => {
-      setIsapplicationFormOpen(false)
+      setIsApplicationFormOpen(false)
       refetchApplications()
     },
   })
@@ -95,29 +95,12 @@ export const Applications = () => {
 
   return (
     <Layout title='Applications'>
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'flex-start',
-          alignItems: 'center',
-          marginLeft: '1rem',
-        }}
-      >
-        <Button
-          color='info'
-          variant='contained'
-          onClick={() => setIsapplicationFormOpen(!isapplicationFormOpen)}
-        >
-          Add application
-        </Button>
-        <Button
-          style={{ marginLeft: '1rem' }}
-          onClick={() => refetchApplications()}
-        >
-          Refresh Data
-        </Button>
-        <div>Applications: {`${applications?.length || 0}`}</div>
-      </div>
+      <TableToolBar
+        resource={applications}
+        resourceName='Application'
+        refetchResource={refetchApplications}
+        setIsFormOpen={() => setIsApplicationFormOpen(!isApplicationFormOpen)}
+      />
       <ApplicationsTable
         areApplicationsLoading={
           areApplicationsLoading || areApplicationsFetching
@@ -128,8 +111,8 @@ export const Applications = () => {
       />
       <ApplicationForm
         companyId={formState.companies[0]?.id}
-        isOpen={isapplicationFormOpen}
-        handleClose={() => setIsapplicationFormOpen(false)}
+        isOpen={isApplicationFormOpen}
+        handleClose={() => setIsApplicationFormOpen(false)}
         createApplication={createApplication}
         handleFormChange={handleFormChange}
         companies={companies}

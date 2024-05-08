@@ -1,6 +1,5 @@
 import axios from 'axios'
 import { useMutation } from '@tanstack/react-query'
-import Button from '@mui/material/Button'
 import { useState } from 'react'
 import { InterviewsTable } from '../features/interview-table/InterviewTable'
 import { Interview } from '../types/interview'
@@ -13,6 +12,8 @@ import { isValidDate } from '../utils/is-valid-date'
 import { defaultHeaders, useQueryWrapper } from '../context/WrapUseQuery'
 import { groupBy, orderBy } from 'lodash'
 import { getBaseUrl } from '../service/getUrl'
+import { TableToolBar } from '../components/table/table-tool-bar/TableToolBar'
+import '../styles/table-style.css'
 
 type CompanyMap = { [key: string]: Company[] }
 
@@ -114,29 +115,12 @@ export const Interviews = () => {
 
   return (
     <Layout title='Interviews'>
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'flex-start',
-          alignItems: 'center',
-          marginLeft: '1rem',
-        }}
-      >
-        <Button
-          color='info'
-          variant='contained'
-          onClick={() => setIsInterviewFormOpen(!isInterviewFormOpen)}
-        >
-          Add interview
-        </Button>
-        <Button
-          style={{ marginLeft: '1rem' }}
-          onClick={() => refetchInterviews()}
-        >
-          Refresh Data
-        </Button>
-        <div>Interviews: {`${interviews?.length || 0}`}</div>
-      </div>
+      <TableToolBar
+        resource={interviews}
+        resourceName='Interview'
+        refetchResource={refetchInterviews}
+        setIsFormOpen={() => setIsInterviewFormOpen(!isInterviewFormOpen)}
+      />
       {companyMap && (
         <InterviewsTable
           interviewsAreLoading={interviewsAreLoading || interviewsAreFetching}

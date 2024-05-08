@@ -8,7 +8,7 @@ import {
   getSortedRowModel,
 } from '@tanstack/react-table'
 import { Contact } from '../../types/contact'
-import { ReactNode, useEffect, useState } from 'react'
+import { ReactNode, SyntheticEvent, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { DeleteButtonCell } from '../../components/delete-button-cell/DeleteButtonCell'
 import { getTableHeader } from '../../components/table/table-header/TableHeader'
@@ -16,6 +16,8 @@ import { TableCellInput } from '../../components/table/table-cell-input/TableCel
 import { EditButtonCell } from '../../components/edit-button-cell/EditButtonCell'
 import { Company } from '../../types/company'
 import { useLoadingColumns } from '../../components/table/hooks/use-loading-columns'
+import { AppTableContainer } from '../../components/table/table-container/TableContainer'
+import { useLocalStorage } from 'usehooks-ts'
 import '../../styles/table-style.css'
 
 const linkToContactCellFn = (info: CellContext<Contact, unknown>) => {
@@ -75,6 +77,7 @@ export const ContactsTable = ({
       )
     },
   }
+  const [dense, setDense] = useLocalStorage('dense', false)
 
   const columns = [
     {
@@ -173,29 +176,30 @@ export const ContactsTable = ({
     getSortedRowModel: getSortedRowModel(),
   })
 
+  const tableHeaders = getTableHeader<Contact>(table)
+
+  const handleChangeDense = (event: SyntheticEvent) => {
+    setDense((event.target as HTMLInputElement).checked)
+  }
   return (
-    <>
-      <table>
-        {getTableHeader<Contact>(table)}{' '}
-        <tbody>
-          {table.getRowModel().rows.map((row) => {
-            return (
-              <tr key={row.id}>
-                {row.getVisibleCells().map((cell) => {
-                  return (
-                    <td key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
-                    </td>
-                  )
-                })}
-              </tr>
-            )
-          })}
-        </tbody>
-      </table>
-    </>
+    <AppTableContainer
+      dense={dense}
+      tableHeaders={tableHeaders}
+      handleChangeDense={handleChangeDense}
+    >
+      {table.getRowModel().rows.map((row) => {
+        return (
+          <tr key={row.id}>
+            {row.getVisibleCells().map((cell) => {
+              return (
+                <td key={cell.id}>
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </td>
+              )
+            })}
+          </tr>
+        )
+      })}
+    </AppTableContainer>
   )
 }

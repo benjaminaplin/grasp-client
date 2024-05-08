@@ -1,6 +1,5 @@
 import axios from 'axios'
 import { useMutation } from '@tanstack/react-query'
-import Button from '@mui/material/Button'
 import { useState } from 'react'
 import { ContactsTable } from '../features/contact-table/ContactTable'
 import { Contact } from '../types/contact'
@@ -10,6 +9,7 @@ import { defaultHeaders, useQueryWrapper } from '../context/WrapUseQuery'
 import { Company } from '../types/company'
 import { orderBy } from 'lodash'
 import { getBaseUrl } from '../service/getUrl'
+import { TableToolBar } from '../components/table/table-tool-bar/TableToolBar'
 
 export const Contacts = () => {
   const [isContactFormOpen, setIsContactFormOpen] = useState(false)
@@ -114,16 +114,12 @@ export const Contacts = () => {
   }
   return (
     <Layout title='Contacts'>
-      <Button
-        color='info'
-        variant='contained'
-        onClick={() => setIsContactFormOpen(!isContactFormOpen)}
-      >
-        Add Contact
-      </Button>
-      <Button style={{ marginLeft: '1rem' }} onClick={() => refetchContacts()}>
-        Refresh Data
-      </Button>
+      <TableToolBar
+        resource={data}
+        resourceName='Contact'
+        refetchResource={refetchContacts}
+        setIsFormOpen={() => setIsContactFormOpen(!isContactFormOpen)}
+      />
       {data && (
         <ContactsTable
           contactsAreLoading={contactsAreLoading || contactsAreFetching}

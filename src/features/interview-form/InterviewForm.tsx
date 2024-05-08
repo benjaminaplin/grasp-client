@@ -38,8 +38,6 @@ export const InterviewForm = ({
   applicationId,
   companyMap,
 }: InterviewFormPropsType) => {
-  console.log('apps', applications)
-  console.log('company', companyMap)
   const jobApplicationOptions = orderBy(
     [
       ...(applications?.map((a: Application) => ({

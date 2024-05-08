@@ -7,6 +7,7 @@ import {
   getSortedRowModel,
 } from '@tanstack/react-table'
 import { format } from 'date-fns'
+import axios from 'axios'
 import { ReactNode, SyntheticEvent, useEffect, useMemo, useState } from 'react'
 import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
@@ -19,10 +20,10 @@ import { getTableHeader } from '../../components/table/table-header/TableHeader'
 import { TableCellInput } from '../../components/table/table-cell-input/TableCellInput'
 import { defaultHeaders } from '../../context/WrapUseQuery'
 import { useLoadingColumns } from '../../components/table/hooks/use-loading-columns'
-import '../../styles/table-style.css'
 import { AppTableContainer } from '../../components/table/table-container/TableContainer'
-import axios from 'axios'
 import { getBaseUrl } from '../../service/getUrl'
+import { useLocalStorage } from 'usehooks-ts'
+import '../../styles/table-style.css'
 
 type ApplicationsTableType = {
   updateApplication: (updatedApplication: {
@@ -40,7 +41,7 @@ export const ApplicationsTable = ({
   refreshTableData,
   areApplicationsLoading,
 }: ApplicationsTableType) => {
-  const [dense, setDense] = useState(false)
+  const [dense, setDense] = useLocalStorage('dense', false)
 
   const defaultColumn: Partial<ColumnDef<Application>> = {
     cell: ({ getValue, row, column, table }) => {
@@ -192,32 +193,31 @@ export const ApplicationsTable = ({
     },
     getSortedRowModel: getSortedRowModel(),
   })
+
   const handleChangeDense = (event: SyntheticEvent) => {
     setDense((event.target as HTMLInputElement).checked)
   }
 
   const tableHeaders = getTableHeader<Application>(table)
   return (
-    <>
-      <AppTableContainer
-        dense={dense}
-        tableHeaders={tableHeaders}
-        handleChangeDense={handleChangeDense}
-      >
-        {table.getRowModel().rows.map((row) => {
-          return (
-            <TableRow key={row.id}>
-              {row.getVisibleCells().map((cell) => {
-                return (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                )
-              })}
-            </TableRow>
-          )
-        })}
-      </AppTableContainer>
-    </>
+    <AppTableContainer
+      dense={dense}
+      tableHeaders={tableHeaders}
+      handleChangeDense={handleChangeDense}
+    >
+      {table.getRowModel().rows.map((row) => {
+        return (
+          <TableRow key={row.id}>
+            {row.getVisibleCells().map((cell) => {
+              return (
+                <TableCell key={cell.id}>
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </TableCell>
+              )
+            })}
+          </TableRow>
+        )
+      })}
+    </AppTableContainer>
   )
 }

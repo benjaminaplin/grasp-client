@@ -1,11 +1,12 @@
-import { Column, Table } from "@tanstack/react-table"
+import { InputBase } from '@mui/material'
+import { Column, Table } from '@tanstack/react-table'
 
 export function Filter({
   column,
   table,
 }: {
   column: Column<any, any>
-  table: Table<any>,
+  table: Table<any>
 }) {
   const firstValue = table
     .getPreFilteredRowModel()
@@ -13,11 +14,12 @@ export function Filter({
   const columnFilterValue = column.getFilterValue()
 
   return typeof firstValue === 'number' ? (
-    <div className="flex space-x-2">
-      <input
-        type="number"
+    <div className='flex space-x-2'>
+      <InputBase
+        sx={{ bgcolor: 'background.paper' }}
+        type='number'
         value={(columnFilterValue as [number, number])?.[0] ?? ''}
-        onChange={e =>
+        onChange={(e) =>
           column.setFilterValue((old: [number, number]) => [
             e.target.value,
             old?.[1],
@@ -25,10 +27,11 @@ export function Filter({
         }
         placeholder={`Min`}
       />
-      <input
-        type="number"
+      <InputBase
+        sx={{ bgcolor: 'background.paper' }}
+        type='number'
         value={(columnFilterValue as [number, number])?.[1] ?? ''}
-        onChange={e =>
+        onChange={(e) =>
           column.setFilterValue((old: [number, number]) => [
             old?.[0],
             e.target.value,
@@ -38,10 +41,11 @@ export function Filter({
       />
     </div>
   ) : (
-    <input
-      type="text"
+    <InputBase
+      sx={{ bgcolor: 'background.paper' }}
+      type='text'
       value={(columnFilterValue ?? '') as string}
-      onChange={e => column.setFilterValue(e.target.value)}
+      onChange={(e) => column.setFilterValue(e.target.value)}
       placeholder={`Search...`}
     />
   )

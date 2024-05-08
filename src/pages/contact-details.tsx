@@ -10,7 +10,6 @@ import Divider from '@mui/material/Divider'
 
 export const ContactDetails = () => {
   const params = useParams()
-  console.log('parmas', params)
 
   const {
     data: contact,

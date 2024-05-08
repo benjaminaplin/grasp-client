@@ -3,6 +3,8 @@ import { Filter } from '../table-filter/TableFilter'
 import { Table, flexRender } from '@tanstack/react-table'
 import TableRow from '@mui/material/TableRow'
 import TableCell from '@mui/material/TableCell'
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
 
 export const getTableHeader = <ResourceType,>(table: Table<ResourceType>) => {
   return (
@@ -27,8 +29,8 @@ export const getTableHeader = <ResourceType,>(table: Table<ResourceType>) => {
                       <div style={{ display: 'flex' }}>
                         <Filter column={header.column} table={table} />
                         {{
-                          asc: ' 🔼',
-                          desc: ' 🔽',
+                          asc: <KeyboardArrowUpIcon />,
+                          desc: <KeyboardArrowDownIcon />,
                         }[header.column.getIsSorted() as string] ?? null}
                       </div>
                     ) : null}

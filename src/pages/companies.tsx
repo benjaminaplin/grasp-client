@@ -1,6 +1,5 @@
 import axios from 'axios'
 import { useMutation } from '@tanstack/react-query'
-import Button from '@mui/material/Button'
 import { useState } from 'react'
 import { CompanyTable } from '../features/company-table/CompanyTable'
 import { Company } from '../types/company'
@@ -8,6 +7,7 @@ import Layout from '../components/layout/Layout'
 import { CompanyForm } from '../features/company-form/CompanyForm'
 import { defaultHeaders, useQueryWrapper } from '../context/WrapUseQuery'
 import { getBaseUrl } from '../service/getUrl'
+import { TableToolBar } from '../components/table/table-tool-bar/TableToolBar'
 
 export const Companies = () => {
   const [isCompanyFormOpen, setIsCompanyFormOpen] = useState(false)
@@ -92,16 +92,13 @@ export const Companies = () => {
 
   return (
     <Layout title='Companies'>
-      <Button
-        color='info'
-        variant='contained'
-        onClick={() => setIsCompanyFormOpen(!isCompanyFormOpen)}
-      >
-        Add Company
-      </Button>
-      <Button style={{ marginLeft: '1rem' }} onClick={() => refetchCompanies()}>
-        Refresh Data
-      </Button>
+      <TableToolBar
+        resource={data}
+        resourceName='Company'
+        resourceNamePlural='Companies'
+        refetchResource={refetchCompanies}
+        setIsFormOpen={() => setIsCompanyFormOpen(!isCompanyFormOpen)}
+      />
       <CompanyTable
         companiesAreLoading={companiesAreLoading || companiesAreFetching}
         updateCompany={updateCompany}

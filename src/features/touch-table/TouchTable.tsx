@@ -6,7 +6,7 @@ import {
   flexRender,
   getSortedRowModel,
 } from '@tanstack/react-table'
-import { useEffect, useMemo, useState } from 'react'
+import { SyntheticEvent, useEffect, useMemo, useState } from 'react'
 import { Touch } from '../../types/touch'
 import { Link } from 'react-router-dom'
 import { relationFilterFn } from '../../utils/FilterFn'
@@ -20,6 +20,8 @@ import { defaultHeaders } from '../../context/WrapUseQuery'
 import { useLoadingColumns } from '../../components/table/hooks/use-loading-columns'
 import '../../styles/table-style.css'
 import { getBaseUrl } from '../../service/getUrl'
+import { AppTableContainer } from '../../components/table/table-container/TableContainer'
+import { useLocalStorage } from 'usehooks-ts'
 
 type TouchesTableType = {
   updateTouch: (updatedTouch: { touch: Partial<Touch>; id: number }) => void
@@ -34,6 +36,8 @@ export const TouchesTable = ({
   refreshTableData,
   touchesAreLoading,
 }: TouchesTableType) => {
+  const [dense, setDense] = useLocalStorage('dense', false)
+
   const defaultColumn: Partial<ColumnDef<Touch>> = {
     cell: ({ getValue, row, column, table }) => {
       const initialValue = getValue()
@@ -178,25 +182,30 @@ export const TouchesTable = ({
     },
     getSortedRowModel: getSortedRowModel(),
   })
+  const tableHeaders = getTableHeader<Touch>(table)
+  const handleChangeDense = (event: SyntheticEvent) => {
+    setDense((event.target as HTMLInputElement).checked)
+  }
 
   return (
-    <table>
-      {getTableHeader<Touch>(table)}
-      <tbody>
-        {table.getRowModel().rows.map((row) => {
-          return (
-            <tr key={row.id}>
-              {row.getVisibleCells().map((cell) => {
-                return (
-                  <td key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </td>
-                )
-              })}
-            </tr>
-          )
-        })}
-      </tbody>
-    </table>
+    <AppTableContainer
+      dense={dense}
+      tableHeaders={tableHeaders}
+      handleChangeDense={handleChangeDense}
+    >
+      {table.getRowModel().rows.map((row) => {
+        return (
+          <tr key={row.id}>
+            {row.getVisibleCells().map((cell) => {
+              return (
+                <td key={cell.id}>
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </td>
+              )
+            })}
+          </tr>
+        )
+      })}
+    </AppTableContainer>
   )
 }
