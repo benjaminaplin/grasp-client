@@ -24,7 +24,7 @@ export const Interviews = () => {
     type: null,
     status: null,
     jobApplicationId: null,
-    userId: 3,
+    userId: 2,
     contactId: null,
     applications: [],
     jobApplication: undefined,
@@ -58,7 +58,7 @@ export const Interviews = () => {
   } = useQueryWrapper<Interview[]>(`interviews`)
 
   const { data: companyMap } = useQueryWrapper<Company[]>(
-    'users/3/companies',
+    'users/2/companies',
     undefined,
     {
       select: (fetchedData: Company[]) =>

@@ -13,7 +13,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles'
 import CssBaseline from '@mui/material/CssBaseline'
 import { PaletteMode } from '@mui/material'
 import { grey, amber } from '@mui/material/colors'
-import { useMemo } from 'react'
+import { ReactNode, useEffect, useMemo } from 'react'
 import { ColorModeContext } from './context/ColorMode'
 import { Touches } from './pages/touches'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
@@ -21,7 +21,10 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider/L
 import { ContactDetails } from './pages/contact-details'
 import { RowData } from '@tanstack/react-table'
 import { useLocalStorage } from 'usehooks-ts'
-import { faker } from '@faker-js/faker'
+import { Auth0ProviderWithNavigate } from './providers/AuthProviderWithNavigate'
+import { useAuth0 } from '@auth0/auth0-react'
+import { Loader } from './components/loaders/Loader'
+import { CallbackPage } from './components/auth/CallBack'
 
 declare module '@tanstack/react-table' {
   // eslint ignore is needed because TS needs these parameters
@@ -103,11 +106,7 @@ function App() {
     }),
     [],
   )
-  console.log('faker', faker.person.firstName())
-  console.log('faker', faker.person.lastName())
-  console.log('faker', faker.person.jobTitle())
-  console.log('faker', faker.person.jobDescriptor)
-  // Update the theme only if the mode changes
+
   const theme = useMemo(() => createTheme(getDesignTokens(mode)), [mode])
 
   return (
@@ -117,31 +116,55 @@ function App() {
           <ThemeProvider theme={theme}>
             <CssBaseline />
             <BrowserRouter>
-              <Routes>
-                <Route path='/' element={<Dashboard />} />
-                <Route path='/dashboard' element={<Dashboard />} />
-                <Route path='/contacts' element={<Contacts />} />
-                <Route path='/contacts/:id' element={<ContactDetails />} />
-                <Route path='/next-steps' element={<NextSteps />} />
-                <Route path='/next-steps/:id' element={<ResourceView />} />
-                <Route path='/job-applications' element={<Applications />} />
-                <Route path='/interviews' element={<Interviews />} />
-                <Route
-                  path='/job-applications/:id'
-                  element={<ResourceView />}
-                />
-                <Route path='/companies' element={<Companies />} />
-                <Route path='/companies/:id' element={<ResourceView />} />
-                <Route path='/touches' element={<Touches />} />
-                <Route path='/touches/:id' element={<ResourceView />} />
-                <Route path='*' element={<NoMatch />} />
-              </Routes>
+              <Auth0ProviderWithNavigate>
+                <HandleAuth>
+                  <Routes>
+                    <Route path='/' element={<Dashboard />} />
+                    <Route path='/dashboard' element={<Dashboard />} />
+                    <Route path='/contacts' element={<Contacts />} />
+                    <Route path='/contacts/:id' element={<ContactDetails />} />
+                    <Route path='/next-steps' element={<NextSteps />} />
+                    <Route path='/next-steps/:id' element={<ResourceView />} />
+                    <Route
+                      path='/job-applications'
+                      element={<Applications />}
+                    />
+                    <Route path='/interviews' element={<Interviews />} />
+                    <Route
+                      path='/job-applications/:id'
+                      element={<ResourceView />}
+                    />
+                    <Route path='/companies' element={<Companies />} />
+                    <Route path='/companies/:id' element={<ResourceView />} />
+                    <Route path='/touches' element={<Touches />} />
+                    <Route path='/touches/:id' element={<ResourceView />} />
+                    <Route path='/callback' element={<CallbackPage />} />
+                    <Route path='*' element={<NoMatch />} />
+                  </Routes>
+                </HandleAuth>
+              </Auth0ProviderWithNavigate>
             </BrowserRouter>
           </ThemeProvider>
         </ColorModeContext.Provider>
       </LocalizationProvider>
     </QueryClientProvider>
   )
+}
+
+const HandleAuth = ({ children }: { children: ReactNode }) => {
+  const { isLoading, isAuthenticated, loginWithRedirect } = useAuth0()
+
+  useEffect(() => {
+    if (!isAuthenticated && !isLoading) {
+      loginWithRedirect()
+    }
+  }, [isAuthenticated, isLoading])
+
+  if (isLoading) {
+    return <Loader />
+  }
+
+  return <>{children}</>
 }
 
 export default App

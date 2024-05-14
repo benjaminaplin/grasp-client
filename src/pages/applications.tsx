@@ -17,7 +17,7 @@ export const Applications = () => {
     type: null,
     notes: null,
     role: null,
-    userId: 3,
+    userId: 2,
     companies: [],
     companyId: null,
     dateApplied: null,
@@ -40,7 +40,7 @@ export const Applications = () => {
   })
 
   const { data: companies } = useQueryWrapper<Company[]>(
-    'users/3/companies',
+    'users/2/companies',
     undefined,
     { select: (fetchedData: Company[]) => orderBy(fetchedData, ['name']) },
   )

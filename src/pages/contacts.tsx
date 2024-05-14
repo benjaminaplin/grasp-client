@@ -20,7 +20,7 @@ export const Contacts = () => {
     notes: null,
     firstName: null,
     lastName: null,
-    userId: 3,
+    userId: 2,
     closeness: null,
     companyId: 0,
   })
@@ -56,7 +56,7 @@ export const Contacts = () => {
   } = useQueryWrapper<Contact[]>('contacts')
 
   const { data: companies } = useQueryWrapper<Company[]>(
-    'users/3/companies',
+    'users/2/companies',
     undefined,
     { select: (fetchedData: Company[]) => orderBy(fetchedData, ['name']) },
   )

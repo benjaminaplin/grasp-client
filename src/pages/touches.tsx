@@ -20,7 +20,7 @@ export const Touches = () => {
     contactId: undefined,
     nextStep: null,
     jobApplicationId: undefined,
-    userId: 3,
+    userId: 2,
     scheduledDate: null,
   })
   const { mutate: mutateCreateTouch } = useMutation({

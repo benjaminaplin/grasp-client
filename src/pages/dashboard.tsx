@@ -10,7 +10,7 @@ import { Interview } from '../types/interview'
 import { NextStep } from '../types/next-step'
 
 export const Dashboard = () => {
-  const { data: companies } = useQueryWrapper<Company[]>(`users/3/companies`)
+  const { data: companies } = useQueryWrapper<Company[]>(`users/2/companies`)
   const { data: applications } =
     useQueryWrapper<Application[]>(`job-applications`)
   const { data: nextSteps } = useQueryWrapper<NextStep[]>(`next-steps`)

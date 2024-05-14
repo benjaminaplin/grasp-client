@@ -17,7 +17,7 @@ export const NextSteps = () => {
   const [formState, setFormState] = useState<NextStep>({
     type: null,
     notes: null,
-    userId: 3,
+    userId: 2,
     contactId: undefined,
     action: null,
     contacts: [],
