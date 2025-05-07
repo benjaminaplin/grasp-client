@@ -13,6 +13,8 @@ import { TableToolBar } from '../components/table/table-tool-bar/TableToolBar'
 
 export const Applications = () => {
   const [isApplicationFormOpen, setIsApplicationFormOpen] = useState(false)
+  const [applicationCount, setApplicationCount] = useState(0)
+
   const [formState, setFormState] = useState<Application>({
     type: null,
     notes: null,
@@ -22,36 +24,6 @@ export const Applications = () => {
     companyId: null,
     dateApplied: null,
   })
-
-  const { mutate: mutateCreateapplication } = useMutation({
-    mutationFn: (application: Application) => {
-      return axios.post(
-        `${getBaseUrl()}/job-applications`,
-        JSON.stringify(application),
-        {
-          headers: defaultHeaders,
-        },
-      )
-    },
-    onSuccess: () => {
-      setIsApplicationFormOpen(false)
-      refetchApplications()
-    },
-  })
-
-  const { data: companies } = useQueryWrapper<Company[]>(
-    'users/2/companies',
-    undefined,
-    { select: (fetchedData: Company[]) => orderBy(fetchedData, ['name']) },
-  )
-
-  const {
-    data: applications,
-    refetch: refetchApplications,
-    isLoading: areApplicationsLoading,
-    isFetching: areApplicationsFetching,
-  } = useQueryWrapper<Application[]>('job-applications')
-
   const { mutate: mutateUpdateApplication } = useMutation({
     mutationFn: ({
       application,
@@ -69,16 +41,41 @@ export const Applications = () => {
       )
     },
   })
+  const onMutateSuccess = () => {
+    // setIsApplicationFormOpen(false)
+    refetchApplications()
+  }
+
+  // const updateApplication = (updatedapplication: {
+  //   application: Partial<Application>
+  //   id: number
+  // }) => {
+  //   mutateUpdateApplication(updatedapplication)
+  // }
+  // const { mutate: mutateCreateapplication } = useMutation({
+  //   mutationFn: (application: Application) => {
+  //     return axios.post(
+  //       `${getBaseUrl()}/job-applications`,
+  //       JSON.stringify(application),
+  //       {
+  //         headers: defaultHeaders,
+  //       },
+  //     )
+  //   },
+  //   onSuccess: () => {
+  //     setIsApplicationFormOpen(false)
+  //     // refetchApplications()
+  //   },
+  // })
+
+  const { data: companies } = useQueryWrapper<Company[]>(
+    'users/2/companies',
+    undefined,
+    { select: (fetchedData: Company[]) => orderBy(fetchedData, ['name']) },
+  )
 
   const createApplication = () => {
     mutateCreateapplication(formState)
-  }
-
-  const updateApplication = (updatedapplication: {
-    application: Partial<Application>
-    id: number
-  }) => {
-    mutateUpdateApplication(updatedapplication)
   }
 
   const handleFormChange = (evt: any) => {
@@ -87,27 +84,19 @@ export const Applications = () => {
       [evt.target.name]: evt.target.value,
     }))
   }
-  const applicationTableData = applications?.map((a: Application) => ({
-    ...a,
-    company:
-      companies?.find((c: Company) => c.id === a.companyId)?.name || null,
-  }))
 
   return (
     <Layout title='Applications'>
       <TableToolBar
-        resource={applications}
+        resource={undefined}
+        resourceCount={applicationCount}
         resourceName='Application'
-        refetchResource={refetchApplications}
+        refetchResource={() => {}}
         setIsFormOpen={() => setIsApplicationFormOpen(!isApplicationFormOpen)}
       />
       <ApplicationsTable
-        areApplicationsLoading={
-          areApplicationsLoading || areApplicationsFetching
-        }
-        updateApplication={updateApplication}
-        tableData={applicationTableData}
-        refreshTableData={refetchApplications}
+        companies={companies}
+        handleUpdateRowCount={setApplicationCount}
       />
       <ApplicationForm
         companyId={formState.companies[0]?.id}

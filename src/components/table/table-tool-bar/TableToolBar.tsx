@@ -5,8 +5,9 @@ type TableToolBarType = {
   resource: any[] | undefined
   resourceName: string
   setIsFormOpen: () => void
-  refetchResource: () => void
+  refetchResource: () => void | undefined
   resourceNamePlural?: string
+  resourceCount?: number
 }
 
 export const TableToolBar = ({
@@ -15,6 +16,7 @@ export const TableToolBar = ({
   resourceNamePlural,
   setIsFormOpen,
   refetchResource,
+  resourceCount,
 }: TableToolBarType) => {
   return (
     <Toolbar
@@ -27,7 +29,7 @@ export const TableToolBar = ({
       }}
     >
       <div className='table-action-bar-left'>
-        <Typography variant='h6'>{`${resource?.length || 0} ${resourceNamePlural || `${resourceName}s`}`}</Typography>
+        <Typography variant='h6'>{`${resourceCount || resource?.length || 0} ${resourceNamePlural || `${resourceName}s`}`}</Typography>
       </div>
       <div className='table-action-bar-right'>
         <Button color='info' variant='contained' onClick={setIsFormOpen}>
@@ -35,7 +37,7 @@ export const TableToolBar = ({
         </Button>
         <RefreshIcon
           sx={{ marginLeft: '.5rem', cursor: 'pointer' }}
-          onClick={refetchResource}
+          onClick={refetchResource || null}
         />
       </div>
     </Toolbar>
