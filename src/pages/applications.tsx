@@ -6,15 +6,21 @@ import { Application } from '../types/application'
 import Layout from '../components/layout/Layout'
 import { ApplicationForm } from '../features/application-form/ApplicationForm'
 import { Company } from '../types/company'
-import { defaultHeaders, useQueryWrapper } from '../context/WrapUseQuery'
+import {
+  defaultHeaders,
+  fetcher,
+  useQueryWrapper,
+} from '../context/WrapUseQuery'
 import { orderBy } from 'lodash'
 import { getBaseUrl } from '../service/getUrl'
 import { TableToolBar } from '../components/table/table-tool-bar/TableToolBar'
+import { useQueryClient } from '@tanstack/react-query'
+import { useAuth0 } from '@auth0/auth0-react'
 
 export const Applications = () => {
   const [isApplicationFormOpen, setIsApplicationFormOpen] = useState(false)
   const [applicationCount, setApplicationCount] = useState(0)
-
+  const { getAccessTokenSilently } = useAuth0()
   const [formState, setFormState] = useState<Application>({
     type: null,
     notes: null,
@@ -23,50 +29,9 @@ export const Applications = () => {
     companies: [],
     companyId: null,
     dateApplied: null,
+    companyName: null,
   })
-  const { mutate: mutateUpdateApplication } = useMutation({
-    mutationFn: ({
-      application,
-      id,
-    }: {
-      application: Partial<Application>
-      id: number
-    }) => {
-      return axios.patch(
-        `${getBaseUrl()}/job-applications/${id}`,
-        JSON.stringify(application),
-        {
-          headers: defaultHeaders,
-        },
-      )
-    },
-  })
-  const onMutateSuccess = () => {
-    // setIsApplicationFormOpen(false)
-    refetchApplications()
-  }
-
-  // const updateApplication = (updatedapplication: {
-  //   application: Partial<Application>
-  //   id: number
-  // }) => {
-  //   mutateUpdateApplication(updatedapplication)
-  // }
-  // const { mutate: mutateCreateapplication } = useMutation({
-  //   mutationFn: (application: Application) => {
-  //     return axios.post(
-  //       `${getBaseUrl()}/job-applications`,
-  //       JSON.stringify(application),
-  //       {
-  //         headers: defaultHeaders,
-  //       },
-  //     )
-  //   },
-  //   onSuccess: () => {
-  //     setIsApplicationFormOpen(false)
-  //     // refetchApplications()
-  //   },
-  // })
+  const queryClient = useQueryClient()
 
   const { data: companies } = useQueryWrapper<Company[]>(
     'users/2/companies',
@@ -74,15 +39,42 @@ export const Applications = () => {
     { select: (fetchedData: Company[]) => orderBy(fetchedData, ['name']) },
   )
 
+  const { mutate: mutateCreateApplication } = useMutation({
+    mutationFn: async (application: Application) => {
+      console.log('🚀 ~ mutationFn: ~ application:', application)
+      const payload = application
+      if (application.companyId === -1) {
+        delete payload.companyId
+      }
+      console.log('🚀 ~ mutationFn: ~ payload:', payload)
+      const token = await getAccessTokenSilently()
+      return axios.post(
+        `${getBaseUrl()}/job-applications`,
+        JSON.stringify(payload),
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        },
+      )
+    },
+    onSuccess: () => {
+      setIsApplicationFormOpen(false)
+      queryClient.invalidateQueries({ queryKey: ['job-applications'] })
+    },
+  })
+
   const createApplication = () => {
-    mutateCreateapplication(formState)
+    mutateCreateApplication(formState)
   }
 
   const handleFormChange = (evt: any) => {
-    setFormState((formState: any) => ({
-      ...formState,
-      [evt.target.name]: evt.target.value,
-    }))
+    console.log('evt.target.name', evt.target.name)
+    console.log('evt.target.value', evt.target.value)
+    setFormState((formState: any) => {
+      return { ...formState, [evt.target.name]: evt.target.value }
+    })
   }
 
   return (
@@ -94,12 +86,10 @@ export const Applications = () => {
         refetchResource={() => {}}
         setIsFormOpen={() => setIsApplicationFormOpen(!isApplicationFormOpen)}
       />
-      <ApplicationsTable
-        companies={companies}
-        handleUpdateRowCount={setApplicationCount}
-      />
+      <ApplicationsTable />
       <ApplicationForm
-        companyId={formState.companies[0]?.id}
+        companyId={formState.companyId}
+        companyName={formState.companyName}
         isOpen={isApplicationFormOpen}
         handleClose={() => setIsApplicationFormOpen(false)}
         createApplication={createApplication}

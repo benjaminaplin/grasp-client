@@ -1,4 +1,4 @@
-import { Company } from "./company"
+import { Company } from './company'
 
 export type Application = {
   id?: number
@@ -6,7 +6,8 @@ export type Application = {
   role: string | null
   notes: string | null
   userId: number | null
-  companyId: number | null
+  companyId?: number | null
   companies: Company[]
   dateApplied: string | null
+  companyName: string | null
 }

@@ -7,6 +7,13 @@ import FormControlLabel from '@mui/material/FormControlLabel'
 import Switch from '@mui/material/Switch'
 import TablePagination from '@mui/material/TablePagination'
 
+type Pagination = {
+  page: number
+  limit: number
+  count: number
+  rowsPerPage: number
+  pageIndex: number
+}
 export const AppTableContainer = ({
   children,
   dense,
@@ -19,12 +26,11 @@ export const AppTableContainer = ({
   children: ReactNode
   dense: boolean
   tableHeaders: ReactNode
-  pagination: any
+  pagination: Pagination
   handleChangeDense: (event: SyntheticEvent) => void
   handleChangeRowsPerPage: (event: React.ChangeEvent<HTMLInputElement>) => void
   handleChangePage: (event: React.MouseEvent | null, page: number) => void
 }) => {
-  console.log('🚀 ~ pagination:', pagination)
   return (
     <Paper>
       <TableContainer component={Paper}>
@@ -36,9 +42,9 @@ export const AppTableContainer = ({
       <TablePagination
         component='div'
         count={pagination.count}
-        page={pagination.pageIndex}
-        onPageChange={handleChangePage}
+        page={pagination.pageIndex} // must be a number
         rowsPerPage={pagination.rowsPerPage}
+        onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
         rowsPerPageOptions={[10, 25, 50]}
       />

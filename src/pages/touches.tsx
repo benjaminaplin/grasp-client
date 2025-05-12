@@ -11,6 +11,7 @@ import { defaultHeaders, useQueryWrapper } from '../context/WrapUseQuery'
 import { Contact } from '../types/contact'
 import { getBaseUrl } from '../service/getUrl'
 import { TableToolBar } from '../components/table/table-tool-bar/TableToolBar'
+import { PaginatedResponse } from '../types/paginatedResponse'
 
 export const Touches = () => {
   const [isTouchFormOpen, setIsTouchFormOpen] = useState(false)
@@ -36,7 +37,7 @@ export const Touches = () => {
   })
 
   const { data: applications } =
-    useQueryWrapper<Application[]>(`job-applications`)
+    useQueryWrapper<PaginatedResponse<Application>>(`job-applications`)
   const { data: contacts } = useQueryWrapper<Contact[]>(`contacts`)
   const {
     data: touches,
@@ -84,8 +85,9 @@ export const Touches = () => {
   const touchTableData = () =>
     touches?.map((touch: Touch) => {
       const application =
-        applications?.find((a: Application) => a.id === touch.jobApplicationId)
-          ?.role || null
+        applications?.data?.find(
+          (a: Application) => a.id === touch.jobApplicationId,
+        )?.role || null
       return {
         ...touch,
         application,

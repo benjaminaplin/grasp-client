@@ -8,98 +8,176 @@ import {
 } from '@tanstack/react-table'
 import { format } from 'date-fns'
 import axios from 'axios'
-import { ReactNode, SyntheticEvent, useEffect, useMemo, useState } from 'react'
+import {
+  ReactNode,
+  SyntheticEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
 import { Application } from '../../types/application'
 import { Link } from 'react-router-dom'
 import { relationFilterFn } from '../../utils/FilterFn'
 import { DeleteButtonCell } from '../../components/delete-button-cell/DeleteButtonCell'
-import { useMutation } from '@tanstack/react-query'
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query'
 import { getTableHeader } from '../../components/table/table-header/TableHeader'
 import { TableCellInput } from '../../components/table/table-cell-input/TableCellInput'
-import { defaultHeaders, useQueryWrapper } from '../../context/WrapUseQuery'
+import { defaultHeaders, fetcher } from '../../context/WrapUseQuery'
 import { useLoadingColumns } from '../../components/table/hooks/use-loading-columns'
 import { AppTableContainer } from '../../components/table/table-container/TableContainer'
 import { getBaseUrl } from '../../service/getUrl'
 import { useLocalStorage } from 'usehooks-ts'
 import '../../styles/table-style.css'
-import { usePagination } from '../../hooks/usePagination'
 import { Company } from '../../types/company'
+import { PaginatedResponse } from '../../types/paginatedResponse'
+import { useAuth0 } from '@auth0/auth0-react'
 
 type ApplicationsTableType = {
   companies: Company[] | undefined
   handleUpdateRowCount: (count: number) => void
+  setIsFormOpen: (arg: boolean) => void
+}
+type Pagination = {
+  page: number
+  limit: number
+  count: number
+  rowsPerPage: number
+  pageIndex: number
 }
 
-const defaultColumn: Partial<ColumnDef<Application>> = {
-  cell: ({ getValue, row, column, table }) => {
-    const initialValue = getValue()
-    // We need to keep and update the state of the cell normally
-    const [value, setValue] = useState(initialValue)
-
-    // When the input is blurred, we'll call our table meta's updateData function
-    const onBlur = () => {
-      table.options.meta?.updateData(row.index, column.id, value)
-      updateApplication({
-        application: { [column.id]: value },
-        id: row.original.id as number,
-      })
-    }
-
-    // If the initialValue is changed external, sync it up with our state
-    useEffect(() => {
-      setValue(initialValue)
-    }, [initialValue])
-
-    const onChange = (e: { target: { value: unknown } }) =>
-      setValue(e.target.value)
-    return (
-      <TableCellInput
-        value={value as string}
-        onChange={onChange}
-        onBlur={onBlur}
-      />
-    )
-  },
+type PaginationParams = {
+  page: number
+  limit: number
 }
 
-export const ApplicationsTable = ({
-  companies,
-  handleUpdateRowCount,
-}: ApplicationsTableType) => {
+export const ApplicationsTable = () => {
+  const { getAccessTokenSilently } = useAuth0()
+  const queryClient = useQueryClient()
   const [dense, setDense] = useLocalStorage('dense', false)
-  const { pagination, pageIndex, handlePageChange, handleLimitChange } =
-    usePagination()
-  console.log('🚀 ~ pagination:', pagination)
+  const initial: PaginationParams = { page: 1, limit: 10 }
 
-  const {
-    data: applications,
-    refetch: refetchApplications,
-    isLoading: areApplicationsLoading,
-  } = useQueryWrapper<Application[]>(
-    'job-applications',
-    undefined,
-    undefined,
-    undefined,
-    pagination,
+  const [pagination, setPagination] = useState<PaginationParams>(initial)
+  const handlePageChange = useCallback((_e: unknown, newPage: number) => {
+    setPagination((prev) =>
+      prev.page === newPage + 1 ? prev : { ...prev, page: newPage + 1 },
+    )
+  }, [])
+
+  const handleLimitChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const newLimit = parseInt(event.target.value, 10)
+      setPagination((prev) =>
+        prev.limit === newLimit ? prev : { page: 1, limit: newLimit },
+      )
+    },
+    [],
   )
 
-  const onMutateSuccess = () => {
-    // setIsApplicationFormOpen(false)
-    refetchApplications()
+  const pageIndex = useMemo(() => pagination.page - 1, [pagination.page])
+
+  const fetchApplications = async (pagination: any) => {
+    const token = await getAccessTokenSilently()
+    const url = new URL('/api/job-applications', `${getBaseUrl()}/api`)
+    url.searchParams.set('page', pagination.page.toString())
+    url.searchParams.set('limit', pagination.limit.toString())
+
+    const res = await axios.get(url.toString(), {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    })
+
+    return res.data
   }
 
-  const { mutate: mutateDeleteContact } = useMutation({
-    mutationFn: (applicationId: number) => {
-      return axios.delete(`${getBaseUrl()}/job-applications/${applicationId}`, {
-        headers: defaultHeaders,
-      })
+  const { mutate: mutateUpdateApplication } = useMutation({
+    mutationFn: ({
+      application,
+      id,
+    }: {
+      application: Partial<Application>
+      id: number
+    }) => {
+      return fetcher(
+        `${getBaseUrl()}/job-applications/${id}`,
+        { body: JSON.stringify(application) },
+        'patch',
+        getAccessTokenSilently,
+      )
     },
-    onSuccess: onMutateSuccess,
   })
-  const deleteContact = (applicationId: number) => {
-    mutateDeleteContact(applicationId)
+
+  const updateApplication = (updatedapplication: {
+    application: Partial<Application>
+    id: number
+  }) => {
+    mutateUpdateApplication(updatedapplication)
+  }
+
+  const defaultColumn: Partial<ColumnDef<Application>> = {
+    cell: ({ getValue, row, column, table }) => {
+      const initialValue = getValue()
+      // We need to keep and update the state of the cell normally
+      const [value, setValue] = useState(initialValue)
+
+      // When the input is blurred, we'll call our table meta's updateData function
+      const onBlur = () => {
+        table.options.meta?.updateData(row.index, column.id, value)
+        updateApplication({
+          application: { [column.id]: value },
+          id: row.original.id as number,
+        })
+      }
+
+      // If the initialValue is changed external, sync it up with our state
+      useEffect(() => {
+        setValue(initialValue)
+      }, [initialValue])
+
+      const onChange = (e: { target: { value: unknown } }) =>
+        setValue(e.target.value)
+      return (
+        <TableCellInput
+          value={value as string}
+          onChange={onChange}
+          onBlur={onBlur}
+        />
+      )
+    },
+  }
+
+  const { data: applications, isLoading: areApplicationsLoading } = useQuery({
+    queryKey: ['job-application', pagination.page, pagination.limit],
+    queryFn: () => fetchApplications(pagination),
+    placeholderData: keepPreviousData,
+    staleTime: 5000,
+  })
+
+  const { mutate: mutateDeleteApplication } = useMutation({
+    mutationFn: (applicationId: number) => {
+      return fetcher(
+        `${getBaseUrl()}/job-applications/${applicationId}`,
+        {},
+        'delete',
+        getAccessTokenSilently,
+      )
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['job-applications'] })
+    },
+  })
+
+  const deleteApplication = (applicationId: number) => {
+    mutateDeleteApplication(applicationId)
   }
 
   const columns = useMemo<ColumnDef<Application>[]>(
@@ -140,7 +218,6 @@ export const ApplicationsTable = ({
         header: () => <span>Company</span>,
         footer: (props) => props.column.id,
         cell: (info) => {
-          console.log('🚀 ~ count:', count)
           return (
             <Link to={`/companies/${info.row.original.companyId}`}>
               {info.getValue() as ReactNode}
@@ -173,7 +250,7 @@ export const ApplicationsTable = ({
         cell: ({ row }) => (
           <DeleteButtonCell
             row={row}
-            deleteResource={(id: number) => deleteContact(id)}
+            deleteResource={(id: number) => deleteApplication(id)}
           />
         ),
       },
@@ -189,11 +266,11 @@ export const ApplicationsTable = ({
   const table = useReactTable({
     columns: memoColumns,
     defaultColumn,
-    data: applications || [],
+    data: applications?.data || [],
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     debugTable: true,
-    rowCount: applications?.length,
+    rowCount: applications?.data?.length,
     initialState: {
       sorting: [
         {
@@ -208,23 +285,15 @@ export const ApplicationsTable = ({
   const handleChangeDense = (event: SyntheticEvent) => {
     setDense((event.target as HTMLInputElement).checked)
   }
-  // @ts-expect-error need to figure out
-  const applicationTableData = table
-    .getRowModel()
-    ?.rows?.map((a: Application) => ({
-      ...a,
-      company:
-        companies?.find((c: Company) => c.id === a.companyId)?.name || null,
-    }))
+  const applicationTableData = table.getRowModel()?.rows
 
   const tableHeaders = getTableHeader<Application>(table)
-  const count = applicationTableData.length
-  console.log('count', count)
+  const count = applications?.total || 0
   const paginationProps = {
     ...pagination,
     count,
-    rowsPerPage: pagination.limit,
-    pageIndex,
+    pageIndex: Math.max(pagination.page - 1, 0),
+    rowsPerPage: pagination.limit || 10,
   }
 
   return (
@@ -239,7 +308,6 @@ export const ApplicationsTable = ({
       {applicationTableData.map((row) => {
         return (
           <TableRow key={row.id}>
-            {/* @ts-expect-error need to figure out */}
             {row.getVisibleCells().map((cell) => {
               return (
                 <TableCell key={cell.id}>

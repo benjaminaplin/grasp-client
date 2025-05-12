@@ -8,25 +8,26 @@ import { Company } from '../types/company'
 import { Contact } from '../types/contact'
 import { Interview } from '../types/interview'
 import { NextStep } from '../types/next-step'
+import { PaginatedResponse } from '../types/paginatedResponse'
 
 export const Dashboard = () => {
   const { data: companies } = useQueryWrapper<Company[]>(`users/2/companies`)
   const { data: applications } =
-    useQueryWrapper<Application[]>(`job-applications`)
+    useQueryWrapper<PaginatedResponse<Application>>(`job-applications`)
   const { data: nextSteps } = useQueryWrapper<NextStep[]>(`next-steps`)
   const { data: interviews } = useQueryWrapper<Interview[]>(`interviews`)
   const { data: touches } = useQueryWrapper<Contact[]>(`touches`)
 
   const recruiterApplications =
-    applications?.filter((application: Application) =>
+    applications?.data?.filter((application: Application) =>
       application.type?.includes('recruiter'),
     )?.length || 0
   const coldApplications =
-    applications?.filter((application: Application) =>
+    applications?.data?.filter((application: Application) =>
       application.type?.includes('cold'),
     )?.length || 0
   const connectionApplications =
-    applications?.filter((application: Application) =>
+    applications?.data?.filter((application: Application) =>
       application.type?.includes('connection'),
     )?.length || 0
 
@@ -37,7 +38,9 @@ export const Dashboard = () => {
           title='Applications'
           color='coral'
           destinationOnClick='/job-applications'
-          content={<StatContainer>{applications?.length || 0}</StatContainer>}
+          content={
+            <StatContainer>{applications?.data?.length || 0}</StatContainer>
+          }
         />
         <DashboardCard
           title='Recruiter Applications'

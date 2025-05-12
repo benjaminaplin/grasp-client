@@ -5,6 +5,7 @@ import TextField from '@mui/material/TextField'
 import { SelectInput } from '../../components/form/inputs/SelectInput'
 import { Company } from '../../types/company'
 import { FormContainer } from '../../components/form/form-container/FormContainer'
+import { MenuItem } from '@mui/material'
 
 type ApplicationFormPropsType = {
   isOpen: boolean
@@ -13,6 +14,7 @@ type ApplicationFormPropsType = {
   createApplication: () => void
   companies: Company[] | undefined
   companyId?: number | null
+  companyName?: string | null
 }
 
 export const ApplicationForm = ({
@@ -20,12 +22,17 @@ export const ApplicationForm = ({
   handleClose,
   handleFormChange,
   createApplication,
-  companies,
+  companies = [],
   companyId,
+  companyName,
 }: ApplicationFormPropsType) => {
+  const isOtherSelected = companyId === -1
+  console.log('🚀 ~ companyId:', companyId)
+
   const companyOptions = [
+    { value: -1, label: 'Other (enter manually)' },
     ...(companies?.map((c: Company) => ({ value: c.id, label: c.name })) || []),
-    { value: null, label: 'Please choose a company' },
+    { value: 0, label: 'Please choose a company' },
   ]
 
   return (
@@ -45,6 +52,16 @@ export const ApplicationForm = ({
             value={companyId}
             options={companyOptions}
           />
+          {isOtherSelected && (
+            <TextField
+              label='New Company Name'
+              name='companyName'
+              value={companyName}
+              onChange={handleFormChange}
+              fullWidth
+              sx={{ mt: 2 }}
+            />
+          )}
           <TextField
             id='standard-basic'
             name='type'
