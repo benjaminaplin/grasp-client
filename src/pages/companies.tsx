@@ -8,19 +8,8 @@ import { CompanyForm } from '../features/company-form/CompanyForm'
 import { defaultHeaders, useQueryWrapper } from '../context/WrapUseQuery'
 import { getBaseUrl } from '../service/getUrl'
 import { TableToolBar } from '../components/table/table-tool-bar/TableToolBar'
-import { PaginationParams, usePagination } from '../hooks/usePagination'
 import { PaginatedResponse } from '../types/paginatedResponse'
-
-const usePagination = () => {
-  const initial: PaginationParams = { page: 1, limit: 10 }
-
-  const [pagination, setPagination] = useState({
-    pageIndex: 0,
-    pageSize: 10,
-  })
-
-  return { pagination, setPagination }
-}
+import { usePagination } from '../hooks/usePagination'
 
 export const Companies = () => {
   const [isCompanyFormOpen, setIsCompanyFormOpen] = useState(false)

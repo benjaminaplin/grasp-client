@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { useMutation } from '@tanstack/react-query'
+import { keepPreviousData, useMutation } from '@tanstack/react-query'
 import { useState } from 'react'
 import { ApplicationsTable } from '../features/application-table/ApplicationTable'
 import { Application } from '../types/application'
@@ -17,6 +17,8 @@ import { TableToolBar } from '../components/table/table-tool-bar/TableToolBar'
 import { useQueryClient } from '@tanstack/react-query'
 import { useAuth0 } from '@auth0/auth0-react'
 import { JOB_APPLICATIONS_KEY } from '../constants/queryKeys'
+import { usePagination } from '../hooks/usePagination'
+import { PaginatedResponse } from '../types/paginatedResponse'
 
 export const Applications = () => {
   const [isApplicationFormOpen, setIsApplicationFormOpen] = useState(false)
@@ -34,13 +36,27 @@ export const Applications = () => {
   })
   const queryClient = useQueryClient()
 
-  const { data: companies } = useQueryWrapper<Company[]>(
-    'users/2/companies',
+  const { pagination, setPagination } = usePagination()
+
+  const {
+    data: tableData,
+    refetch: refetchApplications,
+    isLoading: applicationsAreLoading,
+    isFetching: applicationsAreFetching,
+  } = useQueryWrapper<PaginatedResponse<Application>>(
+    `applications`,
+    undefined,
+    { placeholderData: keepPreviousData }, // don't have 0 rows flash while changing pages/loading next page
+    undefined,
+    { page: pagination.pageIndex, limit: pagination.pageSize },
+    undefined,
+  )
+  const { data: applications } = useQueryWrapper<Company[]>(
+    'users/2/applications',
     undefined,
     { select: (fetchedData: Company[]) => orderBy(fetchedData, ['name']) },
   )
   const refreshJobApplications = () => {
-    console.log('🚀 ~ refreshJobApplications ~ invalidateQueries:')
     queryClient.invalidateQueries({ queryKey: [JOB_APPLICATIONS_KEY] })
   }
   const { mutate: mutateCreateApplication } = useMutation({
@@ -85,10 +101,15 @@ export const Applications = () => {
         resource={undefined}
         resourceCount={applicationCount}
         resourceName='Application'
-        refetchResource={refreshJobApplications}
+        refetchResource={refetchApplications}
         setIsFormOpen={() => setIsApplicationFormOpen(!isApplicationFormOpen)}
       />
-      <ApplicationsTable />
+      <ApplicationsTable
+        setPagination={setPagination}
+        pagination={pagination}
+        tableData={tableData}
+        isLoading={applicationsAreLoading}
+      />
       <ApplicationForm
         companyId={formState.companyId}
         companyName={formState.companyName}
@@ -96,7 +117,7 @@ export const Applications = () => {
         handleClose={() => setIsApplicationFormOpen(false)}
         createApplication={createApplication}
         handleFormChange={handleFormChange}
-        companies={companies}
+        companies={[]}
       />
     </Layout>
   )

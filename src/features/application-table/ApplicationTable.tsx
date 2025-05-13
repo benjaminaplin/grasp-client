@@ -42,54 +42,45 @@ import { useAuth0 } from '@auth0/auth0-react'
 import { JOB_APPLICATIONS_KEY } from '../../constants/queryKeys'
 
 type ApplicationsTableType = {
-  companies: Company[] | undefined
-  handleUpdateRowCount: (count: number) => void
-  setIsFormOpen: (arg: boolean) => void
+  setPagination: React.Dispatch<
+    React.SetStateAction<{
+      pageIndex: number
+      pageSize: number
+    }>
+  >
+  pagination: {
+    pageIndex: number
+    pageSize: number
+  }
+  tableData: PaginatedResponse<Application> | undefined
+  isLoading: boolean
 }
 
-type PaginationParams = {
-  page: number
-  limit: number
-}
-
-export const ApplicationsTable = () => {
+export const ApplicationsTable = ({
+  pagination,
+  setPagination,
+  tableData,
+  isLoading,
+}: ApplicationsTableType) => {
   const { getAccessTokenSilently } = useAuth0()
   const queryClient = useQueryClient()
   const [dense, setDense] = useLocalStorage('dense', false)
-  const initial: PaginationParams = { page: 1, limit: 10 }
 
-  const [pagination, setPagination] = useState<PaginationParams>(initial)
-  const handlePageChange = useCallback((_e: unknown, newPage: number) => {
-    setPagination((prev) =>
-      prev.page === newPage + 1 ? prev : { ...prev, page: newPage + 1 },
-    )
-  }, [])
+  // const fetchApplications = async (pagination: any) => {
+  //   const token = await getAccessTokenSilently()
+  //   const url = new URL('/api/job-applications', `${getBaseUrl()}/api`)
+  //   url.searchParams.set('page', pagination.page.toString())
+  //   url.searchParams.set('limit', pagination.limit.toString())
 
-  const handleLimitChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      const newLimit = parseInt(event.target.value, 10)
-      setPagination((prev) =>
-        prev.limit === newLimit ? prev : { page: 1, limit: newLimit },
-      )
-    },
-    [],
-  )
+  //   const res = await axios.get(url.toString(), {
+  //     headers: {
+  //       Authorization: `Bearer ${token}`,
+  //       'Content-Type': 'application/json',
+  //     },
+  //   })
 
-  const fetchApplications = async (pagination: any) => {
-    const token = await getAccessTokenSilently()
-    const url = new URL('/api/job-applications', `${getBaseUrl()}/api`)
-    url.searchParams.set('page', pagination.page.toString())
-    url.searchParams.set('limit', pagination.limit.toString())
-
-    const res = await axios.get(url.toString(), {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-    })
-
-    return res.data
-  }
+  //   return res.data
+  // }
 
   const { mutate: mutateUpdateApplication } = useMutation({
     mutationFn: async ({
@@ -153,12 +144,12 @@ export const ApplicationsTable = () => {
     },
   }
 
-  const { data: applications, isLoading: areApplicationsLoading } = useQuery({
-    queryKey: [JOB_APPLICATIONS_KEY, pagination.page, pagination.limit],
-    queryFn: () => fetchApplications(pagination),
-    placeholderData: keepPreviousData,
-    staleTime: 5000,
-  })
+  // const { data: applications, isLoading: areApplicationsLoading } = useQuery({
+  //   queryKey: [JOB_APPLICATIONS_KEY, pagination.page, pagination.limit],
+  //   queryFn: () => fetchApplications(pagination),
+  //   placeholderData: keepPreviousData,
+  //   staleTime: 5000,
+  // })
 
   const { mutate: mutateDeleteApplication } = useMutation({
     mutationFn: (applicationId: number) => {
@@ -267,17 +258,17 @@ export const ApplicationsTable = () => {
 
   const memoColumns = useLoadingColumns<Application>(
     columns as ColumnDef<Application>[],
-    areApplicationsLoading,
+    isLoading,
   )
 
   const table = useReactTable({
     columns: memoColumns,
     defaultColumn,
-    data: applications?.data || [],
+    data: tableData?.data || [],
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     debugTable: true,
-    rowCount: applications?.data?.length,
+    rowCount: tableData?.total || 0,
     initialState: {
       sorting: [
         {
@@ -287,6 +278,11 @@ export const ApplicationsTable = () => {
       ],
     },
     getSortedRowModel: getSortedRowModel(),
+    onPaginationChange: setPagination, //update the pagination state when internal APIs mutate the pagination state
+    state: {
+      pagination,
+    },
+    manualPagination: true, //we're doing manual "server-side" pagination
   })
 
   const handleChangeDense = (event: SyntheticEvent) => {
@@ -295,22 +291,12 @@ export const ApplicationsTable = () => {
   const applicationTableData = table.getRowModel()?.rows
 
   const tableHeaders = getTableHeader<Application>(table)
-  const count = applications?.total || 0
-  const paginationProps = {
-    ...pagination,
-    count,
-    pageIndex: Math.max(pagination.page - 1, 0),
-    rowsPerPage: pagination.limit || 10,
-  }
 
   return (
     <AppTableContainer
       dense={dense}
       tableHeaders={tableHeaders}
       handleChangeDense={handleChangeDense}
-      pagination={paginationProps}
-      handleChangePage={handlePageChange}
-      handleChangeRowsPerPage={handleLimitChange}
     >
       {applicationTableData.map((row) => {
         return (
