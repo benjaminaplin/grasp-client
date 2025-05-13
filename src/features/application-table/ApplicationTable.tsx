@@ -39,18 +39,12 @@ import '../../styles/table-style.css'
 import { Company } from '../../types/company'
 import { PaginatedResponse } from '../../types/paginatedResponse'
 import { useAuth0 } from '@auth0/auth0-react'
+import { JOB_APPLICATIONS_KEY } from '../../constants/queryKeys'
 
 type ApplicationsTableType = {
   companies: Company[] | undefined
   handleUpdateRowCount: (count: number) => void
   setIsFormOpen: (arg: boolean) => void
-}
-type Pagination = {
-  page: number
-  limit: number
-  count: number
-  rowsPerPage: number
-  pageIndex: number
 }
 
 type PaginationParams = {
@@ -81,8 +75,6 @@ export const ApplicationsTable = () => {
     [],
   )
 
-  const pageIndex = useMemo(() => pagination.page - 1, [pagination.page])
-
   const fetchApplications = async (pagination: any) => {
     const token = await getAccessTokenSilently()
     const url = new URL('/api/job-applications', `${getBaseUrl()}/api`)
@@ -100,19 +92,25 @@ export const ApplicationsTable = () => {
   }
 
   const { mutate: mutateUpdateApplication } = useMutation({
-    mutationFn: ({
+    mutationFn: async ({
       application,
       id,
     }: {
       application: Partial<Application>
       id: number
     }) => {
-      return fetcher(
+      const token = await getAccessTokenSilently()
+      const res = axios.patch(
         `${getBaseUrl()}/job-applications/${id}`,
-        { body: JSON.stringify(application) },
-        'patch',
-        getAccessTokenSilently,
+        JSON.stringify(application),
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        },
       )
+      return res
     },
   })
 
@@ -156,7 +154,7 @@ export const ApplicationsTable = () => {
   }
 
   const { data: applications, isLoading: areApplicationsLoading } = useQuery({
-    queryKey: ['job-application', pagination.page, pagination.limit],
+    queryKey: [JOB_APPLICATIONS_KEY, pagination.page, pagination.limit],
     queryFn: () => fetchApplications(pagination),
     placeholderData: keepPreviousData,
     staleTime: 5000,
@@ -172,7 +170,7 @@ export const ApplicationsTable = () => {
       )
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['job-applications'] })
+      queryClient.invalidateQueries({ queryKey: [JOB_APPLICATIONS_KEY] })
     },
   })
 
@@ -183,16 +181,24 @@ export const ApplicationsTable = () => {
   const columns = useMemo<ColumnDef<Application>[]>(
     () => [
       {
-        accessorFn: (row) => row.role,
-        id: 'role',
-        header: () => <span>Role</span>,
+        accessorKey: 'company',
+        id: 'company',
+        header: () => <span>Company</span>,
         footer: (props) => props.column.id,
+        cell: (info) => {
+          return (
+            <Link to={`/companies/${info.row.original.companyId}`}>
+              {info.getValue() as ReactNode}
+            </Link>
+          )
+        },
+        filterFn: relationFilterFn<Application>(),
         enableSorting: true,
       },
       {
-        accessorFn: (row) => row.type,
-        id: 'type',
-        header: () => <span>Type</span>,
+        accessorFn: (row) => row.role,
+        id: 'role',
+        header: () => <span>Role</span>,
         footer: (props) => props.column.id,
         enableSorting: true,
       },
@@ -213,23 +219,24 @@ export const ApplicationsTable = () => {
         sortingFn: 'datetime',
       },
       {
-        accessorKey: 'company',
-        id: 'company',
-        header: () => <span>Company</span>,
+        accessorKey: 'interviewCount',
+        id: 'interviewCount',
+        header: () => <span>Interviews</span>,
         footer: (props) => props.column.id,
-        cell: (info) => {
-          return (
-            <Link to={`/companies/${info.row.original.companyId}`}>
-              {info.getValue() as ReactNode}
-            </Link>
-          )
-        },
         filterFn: relationFilterFn<Application>(),
         enableSorting: true,
+        cell: (info) => info.getValue(),
       },
       {
         accessorKey: 'status',
         header: () => <span>Status</span>,
+        footer: (props) => props.column.id,
+        enableSorting: true,
+      },
+      {
+        accessorFn: (row) => row.type,
+        id: 'type',
+        header: () => <span>Type</span>,
         footer: (props) => props.column.id,
         enableSorting: true,
       },
@@ -308,13 +315,11 @@ export const ApplicationsTable = () => {
       {applicationTableData.map((row) => {
         return (
           <TableRow key={row.id}>
-            {row.getVisibleCells().map((cell) => {
-              return (
-                <TableCell key={cell.id}>
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </TableCell>
-              )
-            })}
+            {row.getVisibleCells().map((cell) => (
+              <TableCell key={cell.id}>
+                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+              </TableCell>
+            ))}
           </TableRow>
         )
       })}

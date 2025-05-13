@@ -1,11 +1,15 @@
 import { Button, Toolbar, Typography } from '@mui/material'
 import RefreshIcon from '@mui/icons-material/Refresh'
+import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query'
+import { PaginatedResponse } from '../../../types/paginatedResponse'
 
 type TableToolBarType = {
   resource: any[] | undefined
   resourceName: string
   setIsFormOpen: () => void
-  refetchResource: () => void | undefined
+  refetchResource: (
+    options?: RefetchOptions,
+  ) => Promise<QueryObserverResult<PaginatedResponse<any>, Error>>
   resourceNamePlural?: string
   resourceCount?: number
 }

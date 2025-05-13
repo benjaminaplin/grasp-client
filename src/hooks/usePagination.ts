@@ -5,11 +5,20 @@ export interface PaginationParams {
   limit: number
 }
 
+export type PaginationProps = {
+  page: number
+  limit: number
+  count: number | undefined
+  rowsPerPage: number
+  pageIndex: number
+}
+
 export function usePagination(
   initial: PaginationParams = { page: 0, limit: 10 },
 ) {
   const [pagination, setPagination] = useState<PaginationParams>(initial)
   const handlePageChange = useCallback((_: unknown, newPage: number) => {
+    console.log('🚀 ~ handlePageChange ~ newPage:', newPage)
     setPagination((prev) =>
       prev.page === newPage + 1 ? prev : { ...prev, page: newPage + 1 },
     )
@@ -26,12 +35,15 @@ export function usePagination(
   )
 
   const pageIndex = useMemo(() => pagination.page - 1, [pagination.page])
-
-  return {
-    pagination,
-    pageIndex,
-    handlePageChange,
-    handleLimitChange,
-    setPagination,
-  }
+  const paginationValues = useMemo(
+    () => ({
+      pagination,
+      pageIndex,
+      handlePageChange,
+      handleLimitChange,
+      setPagination,
+    }),
+    [pagination, pageIndex, handlePageChange, handleLimitChange, setPagination],
+  )
+  return paginationValues
 }

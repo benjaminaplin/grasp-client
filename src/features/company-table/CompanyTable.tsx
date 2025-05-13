@@ -6,6 +6,7 @@ import {
   flexRender,
   CellContext,
   getSortedRowModel,
+  getPaginationRowModel,
 } from '@tanstack/react-table'
 import { ReactNode, SyntheticEvent, useEffect, useMemo, useState } from 'react'
 import { Company } from '../../types/company'
@@ -17,6 +18,9 @@ import { useLoadingColumns } from '../../components/table/hooks/use-loading-colu
 import '../../styles/table-style.css'
 import { AppTableContainer } from '../../components/table/table-container/TableContainer'
 import { useLocalStorage } from 'usehooks-ts'
+import { Button } from '@mui/material'
+import { PaginationFooter } from '../../components/table/pagination/pagination-footer'
+import { PaginatedResponse } from '../../types/paginatedResponse'
 
 const linkToCompanyCellFn = (info: CellContext<Company, unknown>) => {
   return (
@@ -31,10 +35,20 @@ type CompanysTableType = {
     company: Partial<Company>
     id: number
   }) => void
-  tableData: Company[] | undefined
+  tableData: PaginatedResponse<Company> | undefined
   refreshTableData: () => void
   deleteCompany: (id: number) => void
   companiesAreLoading: boolean
+  setPagination: React.Dispatch<
+    React.SetStateAction<{
+      pageIndex: number
+      pageSize: number
+    }>
+  >
+  pagination: {
+    pageIndex: number
+    pageSize: number
+  }
 }
 
 export const CompanyTable = ({
@@ -42,6 +56,8 @@ export const CompanyTable = ({
   tableData,
   deleteCompany,
   companiesAreLoading,
+  pagination,
+  setPagination,
 }: CompanysTableType) => {
   const [dense, setDense] = useLocalStorage('dense', false)
 
@@ -67,6 +83,9 @@ export const CompanyTable = ({
 
       const onChange = (e: { target: { value: unknown } }) =>
         setValue(e.target.value)
+      console.log('🚀 ~ paginationState:', paginationState)
+      console.log('🚀 ~ paginationState:', paginationState)
+      console.log('🚀 ~ paginationState:', paginationState)
       return (
         <TableCellInput
           value={value as string}
@@ -113,22 +132,36 @@ export const CompanyTable = ({
     companiesAreLoading,
   )
 
+  const paginationState = {
+    pageIndex: pagination.pageIndex,
+    pageSize: pagination.pageSize,
+  }
+
   const table = useReactTable({
     columns: memoColumns,
     defaultColumn,
-    data: tableData || [],
+    data: tableData?.data || [],
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     debugTable: true,
-    rowCount: tableData?.length,
+    rowCount: tableData?.total || 0,
     getSortedRowModel: getSortedRowModel(),
+    onPaginationChange: setPagination, //update the pagination state when internal APIs mutate the pagination state
+    state: {
+      pagination: paginationState,
+    },
+    manualPagination: true, //we're doing manual "server-side" pagination
   })
+  // getPaginationRowModel: getPaginationRowModel(), // If only doing manual pagination, you don't need this
+  console.log('🚀 ~ table Prev pg:', table.getCanPreviousPage())
+  console.log('🚀 ~ table Next pg:', table.getCanNextPage())
 
   const handleChangeDense = (event: SyntheticEvent) => {
     setDense((event.target as HTMLInputElement).checked)
   }
 
   const tableHeaders = getTableHeader<Company>(table)
+
   return (
     <AppTableContainer
       dense={dense}
@@ -148,6 +181,7 @@ export const CompanyTable = ({
           </tr>
         )
       })}
+      <PaginationFooter table={table} />
     </AppTableContainer>
   )
 }

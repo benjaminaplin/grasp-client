@@ -16,6 +16,7 @@ import { getBaseUrl } from '../service/getUrl'
 import { TableToolBar } from '../components/table/table-tool-bar/TableToolBar'
 import { useQueryClient } from '@tanstack/react-query'
 import { useAuth0 } from '@auth0/auth0-react'
+import { JOB_APPLICATIONS_KEY } from '../constants/queryKeys'
 
 export const Applications = () => {
   const [isApplicationFormOpen, setIsApplicationFormOpen] = useState(false)
@@ -38,15 +39,16 @@ export const Applications = () => {
     undefined,
     { select: (fetchedData: Company[]) => orderBy(fetchedData, ['name']) },
   )
-
+  const refreshJobApplications = () => {
+    console.log('🚀 ~ refreshJobApplications ~ invalidateQueries:')
+    queryClient.invalidateQueries({ queryKey: [JOB_APPLICATIONS_KEY] })
+  }
   const { mutate: mutateCreateApplication } = useMutation({
     mutationFn: async (application: Application) => {
-      console.log('🚀 ~ mutationFn: ~ application:', application)
       const payload = application
       if (application.companyId === -1) {
         delete payload.companyId
       }
-      console.log('🚀 ~ mutationFn: ~ payload:', payload)
       const token = await getAccessTokenSilently()
       return axios.post(
         `${getBaseUrl()}/job-applications`,
@@ -60,8 +62,8 @@ export const Applications = () => {
       )
     },
     onSuccess: () => {
+      refreshJobApplications()
       setIsApplicationFormOpen(false)
-      queryClient.invalidateQueries({ queryKey: ['job-applications'] })
     },
   })
 
@@ -83,7 +85,7 @@ export const Applications = () => {
         resource={undefined}
         resourceCount={applicationCount}
         resourceName='Application'
-        refetchResource={() => {}}
+        refetchResource={refreshJobApplications}
         setIsFormOpen={() => setIsApplicationFormOpen(!isApplicationFormOpen)}
       />
       <ApplicationsTable />

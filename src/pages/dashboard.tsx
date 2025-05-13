@@ -14,6 +14,7 @@ export const Dashboard = () => {
   const { data: companies } = useQueryWrapper<Company[]>(`users/2/companies`)
   const { data: applications } =
     useQueryWrapper<PaginatedResponse<Application>>(`job-applications`)
+  console.log('🚀 ~ Dashboard ~ applications:', applications)
   const { data: nextSteps } = useQueryWrapper<NextStep[]>(`next-steps`)
   const { data: interviews } = useQueryWrapper<Interview[]>(`interviews`)
   const { data: touches } = useQueryWrapper<Contact[]>(`touches`)
@@ -38,9 +39,7 @@ export const Dashboard = () => {
           title='Applications'
           color='coral'
           destinationOnClick='/job-applications'
-          content={
-            <StatContainer>{applications?.data?.length || 0}</StatContainer>
-          }
+          content={<StatContainer>{applications?.total || 0}</StatContainer>}
         />
         <DashboardCard
           title='Recruiter Applications'

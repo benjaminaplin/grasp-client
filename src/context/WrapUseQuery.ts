@@ -35,7 +35,7 @@ export async function fetcher(
 
 type PaginationParams = { page: number; limit: number }
 
-const makeUrl = (
+const makePaginatedUrl = (
   query: string,
   pagination: PaginationParams | undefined,
   originalUrl?: string,
@@ -60,22 +60,21 @@ export function useQueryWrapper<ResourceType>(
   pagination?: PaginationParams,
   fetcherOptions?: FetcherOptions,
 ) {
-  const queryKey = useMemo(
-    () => [query, pagination?.page, pagination?.limit],
-    [query, pagination?.page, pagination?.limit],
-  )
+  let fetchUrl: string | undefined
+  if (pagination) {
+    fetchUrl = makePaginatedUrl(query, pagination, url)
+  } else {
+    fetchUrl = `${getBaseUrl()}/${query}`
+  }
+  // const constructedUrl = makeUrl(query, pagination, url)
+  console.log('🚀 ~ fetchUrl:', fetchUrl)
+  // const queryKey = useMemo(() => [constructedUrl], [constructedUrl])
   const { getAccessTokenSilently } = useAuth0()
 
   return useQuery<ResourceType>({
-    queryKey,
+    queryKey: [query, pagination],
     queryFn: () => {
-      const constructedUrl = makeUrl(query, pagination, url)
-      return fetcher(
-        constructedUrl,
-        fetcherOptions,
-        method,
-        getAccessTokenSilently,
-      )
+      return fetcher(fetchUrl, fetcherOptions, method, getAccessTokenSilently)
     },
     ...queryOptions,
   })

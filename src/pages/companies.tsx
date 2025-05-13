@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { useMutation } from '@tanstack/react-query'
+import { keepPreviousData, useMutation } from '@tanstack/react-query'
 import { useState } from 'react'
 import { CompanyTable } from '../features/company-table/CompanyTable'
 import { Company } from '../types/company'
@@ -8,6 +8,19 @@ import { CompanyForm } from '../features/company-form/CompanyForm'
 import { defaultHeaders, useQueryWrapper } from '../context/WrapUseQuery'
 import { getBaseUrl } from '../service/getUrl'
 import { TableToolBar } from '../components/table/table-tool-bar/TableToolBar'
+import { PaginationParams, usePagination } from '../hooks/usePagination'
+import { PaginatedResponse } from '../types/paginatedResponse'
+
+const usePagination = () => {
+  const initial: PaginationParams = { page: 1, limit: 10 }
+
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 10,
+  })
+
+  return { pagination, setPagination }
+}
 
 export const Companies = () => {
   const [isCompanyFormOpen, setIsCompanyFormOpen] = useState(false)
@@ -34,12 +47,22 @@ export const Companies = () => {
     onSuccess: onMutateSuccess,
   })
 
+  const { pagination, setPagination } = usePagination()
+
   const {
-    data,
+    data: companyData,
     refetch: refetchCompanies,
     isLoading: companiesAreLoading,
     isFetching: companiesAreFetching,
-  } = useQueryWrapper<Company[]>('users/2/companies')
+  } = useQueryWrapper<PaginatedResponse<Company>>(
+    `companies`,
+    undefined,
+    { placeholderData: keepPreviousData }, // don't have 0 rows flash while changing pages/loading next page
+    undefined,
+    { page: pagination.pageIndex, limit: pagination.pageSize },
+    undefined,
+  )
+  console.log('🚀 ~ Companies ~ companyData:', companyData)
 
   const { mutate: mutateDeleteCompany } = useMutation({
     mutationFn: (companyId: number) => {
@@ -93,7 +116,7 @@ export const Companies = () => {
   return (
     <Layout title='Companies'>
       <TableToolBar
-        resource={data}
+        resource={companyData?.data}
         resourceName='Company'
         resourceNamePlural='Companies'
         refetchResource={refetchCompanies}
@@ -102,9 +125,11 @@ export const Companies = () => {
       <CompanyTable
         companiesAreLoading={companiesAreLoading || companiesAreFetching}
         updateCompany={updateCompany}
-        tableData={data}
+        tableData={companyData}
         refreshTableData={refetchCompanies}
         deleteCompany={deleteCompany}
+        setPagination={setPagination}
+        pagination={pagination}
       />
       <CompanyForm
         isOpen={isCompanyFormOpen}

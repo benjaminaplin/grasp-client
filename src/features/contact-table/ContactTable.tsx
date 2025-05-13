@@ -8,7 +8,13 @@ import {
   getSortedRowModel,
 } from '@tanstack/react-table'
 import { Contact } from '../../types/contact'
-import { ReactNode, SyntheticEvent, useEffect, useState } from 'react'
+import {
+  ReactNode,
+  SyntheticEvent,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react'
 import { Link } from 'react-router-dom'
 import { DeleteButtonCell } from '../../components/delete-button-cell/DeleteButtonCell'
 import { getTableHeader } from '../../components/table/table-header/TableHeader'
@@ -19,6 +25,7 @@ import { useLoadingColumns } from '../../components/table/hooks/use-loading-colu
 import { AppTableContainer } from '../../components/table/table-container/TableContainer'
 import { useLocalStorage } from 'usehooks-ts'
 import '../../styles/table-style.css'
+import { PaginationParams } from '../../hooks/usePagination'
 
 const linkToContactCellFn = (info: CellContext<Contact, unknown>) => {
   return (
@@ -47,6 +54,24 @@ export const ContactsTable = ({
   contactsAreLoading,
   handleOpenContactForm,
 }: ContactsTableType) => {
+  const initial: PaginationParams = { page: 1, limit: 10 }
+  const [pagination, setPagination] = useState<PaginationParams>(initial)
+  const handlePageChange = useCallback((_e: unknown, newPage: number) => {
+    setPagination((prev) =>
+      prev.page === newPage + 1 ? prev : { ...prev, page: newPage + 1 },
+    )
+  }, [])
+
+  const handleLimitChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const newLimit = parseInt(event.target.value, 10)
+      setPagination((prev) =>
+        prev.limit === newLimit ? prev : { page: 1, limit: newLimit },
+      )
+    },
+    [],
+  )
+
   const defaultColumn: Partial<ColumnDef<Contact>> = {
     cell: ({ getValue, row, column, table }) => {
       const initialValue = getValue()
@@ -177,7 +202,13 @@ export const ContactsTable = ({
   })
 
   const tableHeaders = getTableHeader<Contact>(table)
-
+  const count = tableData?.total || 0
+  const paginationProps = {
+    ...pagination,
+    count,
+    pageIndex: Math.max(pagination.page - 1, 0),
+    rowsPerPage: pagination.limit || 10,
+  }
   const handleChangeDense = (event: SyntheticEvent) => {
     setDense((event.target as HTMLInputElement).checked)
   }
@@ -186,6 +217,9 @@ export const ContactsTable = ({
       dense={dense}
       tableHeaders={tableHeaders}
       handleChangeDense={handleChangeDense}
+      pagination={paginationProps}
+      handleChangePage={handlePageChange}
+      handleChangeRowsPerPage={handleLimitChange}
     >
       {table.getRowModel().rows.map((row) => {
         return (
