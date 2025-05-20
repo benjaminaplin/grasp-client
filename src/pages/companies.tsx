@@ -10,8 +10,10 @@ import { getBaseUrl } from '../service/getUrl'
 import { TableToolBar } from '../components/table/table-tool-bar/TableToolBar'
 import { PaginatedResponse } from '../types/paginatedResponse'
 import { usePagination } from '../hooks/usePagination'
+import { useAuth0 } from '@auth0/auth0-react'
 
 export const Companies = () => {
+  const { getAccessTokenSilently } = useAuth0()
   const [isCompanyFormOpen, setIsCompanyFormOpen] = useState(false)
   const [formState, setFormState] = useState<Company>({
     name: null,
@@ -28,9 +30,13 @@ export const Companies = () => {
   }
 
   const { mutate: mutateCreateCompany } = useMutation({
-    mutationFn: (company: Company) => {
+    mutationFn: async (company: Company) => {
+      const token = await getAccessTokenSilently()
       return axios.post(`${getBaseUrl()}/companies`, JSON.stringify(company), {
-        headers: defaultHeaders,
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
       })
     },
     onSuccess: onMutateSuccess,

@@ -29,10 +29,12 @@ export const Applications = () => {
     notes: null,
     role: null,
     userId: 2,
-    companies: [],
     companyId: null,
     dateApplied: null,
     companyName: null,
+    link: null,
+    status: null,
+    description: null,
   })
   const queryClient = useQueryClient()
 
@@ -44,18 +46,24 @@ export const Applications = () => {
     isLoading: applicationsAreLoading,
     isFetching: applicationsAreFetching,
   } = useQueryWrapper<PaginatedResponse<Application>>(
-    `applications`,
+    `job-applications`,
     undefined,
     { placeholderData: keepPreviousData }, // don't have 0 rows flash while changing pages/loading next page
     undefined,
     { page: pagination.pageIndex, limit: pagination.pageSize },
     undefined,
   )
-  const { data: applications } = useQueryWrapper<Company[]>(
-    'users/2/applications',
+
+  const { data: companies } = useQueryWrapper<Company[]>(
+    `users/2/companies`,
     undefined,
-    { select: (fetchedData: Company[]) => orderBy(fetchedData, ['name']) },
+    { placeholderData: keepPreviousData }, // don't have 0 rows flash while changing pages/loading next page
+    undefined,
+    undefined,
+    undefined,
   )
+  console.log('🚀 ~ Applications ~ companies:', companies)
+
   const refreshJobApplications = () => {
     queryClient.invalidateQueries({ queryKey: [JOB_APPLICATIONS_KEY] })
   }
@@ -88,8 +96,6 @@ export const Applications = () => {
   }
 
   const handleFormChange = (evt: any) => {
-    console.log('evt.target.name', evt.target.name)
-    console.log('evt.target.value', evt.target.value)
     setFormState((formState: any) => {
       return { ...formState, [evt.target.name]: evt.target.value }
     })
@@ -117,7 +123,7 @@ export const Applications = () => {
         handleClose={() => setIsApplicationFormOpen(false)}
         createApplication={createApplication}
         handleFormChange={handleFormChange}
-        companies={[]}
+        companies={companies}
       />
     </Layout>
   )

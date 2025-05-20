@@ -172,11 +172,13 @@ export const NextStepTable = ({
       ],
     },
   })
+
   const handleChangeDense = (event: SyntheticEvent) => {
     setDense((event.target as HTMLInputElement).checked)
   }
 
   const tableHeaders = getTableHeader<NextStep>(table)
+
   return (
     <AppTableContainer
       dense={dense}

@@ -1,0 +1,40 @@
+.container {
+  padding: 1.5rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.nextStepContainer {
+  display: flex;
+  justify-content: space-between;
+}
+
+.title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.field {
+  margin-bottom: 0.5rem;
+}
+
+.label {
+  font-weight: 500;
+  margin-right: 0.25rem;
+}
+
+.link {
+  color: #0066cc;
+  text-decoration: underline;
+}
+
+.nextSteps {
+  margin-top: 1rem;
+}
+
+.nextStepItem {
+  margin-bottom: 0.25rem;
+}

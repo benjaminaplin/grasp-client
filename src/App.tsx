@@ -25,6 +25,7 @@ import { Auth0ProviderWithNavigate } from './providers/AuthProviderWithNavigate'
 import { useAuth0 } from '@auth0/auth0-react'
 import { Loader } from './components/loaders/Loader'
 import { CallbackPage } from './components/auth/CallBack'
+import { JobApplicationDetails } from './pages/job-application-details'
 
 declare module '@tanstack/react-table' {
   // eslint ignore is needed because TS needs these parameters
@@ -131,8 +132,8 @@ function App() {
                     />
                     <Route path='/interviews' element={<Interviews />} />
                     <Route
-                      path='/job-applications/:id'
-                      element={<ResourceView />}
+                      path='/job-applications/:applicationId'
+                      element={<JobApplicationDetails />}
                     />
                     <Route path='/companies' element={<Companies />} />
                     <Route path='/companies/:id' element={<ResourceView />} />

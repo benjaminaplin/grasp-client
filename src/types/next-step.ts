@@ -1,4 +1,4 @@
-import { Contact } from "./contact"
+import { Contact } from './contact'
 
 export type NextStep = {
   id?: number
@@ -10,4 +10,7 @@ export type NextStep = {
   contacts: Contact[] | undefined
   completed: boolean
   dueDate?: string
+  description?: string
+  scheduledDate?: string
+  isCompleted?: boolean
 }

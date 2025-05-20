@@ -40,6 +40,7 @@ import { Company } from '../../types/company'
 import { PaginatedResponse } from '../../types/paginatedResponse'
 import { useAuth0 } from '@auth0/auth0-react'
 import { JOB_APPLICATIONS_KEY } from '../../constants/queryKeys'
+import { PaginationFooter } from '../../components/table/pagination/pagination-footer'
 
 type ApplicationsTableType = {
   setPagination: React.Dispatch<
@@ -65,22 +66,6 @@ export const ApplicationsTable = ({
   const { getAccessTokenSilently } = useAuth0()
   const queryClient = useQueryClient()
   const [dense, setDense] = useLocalStorage('dense', false)
-
-  // const fetchApplications = async (pagination: any) => {
-  //   const token = await getAccessTokenSilently()
-  //   const url = new URL('/api/job-applications', `${getBaseUrl()}/api`)
-  //   url.searchParams.set('page', pagination.page.toString())
-  //   url.searchParams.set('limit', pagination.limit.toString())
-
-  //   const res = await axios.get(url.toString(), {
-  //     headers: {
-  //       Authorization: `Bearer ${token}`,
-  //       'Content-Type': 'application/json',
-  //     },
-  //   })
-
-  //   return res.data
-  // }
 
   const { mutate: mutateUpdateApplication } = useMutation({
     mutationFn: async ({
@@ -144,13 +129,6 @@ export const ApplicationsTable = ({
     },
   }
 
-  // const { data: applications, isLoading: areApplicationsLoading } = useQuery({
-  //   queryKey: [JOB_APPLICATIONS_KEY, pagination.page, pagination.limit],
-  //   queryFn: () => fetchApplications(pagination),
-  //   placeholderData: keepPreviousData,
-  //   staleTime: 5000,
-  // })
-
   const { mutate: mutateDeleteApplication } = useMutation({
     mutationFn: (applicationId: number) => {
       return fetcher(
@@ -192,6 +170,13 @@ export const ApplicationsTable = ({
         header: () => <span>Role</span>,
         footer: (props) => props.column.id,
         enableSorting: true,
+        cell: (info) => {
+          return (
+            <Link to={`/job-applications/${info.row.original.id}`}>
+              {info.getValue() as ReactNode}
+            </Link>
+          )
+        },
       },
       {
         accessorFn: (row) => row.dateApplied,
@@ -293,22 +278,25 @@ export const ApplicationsTable = ({
   const tableHeaders = getTableHeader<Application>(table)
 
   return (
-    <AppTableContainer
-      dense={dense}
-      tableHeaders={tableHeaders}
-      handleChangeDense={handleChangeDense}
-    >
-      {applicationTableData.map((row) => {
-        return (
-          <TableRow key={row.id}>
-            {row.getVisibleCells().map((cell) => (
-              <TableCell key={cell.id}>
-                {flexRender(cell.column.columnDef.cell, cell.getContext())}
-              </TableCell>
-            ))}
-          </TableRow>
-        )
-      })}
-    </AppTableContainer>
+    <>
+      <AppTableContainer
+        dense={dense}
+        tableHeaders={tableHeaders}
+        handleChangeDense={handleChangeDense}
+      >
+        {applicationTableData.map((row) => {
+          return (
+            <TableRow key={row.id}>
+              {row.getVisibleCells().map((cell) => (
+                <TableCell key={cell.id}>
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </TableCell>
+              ))}
+            </TableRow>
+          )
+        })}
+      </AppTableContainer>
+      <PaginationFooter table={table} />
+    </>
   )
 }

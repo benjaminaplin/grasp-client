@@ -152,9 +152,6 @@ export const CompanyTable = ({
     },
     manualPagination: true, //we're doing manual "server-side" pagination
   })
-  // getPaginationRowModel: getPaginationRowModel(), // If only doing manual pagination, you don't need this
-  console.log('🚀 ~ table Prev pg:', table.getCanPreviousPage())
-  console.log('🚀 ~ table Next pg:', table.getCanNextPage())
 
   const handleChangeDense = (event: SyntheticEvent) => {
     setDense((event.target as HTMLInputElement).checked)

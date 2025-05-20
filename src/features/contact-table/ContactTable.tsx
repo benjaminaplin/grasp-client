@@ -9,7 +9,9 @@ import {
 } from '@tanstack/react-table'
 import { Contact } from '../../types/contact'
 import {
+  Dispatch,
   ReactNode,
+  SetStateAction,
   SyntheticEvent,
   useCallback,
   useEffect,
@@ -25,7 +27,8 @@ import { useLoadingColumns } from '../../components/table/hooks/use-loading-colu
 import { AppTableContainer } from '../../components/table/table-container/TableContainer'
 import { useLocalStorage } from 'usehooks-ts'
 import '../../styles/table-style.css'
-import { PaginationParams } from '../../hooks/usePagination'
+import { PaginatedResponse } from '../../types/paginatedResponse'
+import { PaginationFooter } from '../../components/table/pagination/pagination-footer'
 
 const linkToContactCellFn = (info: CellContext<Contact, unknown>) => {
   return (
@@ -41,10 +44,18 @@ type ContactsTableType = {
     contact: Partial<Contact>
     id: number
   }) => void
-  tableData: Contact[] | undefined
+  tableData: PaginatedResponse<Contact> | undefined
   refreshTableData: () => void
   deleteContact: (id: number) => void
   handleOpenContactForm: (contactId: number | undefined) => void
+  setPagination: Dispatch<
+    SetStateAction<{ pageIndex: number; pageSize: number }>
+  >
+  pagination: {
+    pageIndex: number
+    pageSize: number
+  }
+  isLoading: boolean
 }
 
 export const ContactsTable = ({
@@ -53,25 +64,11 @@ export const ContactsTable = ({
   deleteContact,
   contactsAreLoading,
   handleOpenContactForm,
+  setPagination,
+  pagination,
+  isLoading,
 }: ContactsTableType) => {
-  const initial: PaginationParams = { page: 1, limit: 10 }
-  const [pagination, setPagination] = useState<PaginationParams>(initial)
-  const handlePageChange = useCallback((_e: unknown, newPage: number) => {
-    setPagination((prev) =>
-      prev.page === newPage + 1 ? prev : { ...prev, page: newPage + 1 },
-    )
-  }, [])
-
-  const handleLimitChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      const newLimit = parseInt(event.target.value, 10)
-      setPagination((prev) =>
-        prev.limit === newLimit ? prev : { page: 1, limit: newLimit },
-      )
-    },
-    [],
-  )
-
+  console.log('🚀 ~ tableData:', tableData)
   const defaultColumn: Partial<ColumnDef<Contact>> = {
     cell: ({ getValue, row, column, table }) => {
       const initialValue = getValue()
@@ -193,47 +190,45 @@ export const ContactsTable = ({
   const table = useReactTable({
     columns: memoColumns,
     defaultColumn,
-    data: tableData || [],
+    data: tableData?.data || [],
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     debugTable: true,
-    rowCount: tableData?.length,
+    rowCount: tableData?.total,
     getSortedRowModel: getSortedRowModel(),
+    onPaginationChange: setPagination, //update the pagination state when internal APIs mutate the pagination state
+    state: {
+      pagination,
+    },
+    manualPagination: true, //we're doing manual "server-side" pagination
   })
 
   const tableHeaders = getTableHeader<Contact>(table)
-  const count = tableData?.total || 0
-  const paginationProps = {
-    ...pagination,
-    count,
-    pageIndex: Math.max(pagination.page - 1, 0),
-    rowsPerPage: pagination.limit || 10,
-  }
   const handleChangeDense = (event: SyntheticEvent) => {
     setDense((event.target as HTMLInputElement).checked)
   }
   return (
-    <AppTableContainer
-      dense={dense}
-      tableHeaders={tableHeaders}
-      handleChangeDense={handleChangeDense}
-      pagination={paginationProps}
-      handleChangePage={handlePageChange}
-      handleChangeRowsPerPage={handleLimitChange}
-    >
-      {table.getRowModel().rows.map((row) => {
-        return (
-          <tr key={row.id}>
-            {row.getVisibleCells().map((cell) => {
-              return (
-                <td key={cell.id}>
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
-              )
-            })}
-          </tr>
-        )
-      })}
-    </AppTableContainer>
+    <>
+      <AppTableContainer
+        dense={dense}
+        tableHeaders={tableHeaders}
+        handleChangeDense={handleChangeDense}
+      >
+        {table.getRowModel().rows.map((row) => {
+          return (
+            <tr key={row.id}>
+              {row.getVisibleCells().map((cell) => {
+                return (
+                  <td key={cell.id}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </td>
+                )
+              })}
+            </tr>
+          )
+        })}
+      </AppTableContainer>
+      <PaginationFooter table={table} />
+    </>
   )
 }

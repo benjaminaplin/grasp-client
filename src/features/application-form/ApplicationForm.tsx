@@ -6,6 +6,7 @@ import { SelectInput } from '../../components/form/inputs/SelectInput'
 import { Company } from '../../types/company'
 import { FormContainer } from '../../components/form/form-container/FormContainer'
 import { MenuItem } from '@mui/material'
+import { makeCompanyOptions } from '../../utils/make-company-options'
 
 type ApplicationFormPropsType = {
   isOpen: boolean
@@ -27,13 +28,7 @@ export const ApplicationForm = ({
   companyName,
 }: ApplicationFormPropsType) => {
   const isOtherSelected = companyId === -1
-  console.log('🚀 ~ companyId:', companyId)
-
-  const companyOptions = [
-    { value: -1, label: 'Other (enter manually)' },
-    ...(companies?.map((c: Company) => ({ value: c.id, label: c.name })) || []),
-    { value: 0, label: 'Please choose a company' },
-  ]
+  const companyOptions = makeCompanyOptions(companies)
 
   return (
     <Modal open={isOpen} onClose={handleClose}>

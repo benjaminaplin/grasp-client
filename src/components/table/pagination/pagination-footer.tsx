@@ -2,7 +2,7 @@ import { Table } from '@tanstack/react-table'
 import { Company } from '../../../types/company'
 import Button from '@mui/material/Button'
 
-export const PaginationFooter = ({ table }: { table: Table<Company> }) => {
+export const PaginationFooter = ({ table }: { table: Table<any> }) => {
   return (
     <>
       <Button

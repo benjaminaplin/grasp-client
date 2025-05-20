@@ -6,6 +6,7 @@ import { Contact } from '../../types/contact'
 import { SelectInput } from '../../components/form/inputs/SelectInput'
 import { Company } from '../../types/company'
 import { FormContainer } from '../../components/form/form-container/FormContainer'
+import { makeCompanyOptions } from '../../utils/make-company-options'
 
 type ContactFormPropsType = {
   companies: Company[]
@@ -25,10 +26,7 @@ export const ContactForm = ({
   companies,
   companyId,
 }: ContactFormPropsType) => {
-  const companyOptions = [
-    ...(companies?.map((c: Company) => ({ value: c.id, label: c.name })) || []),
-    { value: null, label: 'Please choose a company' },
-  ]
+  const companyOptions = makeCompanyOptions(companies)
   return (
     <Modal open={isOpen} onClose={handleClose}>
       <FormContainer>
