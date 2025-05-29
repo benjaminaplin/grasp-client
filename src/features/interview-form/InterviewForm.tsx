@@ -8,15 +8,15 @@ import { Company } from '../../types/company'
 import { orderBy } from 'lodash'
 import { FormContainer } from '../../components/form/form-container/FormContainer'
 import DatePicker from '../../components/form/inputs/DatePicker'
+import { PaginatedResponse } from '../../types/paginatedResponse'
 
 type InterviewFormPropsType = {
   isOpen: boolean
   handleClose: (arg: boolean) => void
   handleFormChange: (evt: any) => void
   createInterview: () => void
-  applications: Application[] | undefined
+  applications: PaginatedResponse<Application> | undefined
   applicationId?: number | null
-  companyMap: { [key: string]: Company[] }
   interviewDate: any
 }
 
@@ -27,14 +27,13 @@ export const InterviewForm = ({
   createInterview,
   applications,
   applicationId,
-  companyMap,
   interviewDate,
 }: InterviewFormPropsType) => {
   const jobApplicationOptions = orderBy(
     [
-      ...(applications?.map((a: Application) => ({
+      ...(applications?.data?.map((a: Application) => ({
         value: a.id,
-        label: `${a.companyId ? companyMap?.[a.companyId]?.[0]?.name : 'unknown company'} ${a.role}`,
+        label: `${a.company ?? 'unknown company'} ${a.role}`,
       })) || []),
     ],
     ['label'],

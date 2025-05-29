@@ -13,6 +13,8 @@ import { getBaseUrl } from '../service/getUrl'
 import { TableToolBar } from '../components/table/table-tool-bar/TableToolBar'
 import '../styles/table-style.css'
 import dayjs from 'dayjs'
+import { useMutationWrapper } from '../context/WrapUseMutation'
+import { PaginatedResponse } from '../types/paginatedResponse'
 
 type CompanyMap = { [key: string]: Company[] }
 
@@ -31,24 +33,20 @@ export const Interviews = () => {
     date: null,
   })
 
-  const { mutate: mutateCreateInterview } = useMutation({
-    mutationFn: (interview: Interview) => {
-      return axios.post(
-        `${getBaseUrl()}/interviews`,
-        JSON.stringify(interview),
-        {
-          headers: defaultHeaders,
-        },
-      )
+  const { mutate: mutateCreateInterview } = useMutationWrapper(
+    `interviews`,
+    'post',
+    formState,
+    {
+      onSuccess: () => {
+        setIsInterviewFormOpen(false)
+        refetchInterviews()
+      },
     },
-    onSuccess: () => {
-      setIsInterviewFormOpen(false)
-      refetchInterviews()
-    },
-  })
+  )
 
   const { data: applications } =
-    useQueryWrapper<Application[]>(`job-applications`)
+    useQueryWrapper<PaginatedResponse<Application>>(`job-applications`)
 
   const {
     data: interviews,
@@ -57,7 +55,7 @@ export const Interviews = () => {
     isFetching: interviewsAreFetching,
   } = useQueryWrapper<Interview[]>(`interviews`)
 
-  const { data: companyMap } = useQueryWrapper<Company[]>(
+  const { data: companies } = useQueryWrapper<Company[]>(
     'users/2/companies',
     undefined,
     {
@@ -88,7 +86,7 @@ export const Interviews = () => {
   })
 
   const createInterview = () => {
-    mutateCreateInterview(formState)
+    mutateCreateInterview()
   }
 
   const updateInterview = (updatedInterview: {
@@ -118,30 +116,37 @@ export const Interviews = () => {
   return (
     <Layout title='Interviews'>
       <TableToolBar
-        resource={interviews}
+        resource={interviews ?? []}
         resourceName='Interview'
         refetchResource={refetchInterviews}
         setIsFormOpen={() => setIsInterviewFormOpen(!isInterviewFormOpen)}
       />
-      {companyMap && (
+      {companies && (
         <InterviewsTable
           interviewsAreLoading={interviewsAreLoading || interviewsAreFetching}
-          companyMap={companyMap as unknown as CompanyMap}
+          companies={companies}
           updateInterview={updateInterview}
-          tableData={interviews}
+          tableData={{
+            data: interviews ?? [],
+            page: 1,
+            limit: 50,
+            total: 50,
+            pages: 1,
+          }}
           refreshTableData={refetchInterviews}
         />
       )}
-      <InterviewForm
-        interviewDate={formState.date}
-        companyMap={companyMap as unknown as CompanyMap}
-        applicationId={formState.applications[0]?.id}
-        isOpen={isInterviewFormOpen}
-        handleClose={() => setIsInterviewFormOpen(false)}
-        createInterview={createInterview}
-        handleFormChange={handleFormChange}
-        applications={applications}
-      />
+      {applications && (
+        <InterviewForm
+          interviewDate={formState.date}
+          applicationId={formState.applications[0]?.id}
+          isOpen={isInterviewFormOpen}
+          handleClose={() => setIsInterviewFormOpen(false)}
+          createInterview={createInterview}
+          handleFormChange={handleFormChange}
+          applications={applications}
+        />
+      )}
     </Layout>
   )
 }

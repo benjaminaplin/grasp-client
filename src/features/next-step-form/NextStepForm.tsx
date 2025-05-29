@@ -26,7 +26,6 @@ export const NextStepForm = ({
   contactId,
   dueDate,
 }: NextStepFormPropsType) => {
-  console.log('🚀 ~ isOpen:', isOpen)
   const contactOptions = [
     ...(contacts?.map((c: Contact) => ({
       value: c.id,

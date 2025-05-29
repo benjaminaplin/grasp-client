@@ -43,7 +43,6 @@ export const Contacts = () => {
   const { mutate: mutateCreateContact } = useMutation({
     mutationFn: async (contact: Contact) => {
       const token = await getAccessTokenSilently()
-      console.log('🚀 ~ Contacts ~ token:', token)
       return axios.post(`${getBaseUrl()}/contacts`, JSON.stringify(contact), {
         headers: { ...defaultHeaders, Authorization: `Bearer ${token}` },
       })
@@ -111,8 +110,6 @@ export const Contacts = () => {
   }
 
   const createContact = () => {
-    console.log('🚀 ~ createContact ~ createContact:', createContact)
-
     mutateCreateContact(formState as Contact)
   }
 
@@ -131,11 +128,9 @@ export const Contacts = () => {
   }
 
   const openContactForm = (contactId: number | undefined) => {
-    console.log('🚀 ~ openContactForm ~ contactId:', contactId)
     setContactToEditId(contactId)
     setIsContactFormOpen(true)
   }
-  console.log('🚀 ~ Contacts ~ contactTableData:', contactTableData)
   return (
     <Layout title='Contacts'>
       <TableToolBar

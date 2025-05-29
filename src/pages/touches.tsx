@@ -38,13 +38,14 @@ export const Touches = () => {
 
   const { data: applications } =
     useQueryWrapper<PaginatedResponse<Application>>(`job-applications`)
-  const { data: contacts } = useQueryWrapper<Contact[]>(`contacts`)
+  const { data: contacts } = useQueryWrapper<Contact[]>(`contacts/all`)
+  console.log('🚀 ~ Touches ~ contacts:', contacts)
   const {
     data: touches,
     refetch: refetchTouches,
     isLoading: touchesAreLoading,
     isFetching: touchesAreFetching,
-  } = useQueryWrapper<Touch[]>(`touches`)
+  } = useQueryWrapper<PaginatedResponse<Touch>>(`touches`)
 
   const { mutate: mutateUpdateTouch } = useMutation({
     mutationFn: ({ touch, id }: { touch: Partial<Touch>; id: number }) => {
@@ -83,7 +84,7 @@ export const Touches = () => {
     })
   }
   const touchTableData = () =>
-    touches?.map((touch: Touch) => {
+    touches?.data?.map((touch: Touch) => {
       const application =
         applications?.data?.find(
           (a: Application) => a.id === touch.jobApplicationId,

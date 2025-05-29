@@ -156,8 +156,8 @@ export const ApplicationsTable = ({
         footer: (props) => props.column.id,
         cell: (info) => {
           return (
-            <Link to={`/companies/${info.row.original.companyId}`}>
-              {info.getValue() as ReactNode}
+            <Link to={`/companies/${info.row.original?.company?.id}`}>
+              {info.row.original?.company?.name}
             </Link>
           )
         },
@@ -182,11 +182,11 @@ export const ApplicationsTable = ({
         accessorFn: (row) => row.dateApplied,
         id: 'dateApplied',
         header: () => <span>Date Applied</span>,
-        cell: (info) => {
+        cell: ({ row }) => {
           return (
             <span>
-              {info.row.original.dateApplied
-                ? `${format(info.row.original.dateApplied, 'MM/dd/yyyy')}`
+              {row.original.dateApplied
+                ? `${format(row.original.dateApplied, 'MM/dd/yyyy')}`
                 : ''}
             </span>
           )
@@ -195,13 +195,24 @@ export const ApplicationsTable = ({
         sortingFn: 'datetime',
       },
       {
-        accessorKey: 'interviewCount',
-        id: 'interviewCount',
+        accessorKey: 'Interview',
+        id: 'Interview',
         header: () => <span>Interviews</span>,
         footer: (props) => props.column.id,
         filterFn: relationFilterFn<Application>(),
         enableSorting: true,
-        cell: (info) => info.getValue(),
+        cell: (info) => (
+          <span>{info?.row?.original?.Interview?.length ?? 0}</span>
+        ),
+      },
+      {
+        accessorKey: 'Touch',
+        id: 'Touch',
+        header: () => <span>Touches</span>,
+        footer: (props) => props.column.id,
+        filterFn: relationFilterFn<Application>(),
+        enableSorting: true,
+        cell: (info) => <span>{info?.row?.original?.Touch?.length ?? 0}</span>,
       },
       {
         accessorKey: 'status',
@@ -274,6 +285,7 @@ export const ApplicationsTable = ({
     setDense((event.target as HTMLInputElement).checked)
   }
   const applicationTableData = table.getRowModel()?.rows
+  console.log('🚀 ~ applicationTableData:', applicationTableData)
 
   const tableHeaders = getTableHeader<Application>(table)
 

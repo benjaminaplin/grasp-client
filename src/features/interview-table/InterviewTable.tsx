@@ -23,13 +23,14 @@ import { getBaseUrl } from '../../service/getUrl'
 import { AppTableContainer } from '../../components/table/table-container/TableContainer'
 import { useLocalStorage } from 'usehooks-ts'
 import '../../styles/table-style.css'
+import { PaginatedResponse } from '../../types/paginatedResponse'
 
 type InterviewsTableType = {
   updateInterview: (updatedInterview: {
     interview: Partial<Interview>
     id: number
   }) => void
-  tableData: Interview[] | undefined
+  tableData: PaginatedResponse<Interview> | undefined
   refreshTableData: () => void
   companyMap: { [key: string]: Company[] }
   interviewsAreLoading: boolean
@@ -129,12 +130,11 @@ export const InterviewsTable = ({
           },
         }) => {
           const role = jobApplication?.role
-          const company = (jobApplication?.companyId &&
-            companyMap?.[jobApplication?.companyId]?.[0]) || { name: null }
+          const company = jobApplication?.company?.name || { name: null }
           return (
             <Link
               to={`/job-applications/${jobApplicationId}`}
-            >{`${role} ${company?.name}`}</Link>
+            >{`${role} ${jobApplication?.company?.name}`}</Link>
           )
         },
         filterFn: relationFilterFn<Interview>(),
@@ -177,11 +177,11 @@ export const InterviewsTable = ({
   const table = useReactTable({
     columns: memoColumns,
     defaultColumn,
-    data: tableData || [],
+    data: tableData?.data || [],
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     debugTable: true,
-    rowCount: tableData?.length,
+    rowCount: tableData?.total,
     initialState: {
       sorting: [
         {

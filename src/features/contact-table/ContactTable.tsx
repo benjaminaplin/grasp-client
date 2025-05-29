@@ -68,7 +68,6 @@ export const ContactsTable = ({
   pagination,
   isLoading,
 }: ContactsTableType) => {
-  console.log('🚀 ~ tableData:', tableData)
   const defaultColumn: Partial<ColumnDef<Contact>> = {
     cell: ({ getValue, row, column, table }) => {
       const initialValue = getValue()

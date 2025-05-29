@@ -16,19 +16,13 @@ export async function fetcher(
   method: Method,
   getToken: any,
 ) {
-  console.log('🚀 ~ method:', method)
-  console.log('🚀 ~ options:', options)
-  console.log('🚀 ~ url:', url)
   const token = await getToken()
-  // console.log("🚀 ~ token:", token)
   const headers = { ...defaultHeaders, authorization: `Bearer ${token}` }
-  console.log('🚀 ~ headers:', headers)
   // @ts-expect-error because TS telling us `axios` can't be accessed with string
   const resp = await axios[method](url, {
     headers,
     ...options,
   })
-  console.log('🚀 ~ resp:', resp)
 
   return await resp.data
 }
@@ -66,9 +60,6 @@ export function useQueryWrapper<ResourceType>(
   } else {
     fetchUrl = `${getBaseUrl()}/${query}`
   }
-  // const constructedUrl = makeUrl(query, pagination, url)
-  console.log('🚀 ~ fetchUrl:', fetchUrl)
-  // const queryKey = useMemo(() => [constructedUrl], [constructedUrl])
   const { getAccessTokenSilently } = useAuth0()
 
   return useQuery<ResourceType>({

@@ -57,7 +57,6 @@ export const Companies = () => {
     { page: pagination.pageIndex, limit: pagination.pageSize },
     undefined,
   )
-  console.log('🚀 ~ Companies ~ companyData:', companyData)
 
   const { mutate: mutateDeleteCompany } = useMutation({
     mutationFn: (companyId: number) => {

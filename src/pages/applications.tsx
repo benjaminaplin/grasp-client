@@ -24,14 +24,13 @@ export const Applications = () => {
   const [isApplicationFormOpen, setIsApplicationFormOpen] = useState(false)
   const [applicationCount, setApplicationCount] = useState(0)
   const { getAccessTokenSilently } = useAuth0()
-  const [formState, setFormState] = useState<Application>({
+  const [formState, setFormState] = useState<Partial<Application>>({
     type: null,
     notes: null,
     role: null,
     userId: 2,
     companyId: null,
     dateApplied: null,
-    companyName: null,
     link: null,
     status: null,
     description: null,
@@ -62,13 +61,12 @@ export const Applications = () => {
     undefined,
     undefined,
   )
-  console.log('🚀 ~ Applications ~ companies:', companies)
 
   const refreshJobApplications = () => {
     queryClient.invalidateQueries({ queryKey: [JOB_APPLICATIONS_KEY] })
   }
   const { mutate: mutateCreateApplication } = useMutation({
-    mutationFn: async (application: Application) => {
+    mutationFn: async (application: Partial<Application>) => {
       const payload = application
       if (application.companyId === -1) {
         delete payload.companyId
@@ -118,7 +116,11 @@ export const Applications = () => {
       />
       <ApplicationForm
         companyId={formState.companyId}
-        companyName={formState.companyName}
+        companyName={
+          companies?.find(
+            (company: Company) => company.id === formState.companyId,
+          )?.name
+        }
         isOpen={isApplicationFormOpen}
         handleClose={() => setIsApplicationFormOpen(false)}
         createApplication={createApplication}

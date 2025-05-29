@@ -83,9 +83,6 @@ export const CompanyTable = ({
 
       const onChange = (e: { target: { value: unknown } }) =>
         setValue(e.target.value)
-      console.log('🚀 ~ paginationState:', paginationState)
-      console.log('🚀 ~ paginationState:', paginationState)
-      console.log('🚀 ~ paginationState:', paginationState)
       return (
         <TableCellInput
           value={value as string}

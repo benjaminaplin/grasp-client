@@ -12,6 +12,12 @@ import { orderBy } from 'lodash'
 import { getBaseUrl } from '../../service/getUrl'
 import axios from 'axios'
 import dayjs from 'dayjs'
+import Accordion from '@mui/material/Accordion'
+import AccordionSummary from '@mui/material/AccordionSummary'
+import AccordionDetails from '@mui/material/AccordionDetails'
+import Typography from '@mui/material/Typography'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import { Interview } from '../../types/interview'
 
 export const JobApplicationDetails = () => {
   const params = useParams()
@@ -31,7 +37,6 @@ export const JobApplicationDetails = () => {
     select: (fetchedData: { data: NextStep[] }) =>
       orderBy(fetchedData.data, ['firstName']),
   })
-  console.log('🚀 ~ JobApplicationDetails ~ contacts:', contacts)
 
   const { data: application, refetch: refetchApplication } =
     useQueryWrapper<Application>(`job-applications/${params?.applicationId}`)
@@ -74,6 +79,7 @@ export const JobApplicationDetails = () => {
   const handleOpenNextStepForm = () => {
     setIsNextStepFormOpen(!isNextStepFormOpen)
   }
+  const interviews = application?.Interview || []
 
   return (
     <>
@@ -83,7 +89,7 @@ export const JobApplicationDetails = () => {
 
           <p className={styles.field}>
             <span className={styles.label}>Company:</span>{' '}
-            {application.company.name}
+            {application.company?.name || 'unknown'}
           </p>
 
           <p className={styles.field}>
@@ -123,11 +129,11 @@ export const JobApplicationDetails = () => {
             <Button onClick={handleOpenNextStepForm}>Create Next Step</Button>
           </div>
           <div className={styles.nextSteps}>
-            {application.nextSteps?.length === 0 ? (
+            {application.nextsteps?.length === 0 ? (
               <p>No next steps</p>
             ) : (
               <ul>
-                {application.nextSteps?.map((step) => (
+                {application.nextsteps?.map((step: NextStep) => (
                   <li key={step.id} className={styles.nextStepItem}>
                     <strong>{step.description}</strong> —{' '}
                     {step.scheduledDate &&
@@ -142,6 +148,7 @@ export const JobApplicationDetails = () => {
       ) : (
         'loading'
       )}
+      <Interviews interviews={interviews} />
       <NextStepForm
         dueDate={formState.dueDate}
         contactId={formState.contacts?.[0]?.id}
@@ -151,6 +158,38 @@ export const JobApplicationDetails = () => {
         handleFormChange={handleFormChange}
         contacts={contacts}
       />
+    </>
+  )
+}
+
+const Interviews = ({ interviews }: { interviews: Interview[] }) => {
+  return (
+    <>
+      <h3>Interviews</h3>
+      {interviews.map((interview: any) => (
+        <Accordion key={interview.id}>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography>
+              Round {interview.round} — {interview.type || 'Unknown Type'} —{' '}
+              {new Date(interview.date).toLocaleDateString()}
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Typography>
+              <strong>Status:</strong> {interview.status}
+            </Typography>
+            <Typography>
+              <strong>Notes:</strong> {interview.notes}
+            </Typography>
+            <Typography>
+              <strong>User ID:</strong> {interview.userId}
+            </Typography>
+            <Typography>
+              <strong>Contact ID:</strong> {interview.contactId ?? 'N/A'}
+            </Typography>
+          </AccordionDetails>
+        </Accordion>
+      ))}
     </>
   )
 }
